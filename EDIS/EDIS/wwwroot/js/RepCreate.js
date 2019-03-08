@@ -20,7 +20,7 @@ $(function () {
 
         /* Get floors. */
         $.ajax({
-            url: '../../Floor/GetFloors',
+            url: '../Floor/GetFloors',
             type: "POST",
             dataType: "json",
             data: "bname=" + $(this).val(),
@@ -35,7 +35,7 @@ $(function () {
         var bId = $(this).val();
         var fId = $('#Floor').val();
         $.ajax({
-            url: '../../Place/GetPlaces',
+            url: '../Place/GetPlaces',
             type: "POST",
             dataType: "json",
             data: { buildingId: bId, floorId: fId },
@@ -51,7 +51,7 @@ $(function () {
         /* Get AccDptId and Name. */
         $("#AccDpt").val(dptId);
         $.ajax({
-            url: '../../Repair/GetDptName',
+            url: '../Repair/GetDptName',
             type: "POST",
             dataType: "json",
             data: { dptId: dptId },
@@ -68,7 +68,7 @@ $(function () {
         });  
         /* Get engineers. */
         $.ajax({
-            url: '../../Repair/GetDptEngId',
+            url: '../Repair/GetDptEngId',
             type: "POST",
             dataType: "json",
             data: { DptId: dptId },
@@ -89,7 +89,7 @@ $(function () {
         var bId = $("#Building").val();
         var fId = $(this).val();
         $.ajax({
-            url: '../../Place/GetPlaces',
+            url: '../Place/GetPlaces',
             type: "POST",
             dataType: "json",
             data: { buildingId: bId, floorId: fId },
@@ -105,7 +105,7 @@ $(function () {
         /* Get AccDptId and Name. */
         $("#AccDpt").val(dptId); 
         $.ajax({
-            url: '../../Repair/GetDptName',
+            url: '../Repair/GetDptName',
             type: "POST",
             dataType: "json",
             data: { dptId: dptId },
@@ -122,7 +122,7 @@ $(function () {
         });     
         /* Get engineers. */
         $.ajax({
-            url: '../../Repair/GetDptEngId',
+            url: '../Repair/GetDptEngId',
             type: "POST",
             dataType: "json",
             data: { DptId: dptId },
@@ -142,7 +142,7 @@ $(function () {
         /* Get AccDptId and Name. */
         $("#AccDpt").val(dptId);
         $.ajax({
-            url: '../../Repair/GetDptName',
+            url: '../Repair/GetDptName',
             type: "POST",
             dataType: "json",
             data: { dptId: dptId },
@@ -159,7 +159,7 @@ $(function () {
         });    
         /* Get engineers. */
         $.ajax({
-            url: '../../Repair/GetDptEngId',
+            url: '../Repair/GetDptEngId',
             type: "POST",
             dataType: "json",
             data: { DptId: dptId },
@@ -194,7 +194,7 @@ $(function () {
     $("#DptId").change(function () {
         var DptId = $(this).val();
         $.ajax({
-            url: '../../Repair/GetDptName',
+            url: '../Repair/GetDptName',
             type: "POST",
             dataType: "json",
             data: { dptId: DptId },
@@ -214,7 +214,7 @@ $(function () {
     $("#AccDpt").change(function () {
         var AccDptId = $(this).val();
         $.ajax({
-            url: '../../Repair/GetDptName',
+            url: '../Repair/GetDptName',
             type: "POST",
             dataType: "json",
             data: { dptId: AccDptId },
@@ -239,7 +239,7 @@ $(function () {
             /* Get AccDptId and Name. */
             $("#AccDpt").val($("#DptId").val());
             $.ajax({
-                url: '../../Repair/GetDptName',
+                url: '../Repair/GetDptName',
                 type: "POST",
                 dataType: "json",
                 data: { dptId: $("#DptId").val() },
@@ -283,13 +283,13 @@ function onSuccess() {
         window.printRepairDoc(DocId);
     }
 
-    location.href = '../../Home/Index';
+    location.href = '../Home/Index';
 }
 
 function getAssetName() {
     var AssetNo = $("#AssetNo").val();
     $.ajax({
-        url: '../../Repair/GetAssetName',
+        url: '../Repair/GetAssetName',
         type: "POST",
         dataType: "json",
         data: { assetNo: AssetNo },
@@ -312,7 +312,7 @@ function printRepairDoc(DocId) {
     var printContent = "";
     /* Get print page. */
     $.ajax({
-        url: '../../Repair/PrintRepairDoc',
+        url: '../Repair/PrintRepairDoc',
         type: "GET",
         async: false,
         data: { docId: DocId },
