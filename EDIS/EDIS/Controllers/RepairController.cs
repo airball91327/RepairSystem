@@ -532,8 +532,13 @@ namespace EDIS.Controllers
             /* 如請修地點為"本單位"，帶入單位代號 */
             if(repair.LocType == "本單位")
             {
-                ModelState.Remove("Area");  //移除Area的Model驗證
+                ModelState.Remove("Area");      //移除Area的Model驗證
+                ModelState.Remove("Building");  //移除Building的Model驗證
                 repair.Area = repair.DptId;
+            }
+            if (repair.RepType != "增設")
+            {
+                ModelState.Remove("DptMgrId");      //移除Area的Model驗證
             }
 
             var ur = _userRepo.Find(u => u.UserName == this.User.Identity.Name).First();

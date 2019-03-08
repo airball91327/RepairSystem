@@ -6,6 +6,16 @@
     <ApplicationInsightsAnnotationResourceId>/subscriptions/2546476a-2208-424a-9795-689d514f7e69/resourcegroups/Default-ApplicationInsights-EastUS/providers/microsoft.insights/components/EDIS</ApplicationInsightsAnnotationResourceId>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>C:\Users\user\OneDrive\CchHosp\8410\RepairSystem\EDIS\EDIS\EDIS.xml</DocumentationFile>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>C:\Users\user\OneDrive\CchHosp\8410\RepairSystem\EDIS\EDIS\EDIS.xml</DocumentationFile>
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+
   <ItemGroup>
     <Content Include="Files\Manual\UserManual.pptx" />
     <Content Include="Files\Repair\1071200037_1.txt" />
