@@ -87,6 +87,44 @@ namespace EDIS.Controllers
             string aname = qdata.qtyASSETNAME;
             string ftype = qdata.qtyFLOWTYPE;
             string dptid = qdata.qtyDPTID;
+            string qtyDate1 = qdata.qtyApplyDateFrom;
+            string qtyDate2 = qdata.qtyApplyDateTo;
+
+            DateTime applyDateFrom = DateTime.Now;
+            DateTime applyDateTo = DateTime.Now;
+            /* Dealing search by date. */
+            if (qtyDate1 != null && qtyDate2 != null)// If 2 date inputs have been insert, compare 2 dates.
+            {
+                DateTime date1 = DateTime.Parse(qtyDate1);
+                DateTime date2 = DateTime.Parse(qtyDate2);
+                int result = DateTime.Compare(date1, date2);
+                if (result < 0)
+                {
+                    applyDateFrom = date1.Date;
+                    applyDateTo = date2.Date;
+                }
+                else if (result == 0)
+                {
+                    applyDateFrom = date1.Date;
+                    applyDateTo = date1.Date;
+                }
+                else
+                {
+                    applyDateFrom = date2.Date;
+                    applyDateTo = date1.Date;
+                }
+            }
+            else if(qtyDate1 == null && qtyDate2 != null)
+            {
+                applyDateFrom = DateTime.Parse(qtyDate2);
+                applyDateTo = DateTime.Parse(qtyDate2);
+            }
+            else if(qtyDate1 != null && qtyDate2 == null)
+            {
+                applyDateFrom = DateTime.Parse(qtyDate1);
+                applyDateTo = DateTime.Parse(qtyDate1);
+            }
+            
 
             List<RepairListVModel> rv = new List<RepairListVModel>();
             /* Get login user. */
@@ -124,8 +162,13 @@ namespace EDIS.Controllers
                         .Where(v => v.AssetName.Contains(aname))
                         .ToList();
             }
+            if (string.IsNullOrEmpty(qtyDate1) == false || string.IsNullOrEmpty(qtyDate2) == false)
+            {
+                rps = rps.Where(v => v.ApplyDate >= applyDateFrom && v.ApplyDate <= applyDateTo).ToList();
+            }
+
             /* If no search result. */
-            if(rps.Count() == 0)
+            if (rps.Count() == 0)
             {
                 return View("List", rv);
             }

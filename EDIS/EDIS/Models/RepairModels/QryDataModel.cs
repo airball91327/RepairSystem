@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -13,5 +15,11 @@ namespace EDIS.Models.RepairModels
         public string qtyASSETNAME { get; set; }
         public string qtyFLOWTYPE { get; set; }
         public string qtyDPTID { get; set; }
+        [DataType(DataType.Date)]
+        [Column(TypeName = "Date")]
+        public string qtyApplyDateFrom { get; set; }
+        [DataType(DataType.Date)]
+        [Column(TypeName = "Date")]
+        public string qtyApplyDateTo { get; set; }
     }
 }

@@ -58,6 +58,16 @@
         <div class="row">
             <div class=form-inline>
                 <div class="form-group">
+                    <label for="qtyApplyDateFrom" class="control-title">申請日期</label>
+                    <input asp-for="qtyApplyDateFrom" class="form-control" />
+                    <span> ~ </span>
+                    <input asp-for="qtyApplyDateTo" class="form-control" />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class=form-inline>
+                <div class="form-group">
                     <div style="margin-left:115px">
                         <input id="btnQTY" type="submit" value="查詢" class="btn btn-default" />
                     </div>
