@@ -22,6 +22,16 @@ $(document).ready(function () {
     //    }
     //});
 
+    $("#DealState").change(function () {
+        /* 3 = 已完成，4 = 報廢，9 = 退件 */
+        if ($(this).val() == 3 || $(this).val() == 4 || $(this).val() == 9) {
+            $("#DealDes").attr("required", "required");
+        }
+        else {
+            $("#DealDes").removeAttr("required");
+        }
+    });
+
     /* Get and print repair details.*/
     $("#printDtlBtn").click(function () {
         var DocId = $("#DocId").val();

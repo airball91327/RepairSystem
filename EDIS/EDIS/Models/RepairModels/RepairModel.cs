@@ -24,7 +24,7 @@ namespace EDIS.Models.RepairModels
         public string DptId { get; set; }
         [NotMapped]
         public string DptName { get; set; }
-        [Required]
+        [Required(ErrorMessage = "必填項目")]
         [Display(Name = "分機")]
         public string Ext { get; set; }
         [Display(Name = "MVPN")]
@@ -33,22 +33,23 @@ namespace EDIS.Models.RepairModels
         [Column(TypeName = "Date")]
         [Display(Name = "申請日期")]
         public DateTime ApplyDate { get; set; }
-        [Required]
+        [Required(ErrorMessage = "必填項目")]
         [Display(Name = "成本中心")]
         public string AccDpt { get; set; }
         [NotMapped]
         public string AccDptName { get; set; }
         [Display(Name = "財產編號")]
         public string AssetNo { get; set; }
-        [Required]
+        [Required(ErrorMessage = "必填項目")]
         [Display(Name = "設備名稱")]
         public string AssetName { get; set; }
-        [Required]
+        [Required(ErrorMessage = "必填項目")]
         [Display(Name = "請修類別")]
         public string RepType { get; set; }
-        [Required]
+        [Required(ErrorMessage = "必填項目")]
         [Display(Name = "請修地點")]
         public string LocType { get; set; }
+        [Required(ErrorMessage = "必填項目")]
         [Display(Name = "期別")]
         public string Building { get; set; }
         [NotMapped]
@@ -57,12 +58,12 @@ namespace EDIS.Models.RepairModels
         public string Floor { get; set; }
         [NotMapped]
         public string FloorName { get; set; }
-        [Required]
+        [Required(ErrorMessage = "必填項目")]
         [Display(Name = "地點")] // Table "Place"
         public string Area { get; set; }
         [NotMapped]
         public string AreaName { get; set; }
-        [Required]
+        [Required(ErrorMessage = "必填項目")]
         [Display(Name = "請修原因")]
         public string TroubleDes { get; set; }
         [Required]
@@ -73,6 +74,7 @@ namespace EDIS.Models.RepairModels
         [NotMapped]
         [Display(Name = "指定工程師")]
         public int? PrimaryEngId { get; set; }
+        [Required(ErrorMessage = "必填項目")]
         [NotMapped]
         [Display(Name = "單位主管")]
         public int? DptMgrId { get; set; }

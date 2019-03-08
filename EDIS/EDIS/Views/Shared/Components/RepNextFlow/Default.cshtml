@@ -13,7 +13,8 @@
         <div class="form-group">
             @Html.LabelFor(model => model.Hint, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10" style="color: #00ff21; padding-top: 7px;">
-                @Html.DisplayFor(model => model.Hint)
+                @Html.DisplayFor(model => model.Hint)<br />
+                @ViewData["Hint2"]
             </div>
         </div>
         <div class="form-group">
@@ -58,15 +59,19 @@
             <div class="col-md-10 text-left">
                 <div class="form-inline">
                     @Html.DropDownListFor(model => model.FlowUid, null, "請選擇", new { @class = "form-control" })
-                    <input id="btnSelUsr" type="button" value="..." class="btn btn-default" data-toggle="modal" data-target="#modalSELUSER" />
+                    @*<input id="btnSelUsr" type="button" value="..." class="btn btn-default" data-toggle="modal" data-target="#modalSELUSER" />*@
                     @Html.ValidationMessageFor(model => model.FlowUid, "", new { @class = "text-danger" })
+                    <span id="searchUid">
+                        <input type="text" placeholder="輸入code或關鍵字查詢" class="form-control" id="DptMgrQry" />
+                        <button type="button" class="btn btn-default" id="MgrQryBtn">查詢</button>
+                    </span>
                 </div>
             </div>
         </div>
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
                 <input id="btnGO" type="submit" value="確定送出" class="btn btn-primary" />
-                <img id="imgLOADING" src="~/images/opc-ajax-loader.gif" style="display: none" />
+                <img id="imgLOADING_Flow" src="~/images/opc-ajax-loader.gif" style="display: none" />
             </div>
         </div>
     </div>

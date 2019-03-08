@@ -236,6 +236,8 @@ $(function () {
     $("input[type=radio][name=LocType]").change(function () {
         if (this.value == '本單位') {
             $("#divLocations").hide();
+            $("#AccDpt").attr("readonly", "readonly");
+            $("#AccDptName").attr("readonly", "readonly");
             /* Get AccDptId and Name. */
             $("#AccDpt").val($("#DptId").val());
             $.ajax({
@@ -254,11 +256,14 @@ $(function () {
                 }
             });  
         }
-        else if (this.value == '公共區域') {
+        else {
             $("#divLocations").show();
+            $("#AccDpt").removeAttr("readonly");
+            $("#AccDptName").removeAttr("readonly");
         }
     });
 
+    /* If user select "增設", show Mgr dropdown for user to select. */
     $("#DptMgr").hide();    //Default setting.
     $("input[type=radio][name=RepType]").change(function () {
         if (this.value == '增設') {
@@ -268,7 +273,20 @@ $(function () {
             $("#DptMgr").hide();
         }
     });
-
+    /* Get managers by query string. */
+    $("#MgrQryBtn").click(function () {
+        var queryStr = $("#DptMgrQry").val();
+        $.ajax({
+            url: '../Repair/QueryUsers',
+            type: "GET",
+            data: { QueryStr: queryStr },
+            success: function (data) {
+                var select = $('#DptMgrId');
+                $('option', select).remove();
+                select.addItems(data);
+            }
+        });
+    });
 });
 
 function onSuccess() {

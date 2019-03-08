@@ -27,7 +27,7 @@
             <div class=form-inline>
                 <div class=form-group>
                     <label asp-for="DealDes" class="control-title"></label>
-                    <textarea asp-for="DealDes" rows="3" class="form-control" required></textarea>
+                    <textarea asp-for="DealDes" rows="3" class="form-control"></textarea>
                     <span asp-validation-for="DealDes" class="text-danger"></span>
                 </div>
             </div>
@@ -36,8 +36,8 @@
             <div class=form-inline>
                 <div class="form-group">
                     <label asp-for="FailFactor" class="control-title"></label>
-                    <select asp-for="FailFactor" asp-items="@Model.FailFactors" class="form-control" required>
-                        <option selected disabled>請選擇</option>
+                    <select asp-for="FailFactor" asp-items="@Model.FailFactors" class="form-control">
+                        <option >請選擇</option>
 
                     </select>
                     <span asp-validation-for="FailFactor" class="text-danger"></span>

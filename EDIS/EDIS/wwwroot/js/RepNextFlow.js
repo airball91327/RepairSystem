@@ -35,6 +35,7 @@ $(function () {
     $('#btnSelUsr').hide();      //選擇人員
     $('#pnlFLOWVENDOR').hide();  //流程廠商
     $('#pnlUPDATE').hide();
+    $("#searchUid").hide();
 
     if ($('#Cls').val() === "申請人") {
         $('#pnlUPDATE').show();
@@ -56,9 +57,13 @@ $(function () {
             appenddata += "<option value = '0' selected=true></option>";
             select.html(appenddata);
         }
+        else if ($(this).val() === "單位主管" || $(this).val() === "單位主任") {
+            $("#searchUid").show();
+        }
         else {
+            $("#searchUid").hide();
             $('#FlowVendor').val('');
-            $('#imgLOADING').show();
+            $('#imgLOADING_Flow').show();
             var docid = $('#DocId').val();
             $.ajax({
                 url: '../../RepairFlow/GetNextEmp',
@@ -67,7 +72,7 @@ $(function () {
                 data: "cls=" + $(this).val() + "&docid=" + docid,
                 error: onFailed,
                 success: function (data) {
-                    $('#imgLOADING').hide();
+                    $('#imgLOADING_Flow').hide();
                     if (data.success === false) {
                         $('#FlowCls').val('請選擇');
                         alert(data.error);
@@ -93,6 +98,33 @@ $(function () {
                 }
             });
         }
+    });
+
+    /* Get managers by query string. */
+    $("#MgrQryBtn").click(function () {
+        var queryStr = $("#DptMgrQry").val();
+        $('#imgLOADING_Flow').show();
+        $.ajax({
+            url: '../../Repair/QueryUsers',
+            type: "GET",
+            data: { QueryStr: queryStr },
+            success: function (data) {
+                $('#imgLOADING_Flow').hide();
+                var select = $('#FlowUid');
+                var i = 0;
+                var defaultOption = 0;
+                select.empty();
+                $.each(data, function (index, item) {  // item is now an object containing properties 
+                    if (i === defaultOption) {
+                        select.append($('<option selected="selected"></option>').text(item.text).val(item.value));
+                    }
+                    else {
+                        select.append($('<option></option>').text(item.text).val(item.value));
+                    }
+                    i++;
+                });
+            }
+        });
     });
 
     $('#FlowVendor').change(function () {

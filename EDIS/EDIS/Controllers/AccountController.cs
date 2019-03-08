@@ -143,10 +143,10 @@ namespace EDIS.Controllers
                         return View(model);
                     }
                 }
-                if(model.LoginType != "0")  //外包帳號 or 值班帳號
+                else  //外包帳號 or 值班帳號
                 {
                     /* Check and get external user. */
-                    var ExternalUser = _context.ExternalUsers.Where(ex => ex.UserName == model.UserName).First();
+                    var ExternalUser = _context.ExternalUsers.Where(ex => ex.UserName == model.UserName).FirstOrDefault();
                     if( ExternalUser != null && ExternalUser.Password == model.Password )
                     {
                         var signInId = ExternalUser.Id.ToString();
@@ -183,7 +183,7 @@ namespace EDIS.Controllers
                     }
                     else
                     {
-                        ModelState.AddModelError(string.Empty, "登入無效.");
+                        ModelState.AddModelError(string.Empty, "帳號或密碼錯誤.");
                         return View(model);
                     }
                 }
@@ -196,11 +196,11 @@ namespace EDIS.Controllers
                 //    _logger.LogWarning("您的帳號被封鎖.");
                 //    return RedirectToAction(nameof(Lockout));
                 //}
-                else
-                {
-                    ModelState.AddModelError(string.Empty, "帳號或密碼錯誤.");
-                    return View(model);
-                }
+                //else
+                //{
+                //    ModelState.AddModelError(string.Empty, "帳號或密碼錯誤.");
+                //    return View(model);
+                //}
             }
 
             // If we got this far, something failed, redisplay form

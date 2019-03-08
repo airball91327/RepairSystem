@@ -15,9 +15,9 @@
                 <th>
                     @Html.DisplayNameFor(model => model.Opinions)
                 </th>
-                <th>
+                @*<th>
                     @Html.DisplayNameFor(model => model.Role)
-                </th>
+                </th>*@
                 <th>
                     @Html.DisplayNameFor(model => model.Status)
                 </th>
@@ -42,9 +42,9 @@
                     <td>
                         @Html.DisplayFor(modelItem => item.Opinions)
                     </td>
-                    <td>
+                    @*<td>
                         @Html.DisplayFor(modelItem => item.Role)
-                    </td>
+                    </td>*@
                     <td>
                         @if (item.Status == "1")
                         {

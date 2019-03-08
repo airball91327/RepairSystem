@@ -299,16 +299,16 @@ namespace EDIS.Controllers
                 case "單位主任":
                     //s = roleManager.GetUsersInRole("Manager").ToList();
                     /* 擷取申請人單位底下所有人員 */
-                    string c = _context.AppUsers.Find(r.UserId).DptId;
-                    var dptUsers = _context.AppUsers.Where(a => a.DptId == c).ToList();
-                    list = new List<SelectListItem>();
-                    foreach (var item in dptUsers)
-                    {
-                            li = new SelectListItem();
-                            li.Text = item.FullName;
-                            li.Value = item.Id.ToString();
-                            list.Add(li);
-                    }
+                    //string c = _context.AppUsers.Find(r.UserId).DptId;
+                    //var dptUsers = _context.AppUsers.Where(a => a.DptId == c).ToList();
+                    //list = new List<SelectListItem>();
+                    //foreach (var item in dptUsers)
+                    //{
+                    //        li = new SelectListItem();
+                    //        li.Text = item.FullName;
+                    //        li.Value = item.Id.ToString();
+                    //        list.Add(li);
+                    //}
                     break;
                 case "單位副院長":
                     s = roleManager.GetUsersInRole("ViceSI").ToList();

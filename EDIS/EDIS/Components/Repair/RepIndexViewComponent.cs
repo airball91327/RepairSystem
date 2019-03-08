@@ -33,7 +33,7 @@ namespace EDIS.Components.Repair
             {
                 listItem.Add(new SelectListItem
                 {
-                    Text = item.Name_C,
+                    Text = item.Name_C + "(" + item.DptId + ")",    //show DptName(DptId)
                     Value = item.DptId
                 });
             }

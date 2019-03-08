@@ -59,6 +59,7 @@ namespace EDIS.Controllers
         }
 
         // GET: /<controller>/
+        //Not Used
         public ActionResult Index()
         {
             List<SelectListItem> FlowlistItem = new List<SelectListItem>();
@@ -407,18 +408,18 @@ namespace EDIS.Controllers
                 });
             repair.Buildings = bs;
 
-            /* 擷取該使用者單位底下所有人員 */
-            var dptUsers = _context.AppUsers.Where(a => a.DptId == dpt.DptId).ToList();
-            List<SelectListItem> dptMemberList = new List<SelectListItem>();
-            foreach (var item in dptUsers)
-            {
-                dptMemberList.Add(new SelectListItem
-                {
-                    Text = item.FullName,
-                    Value = item.Id.ToString()
-                });
-            }
-            ViewData["DptMembers"] = new SelectList(dptMemberList, "Value", "Text");
+            ///* 擷取該使用者單位底下所有人員 */
+            //var dptUsers = _context.AppUsers.Where(a => a.DptId == dpt.DptId).ToList();
+            //List<SelectListItem> dptMemberList = new List<SelectListItem>();
+            //foreach (var item in dptUsers)
+            //{
+            //    dptMemberList.Add(new SelectListItem
+            //    {
+            //        Text = item.FullName,
+            //        Value = item.Id.ToString()
+            //    });
+            //}
+            //ViewData["DptMembers"] = new SelectList(dptMemberList, "Value", "Text");
 
             /* Get engineers according to user department. */
             var dptEngineers = _context.EngsInDepts.Include(e => e.AppUsers).Include(e => e.Departments)
@@ -729,6 +730,22 @@ namespace EDIS.Controllers
                                 }).OrderBy(o => o.DealingDocs).FirstOrDefault();
                 return Json(eng.EngId);
             }
+        }
+        
+        public JsonResult QueryUsers(string QueryStr)
+        {
+            /* Search user by fullname or username. */
+            var users = _context.AppUsers.Where(u => u.FullName.Contains(QueryStr) || 
+                                                     u.UserName.Contains(QueryStr)).ToList();
+            List<SelectListItem> list = new List<SelectListItem>();
+            if(users.Count() != 0)
+            {
+                users.ForEach(ur => {
+                    list.Add(new SelectListItem { Text = ur.FullName + "(" + ur.UserName + ")",
+                                                  Value = ur.Id.ToString() });
+                });
+            }
+            return Json(list);
         }
 
         // GET: Repair/Delete/5
