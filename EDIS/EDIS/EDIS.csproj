@@ -7,13 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="Files\Manual\UserManual.pptx" />
-    <Content Include="Files\Repair\1071200037_1.txt" />
-    <Content Include="Files\Repair\1080200009_1.txt" />
-    <Content Include="Files\Repair\1080200126_1.JPG" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.0.3" PrivateAssets="All" />
@@ -54,6 +47,12 @@
     <Folder Include="Areas\Admin\Data\" />
     <Folder Include="Areas\Admin\Models\" />
     <Folder Include="Views\RepairDtl\Components\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="wwwroot\Files\Manual\UserManual.pptx" />
+    <None Include="wwwroot\Files\Repair\1071200037_1.txt" />
+    <None Include="wwwroot\Files\Repair\1080200009_1.txt" />
+    <None Include="wwwroot\Files\Repair\1080200126_1.JPG" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services" />

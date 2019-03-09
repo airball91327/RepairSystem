@@ -20,7 +20,7 @@
                     <form asp-route-returnurl="@ViewData["ReturnUrl"]" method="post">
                         <h4>登入系統</h4>
                         <hr />
-                        <div asp-validation-summary="All" class="text-danger"></div>
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                         <input type="hidden" name="MailDocId" value="@ViewData["MailDocId"]" />
                         <input type="hidden" name="MailType" value="@ViewData["MailType"]" />
 
@@ -34,14 +34,15 @@
                             <input asp-for="Password" class="form-control" />
                             <span asp-validation-for="Password" class="text-danger"></span>
                         </div>
-                        <div class="form-group">
+                        <div>(請使用彰基2000的帳號密碼登入，外包人員請用外包人員帳號)</div>
+                        @*<div class="form-group">
                             <div>
                                 <label asp-for="LoginType"></label><br />
                                 <input asp-for="LoginType" type="radio" value="0" checked />彰基2000
-                                @*<input asp-for="LoginType" type="radio" value="1" />外包人員
-                                <input asp-for="LoginType" type="radio" value="2" />值班人員*@
+                                <input asp-for="LoginType" type="radio" value="1" />外包人員
+                                <input asp-for="LoginType" type="radio" value="2" />值班人員
                             </div>
-                        </div>
+                        </div>*@
                         <div class="form-group">
                             <div class="checkbox">
                                 <label asp-for="RememberMe">

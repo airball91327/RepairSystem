@@ -18,9 +18,9 @@ namespace EDIS.Models.AccountViewModels
         [DataType(DataType.Password)]
         public string Password { get; set; }
 
-        [Required]
-        [Display(Name = "登入角色")]
-        public string LoginType { get; set; }
+        //[Required]
+        //[Display(Name = "登入角色")]
+        //public string LoginType { get; set; }
 
         [Display(Name = "保持登入?")]
         public bool RememberMe { get; set; }

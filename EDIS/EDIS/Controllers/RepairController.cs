@@ -538,7 +538,7 @@ namespace EDIS.Controllers
             }
             if (repair.RepType != "增設")
             {
-                ModelState.Remove("DptMgrId");      //移除Area的Model驗證
+                ModelState.Remove("DptMgrId");      //移除DptMgrId的Model驗證
             }
 
             var ur = _userRepo.Find(u => u.UserName == this.User.Identity.Name).First();
