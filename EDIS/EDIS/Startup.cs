@@ -17,6 +17,8 @@ using EDIS.Models.Identity;
 using EDIS.Models.LocationModels;
 using Microsoft.Extensions.FileProviders;
 using System.IO;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace EDIS
 {
@@ -35,7 +37,7 @@ namespace EDIS
         {
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("EdisConnection")));//AzureConnection//EdisConnection
-
+           
             services.AddScoped<IRepository<RepairModel, string>, RepairRepository>();
             services.AddScoped<IRepository<RepairDtlModel, string>, RepairDtlRepository>();
             services.AddScoped<IRepository<RepairFlowModel, string[]>, RepairFlowRepository>();

@@ -57,7 +57,8 @@ $(function () {
             appenddata += "<option value = '0' selected=true></option>";
             select.html(appenddata);
         }
-        else if ($(this).val() === "單位主管" || $(this).val() === "單位主任") {
+        else if ($(this).val() === "單位主管" || $(this).val() === "單位主任" || $(this).val() === "其他")
+        {
             $("#searchUid").show();
         }
         else {

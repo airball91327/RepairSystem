@@ -100,45 +100,11 @@ $(function () {
                 select.addItems(data);
             }
         });
-
-        var dptId = $('#Area').val();
-        /* Get AccDptId and Name. */
-        $("#AccDpt").val(dptId); 
-        $.ajax({
-            url: '../Repair/GetDptName',
-            type: "POST",
-            dataType: "json",
-            data: { dptId: dptId },
-            async: false,
-            success: function (data) {
-                if (data == "") {
-                    $("#AccDptNameErrorMsg").html("查無部門!");
-                }
-                else {
-                    $("#AccDptNameErrorMsg").html("");
-                }
-                $("#AccDptName").val(data);  
-            }
-        });     
-        /* Get engineers. */
-        $.ajax({
-            url: '../Repair/GetDptEngId',
-            type: "POST",
-            dataType: "json",
-            data: { DptId: dptId },
-            async: false,
-            success: function (data) {
-                $('#EngId').val(data);
-                //var select = $('#EngId');
-                //$('option', select).remove();
-                //select.addItems(data);
-                //console.log(data + ";" + select.val()); // ForDebug
-            }
-        });
+        $('#Area').trigger("change");
     });
 
     $('#Area').change(function () {
-        var dptId = $('#Area').val();
+        var dptId = $('#Area').val().split("-", 1);
         /* Get AccDptId and Name. */
         $("#AccDpt").val(dptId);
         $.ajax({
@@ -284,6 +250,30 @@ $(function () {
                 var select = $('#DptMgrId');
                 $('option', select).remove();
                 select.addItems(data);
+            }
+        });
+    });
+    $("#CheckerQryBtn").click(function () {
+        var queryStr = $("#CheckerQry").val();
+        $.ajax({
+            url: '../Repair/QueryUsers',
+            type: "GET",
+            data: { QueryStr: queryStr },
+            success: function (data) {
+                var select = $('#CheckerId');
+                $('option', select).remove();
+                select.addItems(data);
+            }
+        });
+    });
+    $('#modalFILES').on('hidden.bs.modal', function () {
+        var docid = $("#DocId").val();
+        $.ajax({
+            url: '../AttainFiles/List',
+            type: "POST",
+            data: { docid: docid, doctyp: "1" },
+            success: function (data) {
+                $("#pnlFILES").html(data);
             }
         });
     });

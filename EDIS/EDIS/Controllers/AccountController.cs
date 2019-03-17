@@ -84,7 +84,7 @@ namespace EDIS.Controllers
                 //
                 HttpClient client = new HttpClient();
                 client.BaseAddress = new Uri("http://dms.cch.org.tw:8080/");
-                string url = "WebApi/Accounts/CheckPasswd?id=" + model.UserName;
+                string url = "WebApi/Accounts/CheckPasswdForCch?id=" + model.UserName;
                 url += "&pwd=" + model.Password;
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(

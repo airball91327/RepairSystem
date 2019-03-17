@@ -452,17 +452,17 @@ namespace EDIS.Controllers
             repair.Buildings = bs;
 
             ///* 擷取該使用者單位底下所有人員 */
-            //var dptUsers = _context.AppUsers.Where(a => a.DptId == dpt.DptId).ToList();
-            //List<SelectListItem> dptMemberList = new List<SelectListItem>();
-            //foreach (var item in dptUsers)
-            //{
-            //    dptMemberList.Add(new SelectListItem
-            //    {
-            //        Text = item.FullName,
-            //        Value = item.Id.ToString()
-            //    });
-            //}
-            //ViewData["DptMembers"] = new SelectList(dptMemberList, "Value", "Text");
+            var dptUsers = _context.AppUsers.Where(a => a.DptId == ur.DptId).ToList();
+            List<SelectListItem> dptMemberList = new List<SelectListItem>();
+            foreach (var item in dptUsers)
+            {
+                dptMemberList.Add(new SelectListItem
+                {
+                    Text = item.FullName,
+                    Value = item.Id.ToString()
+                });
+            }
+            ViewData["DptMembers"] = new SelectList(dptMemberList, "Value", "Text");
 
             /* Get engineers according to user department. */
             var dptEngineers = _context.EngsInDepts.Include(e => e.AppUsers).Include(e => e.Departments)
@@ -504,6 +504,7 @@ namespace EDIS.Controllers
                 }
             }
             ViewData["AllEngs"] = new SelectList(list, "Value", "Text");
+            repair.CheckerId = ur.Id;
 
             return View(repair);
         }
@@ -611,7 +612,7 @@ namespace EDIS.Controllers
                     //body += "<p>設備名稱：" + repair.AssetName + "</p>";
                     //body += "<p>故障描述：" + repair.TroubleDes + "</p>";
                     ////body += "<p>放置地點：" + repair.PlaceLoc + "</p>";
-                    //body += "<p><a href='http://dms.cch.org.tw:8000/Account/Login'" + "?docId=" + repair.DocId + "&dealType=Edit" + ">處理案件</a></p>";
+                    //body += "<p><a href='http://dms.cch.org.tw/Account/Login'" + "?docId=" + repair.DocId + "&dealType=Edit" + ">處理案件</a></p>";
                     //body += "<br/>";
                     //body += "<h3>此封信件為系統通知郵件，請勿回覆。</h3>";
                     //mail.message.Body = body;
@@ -802,12 +803,19 @@ namespace EDIS.Controllers
             // Find document.
             RepairModel repair = _context.Repairs.Find(id);
             // Find names to view.
-            int buildingId = System.Convert.ToInt32(repair.Building);
+            if (!string.IsNullOrEmpty(repair.Building))
+            {
+                int buildingId = System.Convert.ToInt32(repair.Building);
+                repair.BuildingName = _context.Buildings.Find(buildingId).BuildingName;
+                repair.FloorName = _context.Floors.Find(buildingId, repair.Floor).FloorName;
+                repair.AreaName = _context.Places.Find(buildingId, repair.Floor, repair.Area).PlaceName;
+            }
+            //int buildingId = System.Convert.ToInt32(repair.Building);
             repair.DptName = _context.Departments.Find(repair.DptId).Name_C;
             repair.AccDptName = _context.Departments.Find(repair.AccDpt).Name_C;
-            repair.BuildingName = _context.Buildings.Find(buildingId).BuildingName;
-            repair.FloorName = _context.Floors.Find(buildingId, repair.Floor).FloorName;
-            repair.AreaName = _context.Places.Find(buildingId, repair.Floor, repair.Area).PlaceName;
+            //repair.BuildingName = _context.Buildings.Find(buildingId).BuildingName;
+            //repair.FloorName = _context.Floors.Find(buildingId, repair.Floor).FloorName;
+            //repair.AreaName = _context.Places.Find(buildingId, repair.Floor, repair.Area).PlaceName;
             repair.EngName = _context.AppUsers.Find(repair.EngId).FullName;
             repair.UserAccount = _context.AppUsers.Find(repair.UserId).UserName;
 

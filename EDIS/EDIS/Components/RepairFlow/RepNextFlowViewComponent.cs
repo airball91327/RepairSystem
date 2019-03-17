@@ -58,7 +58,7 @@ namespace EDIS.Components.RepairFlow
                 listItem.Add(new SelectListItem { Text = "工務主任", Value = "工務主任" });
                 listItem.Add(new SelectListItem { Text = "工務經辦", Value = "工務經辦" });
             }
-
+            listItem.Add(new SelectListItem { Text = "其他", Value = "其他" });
             /* Insert values. */
             AssignModel assign = new AssignModel();
             assign.DocId = id;

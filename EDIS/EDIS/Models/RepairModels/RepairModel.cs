@@ -78,6 +78,9 @@ namespace EDIS.Models.RepairModels
         [NotMapped]
         [Display(Name = "單位主管")]
         public int? DptMgrId { get; set; }
+        [Required(ErrorMessage = "必填項目")]
+        [Display(Name = "驗收人")]
+        public int? CheckerId { get; set; }
         //
         [NotMapped]
         public List<SelectListItem> Buildings { get; set; }

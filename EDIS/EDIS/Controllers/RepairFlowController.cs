@@ -363,11 +363,12 @@ namespace EDIS.Controllers
                                                              .Where(f => f.Status == "Y").ToList());
                             }
                         }
-                        /* 申請人 */
+                        /* 驗收人 */
+                        var checker = _context.AppUsers.Find(r.CheckerId);
                         list = new List<SelectListItem>();
                         li = new SelectListItem();
-                        li.Text = r.UserName;
-                        li.Value = r.UserId.ToString();
+                        li.Text = checker.FullName;
+                        li.Value = checker.Id.ToString();
                         list.Add(li);
 
                         foreach (AppUserModel l in ul)

@@ -117,7 +117,7 @@ namespace EDIS.Areas.Admin.Controllers
         {
             ViewBag.BuildingName = _context.Buildings.Find(placeModel.BuildingId).BuildingName;
             ViewBag.FloorName = _context.Floors.Find(placeModel.BuildingId, placeModel.FloorId).FloorName;
-            var placeIdExist = _context.Places.Find(placeModel.BuildingId, placeModel.FloorId, placeModel.PlaceId);
+            PlaceModel placeIdExist = _context.Places.Find(placeModel.BuildingId, placeModel.FloorId, placeModel.PlaceId);
             if (placeIdExist != null)
             {
                 ModelState.AddModelError("PlaceId", "代號重複");

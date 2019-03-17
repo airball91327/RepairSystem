@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - 工程智能管理系統</title>
+    <title>@ViewData["Title"] - 工務智能請修系統</title>
 
     <environment include="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
@@ -19,7 +19,14 @@
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="~/css/site.css" />
     </environment>
-
+    <style>
+        body {
+            /*padding-top: 50px;*/
+            padding-bottom: 20px;
+            background-color: #1D3C4C;
+            color: #fff;
+        }
+    </style>
     @Html.Raw(JavaScriptSnippet.FullScript)
 </head>
 <body>
@@ -32,7 +39,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">工程智能管理系統</a>
+                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">工務智能請修系統</a>
             </div>
             <div class="navbar-collapse collapse">
                 @*<ul class="nav navbar-nav">
@@ -48,7 +55,7 @@
         @RenderBody()
         <hr />
         <footer>
-            <p>&copy; 2018 - 工程智能管理系統</p>
+            <p>&copy; 2019 - 工務智能請修系統</p>
         </footer>
     </div>
 
