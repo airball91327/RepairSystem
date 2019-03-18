@@ -116,35 +116,35 @@ namespace EDIS.Controllers
                     //Send Mail
                     //To all users in this repair's flow.
                     Tmail mail = new Tmail();
-                    //string body = "";
-                    //string sto = "";
-                    //AppUserModel u;
-                    //RepairModel repair = _context.Repairs.Find(assign.DocId);
-                    //mail.from = new System.Net.Mail.MailAddress(ur.Email); //u.Email
-                    //_context.RepairFlows.Where(f => f.DocId == assign.DocId)
-                    //        .ToList()
-                    //        .ForEach(f =>
-                    //        {
-                    //           u = _context.AppUsers.Find(f.UserId);
-                    //           sto += u.Email + ",";
-                    //        });
-                    //mail.sto = sto.TrimEnd(new char[] { ',' });
+                    string body = "";
+                    string sto = "";
+                    AppUserModel u;
+                    RepairModel repair = _context.Repairs.Find(assign.DocId);
+                    mail.from = new System.Net.Mail.MailAddress(ur.Email); //u.Email
+                    _context.RepairFlows.Where(f => f.DocId == assign.DocId)
+                            .ToList()
+                            .ForEach(f =>
+                            {
+                                u = _context.AppUsers.Find(f.UserId);
+                                sto += u.Email + ",";
+                            });
+                    mail.sto = sto.TrimEnd(new char[] { ',' });
 
-                    //mail.message.Subject = "工務請修資訊系統[請修案-結案通知]：設備名稱： " + repair.AssetName;
-                    //body += "<p>表單編號：" + repair.DocId + "</p>";
-                    //body += "<p>申請日期：" + repair.ApplyDate.ToString("yyyy/MM/dd") + "</p>";
-                    //body += "<p>申請人：" + repair.UserName + "</p>";
-                    //body += "<p>財產編號：" + repair.AssetNo + "</p>";
-                    //body += "<p>設備名稱：" + repair.AssetName + "</p>";
-                    ////body += "<p>放置地點：" + repair.PlaceLoc + "</p>";
-                    //body += "<p>故障描述：" + repair.TroubleDes + "</p>";
-                    //body += "<p>處理描述：" + rd.DealDes + "</p>";
-                    //body += "<p><a href='http://dms.cch.org.tw:8000/Account/Login'" + "?DocId=" + repair.DocId + "&dealType=Views" + ">檢視案件</a></p>";
-                    //body += "<br/>";
-                    //body += "<h3>此封信件為系統通知郵件，請勿回覆。</h3>";
-                    //mail.message.Body = body;
-                    //mail.message.IsBodyHtml = true;
-                    //mail.SendMail();
+                    mail.message.Subject = "工務智能請修系統[請修案-結案通知]：設備名稱： " + repair.AssetName;
+                    body += "<p>表單編號：" + repair.DocId + "</p>";
+                    body += "<p>申請日期：" + repair.ApplyDate.ToString("yyyy/MM/dd") + "</p>";
+                    body += "<p>申請人：" + repair.UserName + "</p>";
+                    body += "<p>財產編號：" + repair.AssetNo + "</p>";
+                    body += "<p>設備名稱：" + repair.AssetName + "</p>";
+                    //body += "<p>放置地點：" + repair.PlaceLoc + "</p>";
+                    body += "<p>故障描述：" + repair.TroubleDes + "</p>";
+                    body += "<p>處理描述：" + rd.DealDes + "</p>";
+                    body += "<p><a href='http://dms.cch.org.tw/EDIS/Account/Login'" + "?DocId=" + repair.DocId + "&dealType=Views" + ">檢視案件</a></p>";
+                    body += "<br/>";
+                    body += "<h3>此封信件為系統通知郵件，請勿回覆。</h3>";
+                    mail.message.Body = body;
+                    mail.message.IsBodyHtml = true;
+                    mail.SendMail();
                 }
                 else if (assign.FlowCls == "廢除")
                 {
@@ -179,25 +179,25 @@ namespace EDIS.Controllers
                     //Send Mail
                     //To user and the next flow user.
                     Tmail mail = new Tmail();
-                    //string body = "";
-                    //AppUserModel u;
-                    //RepairModel repair = _context.Repairs.Find(assign.DocId);
-                    //mail.from = new System.Net.Mail.MailAddress(ur.Email); //ur.Email
-                    //u = _context.AppUsers.Find(flow.UserId);
-                    //mail.to = new System.Net.Mail.MailAddress(u.Email); //u.Email
-                    //                                                    //mail.cc = new System.Net.Mail.MailAddress("99242@cch.org.tw");
-                    //mail.message.Subject = "工務請修資訊系統[請修案]：儀器名稱： " + repair.AssetName;
-                    //body += "<p>申請人：" + repair.UserName + "</p>";
-                    //body += "<p>財產編號：" + repair.AssetNo + "</p>";
-                    //body += "<p>儀器名稱：" + repair.AssetName + "</p>";
-                    //body += "<p>故障描述：" + repair.TroubleDes + "</p>";
-                    ////body += "<p>放置地點：" + repair.PlaceLoc + "</p>";
-                    //body += "<p><a href='http://dms.cch.org.tw:8000/Account/Login'" + "?docId=" + repair.DocId + "&dealType=Edit" + ">處理案件</a></p>";
-                    //body += "<br/>";
-                    //body += "<h3>此封信件為系統通知郵件，請勿回覆。</h3>";
-                    //mail.message.Body = body;
-                    //mail.message.IsBodyHtml = true;
-                    //mail.SendMail();
+                    string body = "";
+                    AppUserModel u;
+                    RepairModel repair = _context.Repairs.Find(assign.DocId);
+                    mail.from = new System.Net.Mail.MailAddress(ur.Email); //ur.Email
+                    u = _context.AppUsers.Find(flow.UserId);
+                    mail.to = new System.Net.Mail.MailAddress(u.Email); //u.Email
+                                                                        //mail.cc = new System.Net.Mail.MailAddress("99242@cch.org.tw");
+                    mail.message.Subject = "工務智能請修系統[請修案]：設備名稱： " + repair.AssetName;
+                    body += "<p>申請人：" + repair.UserName + "</p>";
+                    body += "<p>財產編號：" + repair.AssetNo + "</p>";
+                    body += "<p>設備名稱：" + repair.AssetName + "</p>";
+                    body += "<p>故障描述：" + repair.TroubleDes + "</p>";
+                    //body += "<p>放置地點：" + repair.PlaceLoc + "</p>";
+                    body += "<p><a href='http://dms.cch.org.tw/EDIS/Account/Login'" + "?docId=" + repair.DocId + "&dealType=Edit" + ">處理案件</a></p>";
+                    body += "<br/>";
+                    body += "<h3>此封信件為系統通知郵件，請勿回覆。</h3>";
+                    mail.message.Body = body;
+                    mail.message.IsBodyHtml = true;
+                    mail.SendMail();
                 }
 
                 return new JsonResult(assign)

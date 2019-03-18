@@ -598,26 +598,26 @@ namespace EDIS.Controllers
                     //Send Mail 
                     //To user and the next flow user.
                     Tmail mail = new Tmail();
-                    //string body = "";
-                    //var mailToUser = _userRepo.Find(u => u.UserName == this.User.Identity.Name).FirstOrDefault();
-                    //mail.from = new System.Net.Mail.MailAddress(mailToUser.Email); //u.Email
-                    //mailToUser = _context.AppUsers.Find(flow.UserId);
-                    //mail.to = new System.Net.Mail.MailAddress(mailToUser.Email); //u.Email
-                    //                                                             //mail.cc = new System.Net.Mail.MailAddress("99242@cch.org.tw");
-                    //mail.message.Subject = "工務請修資訊系統[請修案]：設備名稱： " + repair.AssetName;
-                    //body += "<p>表單編號：" + repair.DocId + "</p>";
-                    //body += "<p>申請日期：" + repair.ApplyDate.ToString("yyyy/MM/dd") + "</p>";
-                    //body += "<p>申請人：" + repair.UserName + "</p>";
-                    //body += "<p>財產編號：" + repair.AssetNo + "</p>";
-                    //body += "<p>設備名稱：" + repair.AssetName + "</p>";
-                    //body += "<p>故障描述：" + repair.TroubleDes + "</p>";
-                    ////body += "<p>放置地點：" + repair.PlaceLoc + "</p>";
-                    //body += "<p><a href='http://dms.cch.org.tw/Account/Login'" + "?docId=" + repair.DocId + "&dealType=Edit" + ">處理案件</a></p>";
-                    //body += "<br/>";
-                    //body += "<h3>此封信件為系統通知郵件，請勿回覆。</h3>";
-                    //mail.message.Body = body;
-                    //mail.message.IsBodyHtml = true;
-                    //mail.SendMail();
+                    string body = "";
+                    var mailToUser = _userRepo.Find(u => u.UserName == this.User.Identity.Name).FirstOrDefault();
+                    mail.from = new System.Net.Mail.MailAddress(mailToUser.Email); //u.Email
+                    mailToUser = _context.AppUsers.Find(flow.UserId);
+                    mail.to = new System.Net.Mail.MailAddress(mailToUser.Email); //u.Email
+                    mail.cc = new System.Net.Mail.MailAddress("344027@cch.org.tw");
+                    mail.message.Subject = "工務智能請修系統[請修案]：設備名稱： " + repair.AssetName;
+                    body += "<p>表單編號：" + repair.DocId + "</p>";
+                    body += "<p>申請日期：" + repair.ApplyDate.ToString("yyyy/MM/dd") + "</p>";
+                    body += "<p>申請人：" + repair.UserName + "</p>";
+                    body += "<p>財產編號：" + repair.AssetNo + "</p>";
+                    body += "<p>設備名稱：" + repair.AssetName + "</p>";
+                    body += "<p>故障描述：" + repair.TroubleDes + "</p>";
+                    //body += "<p>放置地點：" + repair.PlaceLoc + "</p>";
+                    body += "<p><a href='http://dms.cch.org.tw/EDIS/Account/Login'" + "?docId=" + repair.DocId + "&dealType=Edit" + ">處理案件</a></p>";
+                    body += "<br/>";
+                    body += "<h3>此封信件為系統通知郵件，請勿回覆。</h3>";
+                    mail.message.Body = body;
+                    mail.message.IsBodyHtml = true;
+                    mail.SendMail();
 
                     return Ok(repair);
                 }

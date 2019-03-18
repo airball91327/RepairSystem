@@ -17,6 +17,8 @@ using EDIS.Models.Identity;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using EDIS.Data;
+using System.Web;
+using System.Text;
 
 namespace EDIS.Controllers
 {
@@ -85,7 +87,7 @@ namespace EDIS.Controllers
                 HttpClient client = new HttpClient();
                 client.BaseAddress = new Uri("http://dms.cch.org.tw:8080/");
                 string url = "WebApi/Accounts/CheckPasswdForCch?id=" + model.UserName;
-                url += "&pwd=" + model.Password;
+                url += "&pwd=" + HttpUtility.UrlEncode(model.Password, Encoding.GetEncoding("UTF-8"));
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(
                     new MediaTypeWithQualityHeaderValue("application/json"));

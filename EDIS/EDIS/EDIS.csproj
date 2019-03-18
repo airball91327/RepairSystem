@@ -47,12 +47,10 @@
     <Folder Include="Areas\Admin\Data\" />
     <Folder Include="Areas\Admin\Models\" />
     <Folder Include="Views\RepairDtl\Components\" />
+    <Folder Include="wwwroot\Files\Repair\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="wwwroot\Files\Manual\UserManual.pptx" />
-    <None Include="wwwroot\Files\Repair\1071200037_1.txt" />
-    <None Include="wwwroot\Files\Repair\1080200009_1.txt" />
-    <None Include="wwwroot\Files\Repair\1080200126_1.JPG" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services" />

@@ -2,6 +2,7 @@
 
 @using EDIS.Models.Identity
 @inject CustomUserManager UserManager
+@inject CustomRoleManager RoleManager
 
 @{
     Layout = "~/Views/Shared/_PassedLayout.cshtml";
@@ -48,7 +49,8 @@
     <li role="presentation" class="active"><a href="#repair" data-toggle="tab" style="padding-left:20px">申請資料</a></li>
     <li role="presentation"><a href="#repairdtl" data-toggle="tab" style="padding-left:20px">請修紀錄</a></li>
     <li role="presentation"><a href="#repairemp" data-toggle="tab" style="padding-left:20px">工程師工時</a></li>
-    @if (Model.UserId != UserManager.GetCurrentUserId(User)) //申請人不能檢視維修花費
+    @if (Model.UserId != UserManager.GetCurrentUserId(User) || 
+        RoleManager.GetUsersInRole("RepEngineer").Contains(User.Identity.Name)) //申請人不能檢視維修花費
     {
         <li role="presentation"><a href="#repaircost" data-toggle="tab" style="padding-left:20px">費用明細</a></li>
     }
