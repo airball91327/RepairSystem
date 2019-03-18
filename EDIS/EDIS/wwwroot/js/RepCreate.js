@@ -269,7 +269,7 @@ $(function () {
     $('#modalFILES').on('hidden.bs.modal', function () {
         var docid = $("#DocId").val();
         $.ajax({
-            url: '../AttainFiles/List',
+            url: '../AttainFile/List3',
             type: "POST",
             data: { docid: docid, doctyp: "1" },
             success: function (data) {
