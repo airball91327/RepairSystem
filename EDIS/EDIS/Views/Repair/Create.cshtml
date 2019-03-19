@@ -10,6 +10,15 @@
 
 <h4>請修單</h4>
 <hr />
+
+<div>
+    <input id="btnFILES" type="button" value="夾帶附件檔案" class="btn btn-default" data-toggle="modal" data-target="#modalFILES">
+</div>
+<div>
+    <div id="pnlFILES"></div>
+</div>
+<hr />
+
 <form asp-action="Create" data-ajax="true"
       data-ajax-method="POST"
       data-ajax-begin="$.Toast.showToast({
@@ -136,11 +145,11 @@
                     </label>
                 </div>
                 @*<div class="radio">
-                    <label>
-                        <input type="radio" name="LocType" id="LocType3" value="其他單位">
-                        其他單位
-                    </label>
-                </div>*@
+                        <label>
+                            <input type="radio" name="LocType" id="LocType3" value="其他單位">
+                            其他單位
+                        </label>
+                    </div>*@
             </div>
         </div>
         <div class="row">
@@ -239,14 +248,6 @@
                     <span asp-validation-for="CheckerId" class="text-danger"></span>
                 </div>
             </div>
-        </div>
-        <div class="row">
-            <div style="padding-left: 115px">
-                <input id="btnFILES" type="button" value="夾帶附件檔案" class="btn btn-default" data-toggle="modal" data-target="#modalFILES">
-            </div>
-        </div>
-        <div class="row">
-            <div id="pnlFILES" style="padding-left: 115px"></div>
         </div>
         <div class="row">
             <div style="padding-left: 115px">
