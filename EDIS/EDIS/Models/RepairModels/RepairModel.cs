@@ -9,6 +9,7 @@ namespace EDIS.Models.RepairModels
     public class RepairModel
     {
         [Key]
+        [Display(Name = "表單編號")]
         public string DocId { get; set; }
         [Required]
         [Display(Name ="申請人代號")]
@@ -38,6 +39,8 @@ namespace EDIS.Models.RepairModels
         public string AccDpt { get; set; }
         [NotMapped]
         public string AccDptName { get; set; }
+        [Display(Name = "放置地點")]
+        public string PlaceLoc { get; set; }
         [Display(Name = "財產編號")]
         public string AssetNo { get; set; }
         [Required(ErrorMessage = "必填項目")]
@@ -81,6 +84,8 @@ namespace EDIS.Models.RepairModels
         [Required(ErrorMessage = "必填項目")]
         [Display(Name = "驗收人")]
         public int? CheckerId { get; set; }
+        [NotMapped]
+        public string CheckerName { get; set; }
         //
         [NotMapped]
         public List<SelectListItem> Buildings { get; set; }

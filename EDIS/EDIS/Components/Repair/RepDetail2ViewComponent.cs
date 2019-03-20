@@ -32,6 +32,7 @@ namespace EDIS.Components.Repair
 
             repair.DptName = _context.Departments.Find(repair.DptId).Name_C;
             repair.AccDptName = _context.Departments.Find(repair.AccDpt).Name_C;
+            repair.CheckerName = _context.AppUsers.Find(repair.CheckerId).FullName;
 
             return View(repair);
         }

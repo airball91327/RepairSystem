@@ -434,7 +434,7 @@ namespace EDIS.Controllers
             RepairModel repair = new RepairModel();
             var ur = _userRepo.Find(u => u.UserName == this.User.Identity.Name).FirstOrDefault();
             var dpt = _dptRepo.FindById(ur.DptId);
-            repair.DocId = GetID();
+            repair.DocId = GetID2();
             repair.UserId = ur.Id;
             repair.UserName = ur.FullName;
             repair.UserAccount = ur.UserName;
@@ -688,6 +688,36 @@ namespace EDIS.Controllers
             else
             {
                 did = Convert.ToString(yymm * 100000 + 1);
+                ds.DocId = did;
+                _dsRepo.Create(ds);
+            }
+
+            return did;
+        }
+
+        public string GetID2()
+        {
+            DocIdStore ds = new DocIdStore();
+            ds.DocType = "請修";
+            string s = _dsRepo.Find(x => x.DocType == "請修").Select(x => x.DocId).Max();
+            string did = "";
+            int yymmdd = (System.DateTime.Now.Year - 1911) * 10000 + (System.DateTime.Now.Month) * 100 + System.DateTime.Now.Day;
+            if (!string.IsNullOrEmpty(s))
+            {
+                did = s;
+            }
+            if (did != "")
+            {
+                if (Convert.ToInt64(did) / 100000 == yymmdd)
+                    did = Convert.ToString(Convert.ToInt64(did) + 1);
+                else
+                    did = Convert.ToString(yymmdd * 100000 + 1);
+                ds.DocId = did;
+                _dsRepo.Update(ds);
+            }
+            else
+            {
+                did = Convert.ToString(yymmdd * 100000 + 1);
                 ds.DocId = did;
                 _dsRepo.Create(ds);
             }

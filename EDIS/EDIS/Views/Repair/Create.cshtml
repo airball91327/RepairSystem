@@ -30,8 +30,16 @@
       data-ajax-complete="onSuccess()">
     <div class="container">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        @Html.HiddenFor(model => model.DocId)
         @Html.HiddenFor(model => model.UserId)
+        <div class="row">
+            <div class=form-inline>
+                <div class=form-group>
+                    <label asp-for="DocId" class="control-title"></label>
+                    <input asp-for="DocId" class="form-control" readonly />
+                    <span asp-validation-for="DocId" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
         <div class="row">
             <div class=form-inline>
                 <div class=form-group>
@@ -145,11 +153,11 @@
                     </label>
                 </div>
                 @*<div class="radio">
-                        <label>
-                            <input type="radio" name="LocType" id="LocType3" value="其他單位">
-                            其他單位
-                        </label>
-                    </div>*@
+                    <label>
+                        <input type="radio" name="LocType" id="LocType3" value="其他單位">
+                        其他單位
+                    </label>
+                </div>*@
             </div>
         </div>
         <div class="row">
@@ -160,6 +168,15 @@
                     <input asp-for="AccDptName" class="form-control" readonly />
                     <span style="color:red" id="AccDptNameErrorMsg"></span>
                     <span asp-validation-for="AccDpt" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class=form-inline>
+                <div class="form-group">
+                    <label asp-for="PlaceLoc" class="control-title"></label>
+                    <input asp-for="PlaceLoc" class="form-control" />
+                    <span asp-validation-for="PlaceLoc" class="text-danger"></span>
                 </div>
             </div>
         </div>
