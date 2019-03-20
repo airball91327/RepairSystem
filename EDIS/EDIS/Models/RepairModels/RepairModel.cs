@@ -39,7 +39,7 @@ namespace EDIS.Models.RepairModels
         public string AccDpt { get; set; }
         [NotMapped]
         public string AccDptName { get; set; }
-        [Display(Name = "放置地點")]
+        [Display(Name = "擺設地點")]
         public string PlaceLoc { get; set; }
         [Display(Name = "財產編號")]
         public string AssetNo { get; set; }

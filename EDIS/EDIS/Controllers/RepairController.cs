@@ -708,16 +708,16 @@ namespace EDIS.Controllers
             }
             if (did != "")
             {
-                if (Convert.ToInt64(did) / 100000 == yymmdd)
+                if (Convert.ToInt64(did) / 1000 == yymmdd)
                     did = Convert.ToString(Convert.ToInt64(did) + 1);
                 else
-                    did = Convert.ToString(yymmdd * 100000 + 1);
+                    did = Convert.ToString(yymmdd * 1000 + 1);
                 ds.DocId = did;
                 _dsRepo.Update(ds);
             }
             else
             {
-                did = Convert.ToString(yymmdd * 100000 + 1);
+                did = Convert.ToString(yymmdd * 1000 + 1);
                 ds.DocId = did;
                 _dsRepo.Create(ds);
             }
@@ -837,8 +837,11 @@ namespace EDIS.Controllers
             {
                 int buildingId = System.Convert.ToInt32(repair.Building);
                 repair.BuildingName = _context.Buildings.Find(buildingId).BuildingName;
-                repair.FloorName = _context.Floors.Find(buildingId, repair.Floor).FloorName;
-                repair.AreaName = _context.Places.Find(buildingId, repair.Floor, repair.Area).PlaceName;
+                if (!string.IsNullOrEmpty(repair.Floor))
+                {
+                    repair.FloorName = _context.Floors.Find(buildingId, repair.Floor).FloorName;
+                    repair.AreaName = _context.Places.Find(buildingId, repair.Floor, repair.Area).PlaceName;
+                }
             }
             //int buildingId = System.Convert.ToInt32(repair.Building);
             repair.DptName = _context.Departments.Find(repair.DptId).Name_C;
