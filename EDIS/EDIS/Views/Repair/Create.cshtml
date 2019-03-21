@@ -27,7 +27,7 @@
       'duration':0
       })"
       data-ajax-failure="onFailed"
-      data-ajax-complete="onSuccess()">
+      data-ajax-success="onSuccess()">
     <div class="container">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         @Html.HiddenFor(model => model.UserId)
@@ -111,6 +111,10 @@
                     <label asp-for="AssetName" class="control-title"></label>
                     <input asp-for="AssetName" class="form-control" required />
                     <span asp-validation-for="AssetName" class="text-danger"></span>
+                    <span id="rowAssetAccDate">
+                        <label>立帳日</label>
+                        <input id="assetAccDate" class="form-control" readonly />
+                    </span>
                 </div>
             </div>
         </div>
@@ -185,7 +189,7 @@
                 <div class=form-inline>
                     <div class="form-group">
                         <label asp-for="Building" class="control-title"></label>
-                        <select asp-for="Building" asp-items="@Model.Buildings" class="form-control">
+                        <select asp-for="Building" asp-items="@Model.Buildings" class="form-control" id="Building">
                             <option disabled selected>請選擇</option>
 
                         </select>
@@ -197,7 +201,7 @@
                 <div class=form-inline>
                     <div class="form-group">
                         <label asp-for="Floor" class="control-title"></label>
-                        <select asp-for="Floor" class="form-control">
+                        <select asp-for="Floor" class="form-control" id="Floor">
                             <option disabled selected>請選擇</option>
 
                         </select>
@@ -263,6 +267,7 @@
                         <option disabled selected>請選擇</option>
                     </select>
                     <span asp-validation-for="CheckerId" class="text-danger"></span>
+                    <span style="color:#ff6161">*驗收人才可以結案</span>
                 </div>
             </div>
         </div>

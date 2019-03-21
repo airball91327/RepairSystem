@@ -1,5 +1,6 @@
 ﻿var onFailed = function (data) {
     alert(data.responseText);
+    $.Toast.hideToast();
 };
 $.fn.addItems = function (data) {
 
@@ -142,16 +143,19 @@ $(function () {
 
     /* Default setting. */
     $("#rowAssetNo").hide();
+    $("#rowAssetAccDate").hide();
     //$("#rowAssetName").hide();
 
     $("input[type=radio][name=assetControl]").change(function () {
         /* While has asset, show assetNo and assetName to input. */
         if (this.value == 'true') {
             $("#rowAssetNo").show();
+            $("#rowAssetAccDate").show();
             //$("#rowAssetName").show();
         }
         else if (this.value == 'false') {
             $("#rowAssetNo").hide();
+            $("#rowAssetAccDate").hide();
             //$("#rowAssetName").hide();
         }       
     });
@@ -198,10 +202,12 @@ $(function () {
     });
 
     /* If user select "本單位", hide select location options. */
-    $("#divLocations").hide(); // Default setting
+    GetDptLocation($("#DptId").val());
     $("input[type=radio][name=LocType]").change(function () {
         if (this.value == '本單位') {
-            $("#divLocations").hide();
+
+            GetDptLocation($("#DptId").val());
+            
             $("#AccDpt").attr("readonly", "readonly");
             $("#AccDptName").attr("readonly", "readonly");
             /* Get AccDptId and Name. */
@@ -309,7 +315,8 @@ function getAssetName() {
             else {
                 $("#AssetNameErrorMsg").html("");
             }
-            $("#AssetName").val(data);
+            $("#AssetName").val(data.cname);
+            $("#assetAccDate").val(data.accDate);
         }
     });  
 }
@@ -335,4 +342,34 @@ function printRepairDoc(DocId) {
     printPage.document.write("<BODY onload='window.print();window.close()'>");
     printPage.document.write(printContent);
     printPage.document.close();
+}
+
+/* Get and check the user department's location, if has many location, show #divLocations. */
+function GetDptLocation(DptId) { 
+    $.ajax({
+        url: '../Repair/GetDptLoc',
+        type: "POST",
+        dataType: "json",
+        data: { dptId: DptId },
+        success: function (data) {
+            //console.log(data); //Debug
+            if (data == "查無地點") {
+                $("#divLocations").hide();
+                alert("查無部門資料!");
+            }
+            else if (data == "多個地點") {
+                $("#divLocations").show();
+            }
+            else {          
+                $("#Building").val(data.buildingId);
+                var selectFloor = $('#Floor');
+                selectFloor.empty();
+                selectFloor.append($('<option selected="selected"></option>').text(data.floorName).val(data.floorId));
+                var selectArea = $('#Area');
+                selectArea.empty();
+                selectArea.append($('<option selected="selected"></option>').text(data.placeName).val(data.placeId));
+                $("#divLocations").hide();
+            }
+        }
+    });
 }

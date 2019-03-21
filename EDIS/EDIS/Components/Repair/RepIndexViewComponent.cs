@@ -21,10 +21,10 @@ namespace EDIS.Components.Repair
         public async Task<IViewComponentResult> InvokeAsync()
         {
             List<SelectListItem> FlowlistItem = new List<SelectListItem>();
-            FlowlistItem.Add(new SelectListItem { Text = "待處理", Value = "待處理" });
-            FlowlistItem.Add(new SelectListItem { Text = "已處理", Value = "已處理" });
+            FlowlistItem.Add(new SelectListItem { Text = "待簽核", Value = "待簽核" });
+            FlowlistItem.Add(new SelectListItem { Text = "流程中", Value = "流程中" });
             FlowlistItem.Add(new SelectListItem { Text = "已結案", Value = "已結案" });
-            ViewData["FLOWTYPE"] = new SelectList(FlowlistItem, "Value", "Text", "待處理");
+            ViewData["FLOWTYPE"] = new SelectList(FlowlistItem, "Value", "Text", "待簽核");
 
             /* 成本中心 & 申請部門的下拉選單資料 */
             var departments = _context.Departments.ToList();

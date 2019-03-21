@@ -176,7 +176,7 @@ namespace EDIS.Controllers
             switch (ftype)
             {
                 /* 與登入者相關且流程不在該登入者身上的文件 */
-                case "已處理":
+                case "流程中":
                     rps.Join(_context.RepairFlows.Where(f2 => f2.UserId == ur.Id && f2.Status == "1")
                        .Select(f => f.DocId).Distinct(),
                                r => r.DocId, f2 => f2, (r, f2) => r)
@@ -321,7 +321,7 @@ namespace EDIS.Controllers
                     }));
                     break;
                 /* 與登入者相關且流程在該登入者身上的文件 */
-                case "待處理":
+                case "待簽核":
                     /* Get all dealing repair docs. */
                     List<RepairFlowModel> repairFlows;
 
@@ -530,13 +530,17 @@ namespace EDIS.Controllers
                     repair.EngId = subStaff.SubstituteId;
                 }
             }
-            /* 如請修地點為"本單位"，帶入單位代號 */
-            if(repair.LocType == "本單位")
+
+            /* 請修地點為"本單位" */
+            if (repair.LocType == "本單位")
             {
-                ModelState.Remove("Area");      //移除Area的Model驗證
-                ModelState.Remove("Building");  //移除Building的Model驗證
-                repair.Area = repair.DptId;
+                /* 選擇地點與本單位不同 */
+                if(repair.DptId != repair.Area)
+                {
+                    return BadRequest("需選擇本單位的確切地點!");
+                }
             }
+
             if (repair.RepType != "增設")
             {
                 ModelState.Remove("DptMgrId");      //移除DptMgrId的Model驗證
@@ -697,31 +701,37 @@ namespace EDIS.Controllers
 
         public string GetID2()
         {
-            DocIdStore ds = new DocIdStore();
-            ds.DocType = "請修";
-            string s = _dsRepo.Find(x => x.DocType == "請修").Select(x => x.DocId).Max();
             string did = "";
-            int yymmdd = (System.DateTime.Now.Year - 1911) * 10000 + (System.DateTime.Now.Month) * 100 + System.DateTime.Now.Day;
-            if (!string.IsNullOrEmpty(s))
+            try
             {
-                did = s;
-            }
-            if (did != "")
-            {
-                if (Convert.ToInt64(did) / 1000 == yymmdd)
-                    did = Convert.ToString(Convert.ToInt64(did) + 1);
+                DocIdStore ds = new DocIdStore();
+                ds.DocType = "請修";
+                string s = _dsRepo.Find(x => x.DocType == "請修").Select(x => x.DocId).Max();
+                int yymmdd = (System.DateTime.Now.Year - 1911) * 10000 + (System.DateTime.Now.Month) * 100 + System.DateTime.Now.Day;
+                if (!string.IsNullOrEmpty(s))
+                {
+                    did = s;
+                }
+                if (did != "")
+                {
+                    if (Convert.ToInt64(did) / 1000 == yymmdd)
+                        did = Convert.ToString(Convert.ToInt64(did) + 1);
+                    else
+                        did = Convert.ToString(yymmdd * 1000 + 1);
+                    ds.DocId = did;
+                    _dsRepo.Update(ds);
+                }
                 else
+                {
                     did = Convert.ToString(yymmdd * 1000 + 1);
-                ds.DocId = did;
-                _dsRepo.Update(ds);
+                    ds.DocId = did;
+                    _dsRepo.Create(ds);
+                }
             }
-            else
+            catch (Exception e)
             {
-                did = Convert.ToString(yymmdd * 1000 + 1);
-                ds.DocId = did;
-                _dsRepo.Create(ds);
+                RedirectToAction("Create", "Repair", new { Area = "" });
             }
-
             return did;
         }
 
@@ -749,16 +759,50 @@ namespace EDIS.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetDptLoc(string dptId)
+        {
+            var dptLocations = _context.Places.Where(p => p.PlaceId == dptId).ToList();
+            if ( dptLocations.Count() == 0 )
+            {
+                return Json("查無地點");
+            }
+            else if(dptLocations.Count() == 1 )
+            {
+                var tempDptLoc = dptLocations.FirstOrDefault();
+                var bname = _context.Buildings.Find(tempDptLoc.BuildingId).BuildingName;
+                var fname = _context.Floors.Find(tempDptLoc.BuildingId, tempDptLoc.FloorId).FloorName;
+                var dptLoc = new
+                {
+                    BuildingId = tempDptLoc.BuildingId,
+                    BuildingName = bname,
+                    FloorId = Convert.ToInt32(tempDptLoc.FloorId ),
+                    FloorName = fname,
+                    PlaceId = Convert.ToInt32(tempDptLoc.PlaceId ),
+                    PlaceName = tempDptLoc.PlaceName
+                };
+                return Json(dptLoc);
+            }
+            else
+            {
+                return Json("多個地點");
+            }
+        }
+
+        [HttpPost]
         public JsonResult GetAssetName(string assetNo)
         {
-            var asset = _context.Assets.Where(a => a.AssetNo == assetNo).FirstOrDefault();
-            var assetName = "";
+            var asset = _context.Assets.Where(a => a.AssetNo == assetNo).FirstOrDefault();        
             if (asset == null)
             {
-                return Json(assetName);
+                return Json("查無資料");
             }
-            assetName = asset.Cname;
-            return Json(assetName);
+            var returnAsset = new
+            {
+                AssetNo = asset.AssetNo,
+                Cname = asset.Cname,
+                AccDate = asset.AccDate == null ? "" : asset.AccDate.Value.ToString("yyyy-MM-dd")
+            };
+            return Json(returnAsset);
         }
 
         [HttpPost]
