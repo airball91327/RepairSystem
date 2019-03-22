@@ -249,6 +249,14 @@
             <div class=form-inline>
                 <div class="form-group">
                     <input type="hidden" asp-for="EngId" id="EngId" />
+                    <label asp-for="EngId" class="control-title"></label>
+                    <input asp-for="EngName" class="form-control" id="EngName" readonly />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class=form-inline>
+                <div class="form-group">
                     <label asp-for="PrimaryEngId" class="control-title"></label>
                     <select asp-for="PrimaryEngId" asp-items="@ViewData["AllEngs"] as SelectList" class="form-control">
                         <option value=0>無</option>

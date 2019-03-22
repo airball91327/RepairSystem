@@ -839,7 +839,7 @@ namespace EDIS.Controllers
             if (engineers.Count() == 0)  //該部門無預設工程師
             {
                 var tempEng = _context.AppUsers.Where(a => a.UserName == "149761").FirstOrDefault();
-                return Json(tempEng.Id);
+                return Json(tempEng);
             }
             else
             {
@@ -851,7 +851,7 @@ namespace EDIS.Controllers
                                     ed.AppUsers.FullName,
                                     e.DealingDocs
                                 }).OrderBy(o => o.DealingDocs).FirstOrDefault();
-                return Json(eng.EngId);
+                return Json(eng);
             }
         }
         

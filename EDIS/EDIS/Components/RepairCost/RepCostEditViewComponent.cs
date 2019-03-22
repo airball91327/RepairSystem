@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace EDIS.Components.RepairCost
 {
@@ -49,7 +50,7 @@ namespace EDIS.Components.RepairCost
                 {
                     return View(cost);
                 }
-                List<RepairCostModel> t = _context.RepairCosts.Where(c => c.DocId == id).ToList();
+                List<RepairCostModel> t = _context.RepairCosts.Include(r => r.TicketDtl).Where(c => c.DocId == id).ToList();
                 return View("Print", t);
             }
             /* 流程 => 工程師，Login User => 負責之工程師 */

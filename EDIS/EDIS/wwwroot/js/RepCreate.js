@@ -75,7 +75,8 @@ $(function () {
             data: { DptId: dptId },
             async: false,
             success: function (data) {
-                $('#EngId').val(data);
+                $('#EngId').val(data.engId);
+                $('#EngName').val(data.fullName);
                 //var select = $('#EngId');
                 //$('option', select).remove();
                 //select.addItems(data);
@@ -132,7 +133,8 @@ $(function () {
             data: { DptId: dptId },
             async: false,
             success: function (data) {
-                $('#EngId').val(data);
+                $('#EngId').val(data.engId);
+                $('#EngName').val(data.fullName);
                 //var select = $('#EngId');
                 //$('option', select).remove();
                 //select.addItems(data);
