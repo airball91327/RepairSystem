@@ -16,6 +16,7 @@ function presend() {
 
 var onFailed = function (data) {
     alert(data.responseText);
+    $('#imgLOADING_Flow').hide();
 };
 
 $.fn.addItems = function (data) {

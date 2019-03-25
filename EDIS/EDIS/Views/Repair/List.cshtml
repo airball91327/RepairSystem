@@ -70,7 +70,13 @@ else
                         @Html.Raw(" |")
                     }
                     @* /* 流程非登入使用者身上 */ *@
-                    @if (!(item.Flg == "?" && item.FlowUid == UserManager.GetCurrentUserId(User)))
+                    @if ((item.Flg == "?" && item.FlowUid != UserManager.GetCurrentUserId(User) &&
+                          item.ApplyDpt == UserManager.GetCurrentUserDptId(User) && item.FlowCls == "驗收人"))
+                    {
+                        @Html.ActionLink("編輯", "Edit", "Repair", new { Area = "", id = item.DocId })
+                        @Html.Raw(" |")
+                    }
+                    else if (!(item.Flg == "?" && item.FlowUid == UserManager.GetCurrentUserId(User)))
                     {
                         @Html.ActionLink("預覽", "Views", "Repair", new { Area = "", id = item.DocId })
                         @Html.Raw(" |")

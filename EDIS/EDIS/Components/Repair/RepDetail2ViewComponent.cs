@@ -30,9 +30,14 @@ namespace EDIS.Components.Repair
         {
             RepairModel repair = _context.Repairs.Find(id);
 
+            /* Get and set value for NotMapped fields. */
             repair.DptName = _context.Departments.Find(repair.DptId).Name_C;
             repair.AccDptName = _context.Departments.Find(repair.AccDpt).Name_C;
             repair.CheckerName = _context.AppUsers.Find(repair.CheckerId).FullName;
+            int buildingId = Convert.ToInt32(repair.Building);
+            repair.BuildingName = _context.Buildings.Find(buildingId).BuildingName;
+            repair.FloorName = _context.Floors.Find(buildingId, repair.Floor).FloorName;
+            repair.AreaName = _context.Places.Find(buildingId, repair.Floor, repair.Area).PlaceName;
 
             return View(repair);
         }

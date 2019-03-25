@@ -323,7 +323,12 @@ namespace EDIS.Controllers
                 /* 與登入者相關且流程在該登入者身上的文件 */
                 case "待簽核":
                     /* Get all dealing repair docs. */
-                    List<RepairFlowModel> repairFlows;
+                    var repairFlows = _context.RepairFlows.Join(rps.DefaultIfEmpty(), f => f.DocId, r => r.DocId,
+                    (f, r) => new
+                    {
+                        repair = r,
+                        flow = f
+                    }).ToList();
 
                     if (userManager.IsInRole(User, "Admin") || userManager.IsInRole(User, "RepEngineer"))
                     {
@@ -331,31 +336,33 @@ namespace EDIS.Controllers
                         /* Else return the docs belong the login engineer.  */
                         if (userManager.IsInRole(User, "RepEngineer") && searchAllDoc == true)
                         {
-                            repairFlows = _context.RepairFlows.Where(f => f.Status == "?" && f.Cls == "工務工程師").ToList();
+                            repairFlows = repairFlows.Where(f => f.flow.Status == "?" && f.flow.Cls == "工務工程師").ToList();
                         }
                         else
                         {
 
-                            repairFlows = _context.RepairFlows.Where(f => f.Status == "?" && f.UserId == ur.Id).ToList();
+                            repairFlows = repairFlows.Where(f => (f.flow.Status == "?" && f.flow.UserId == ur.Id) ||
+                                                             (f.flow.Status == "?" && f.flow.Cls == "驗收人" && f.repair.DptId == ur.DptId)).ToList();
                         }
                     }
                     else
                     {
-                        repairFlows = _context.RepairFlows.Where(f => f.Status == "?" && f.UserId == ur.Id).ToList();
+                        repairFlows = repairFlows.Where(f => ( f.flow.Status == "?" && f.flow.UserId == ur.Id ) ||
+                                                             ( f.flow.Status == "?" && f.flow.Cls == "驗收人" && f.repair.DptId == ur.DptId )).ToList();
                     }
 
-                    repairFlows.Select(f => new
-                    {
-                        f.DocId,
-                        f.UserId,
-                        f.Status,
-                        f.Cls
-                    }).Distinct().Join(rps.DefaultIfEmpty(), f => f.DocId, r => r.DocId,
-                    (f, r) => new
-                    {
-                        repair = r,
-                        flow = f
-                    })
+                    //repairFlows.Select(f => new
+                    //{
+                    //    f.DocId,
+                    //    f.UserId,
+                    //    f.Status,
+                    //    f.Cls
+                    //}).Distinct().Join(rps.DefaultIfEmpty(), f => f.DocId, r => r.DocId,
+                    //(f, r) => new
+                    //{
+                    //    repair = r,
+                    //    flow = f
+                    //})
                     //.Join(_context.Assets, r => r.repair.AssetNo, a => a.AssetNo,
                     //(r, a) => new
                     //{
@@ -363,7 +370,7 @@ namespace EDIS.Controllers
                     //    asset = a,
                     //    flow = r.flow
                     //})
-                    .Join(_context.RepairDtls, m => m.repair.DocId, d => d.DocId,
+                    repairFlows.Join(_context.RepairDtls, m => m.repair.DocId, d => d.DocId,
                     (m, d) => new
                     {
                         repair = m.repair,
