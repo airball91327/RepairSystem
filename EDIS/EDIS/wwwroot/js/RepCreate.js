@@ -294,7 +294,7 @@ function onSuccess() {
     var DocId = $("#DocId").val();
     var repType = $('input:radio[name="RepType"]:checked').val();
     /* If repair type is 送修, print before submit. */
-    console.log(repType);
+    //console.log(repType);
     if (repType == "送修") {
         window.printRepairDoc(DocId);
     }
@@ -332,7 +332,7 @@ function printRepairDoc(DocId) {
         url: '../Repair/PrintRepairDoc',
         type: "GET",
         async: false,
-        data: { docId: DocId },
+        data: { docId: DocId, printType : 1 },
         success: function (data) {
             printContent = data;
         }

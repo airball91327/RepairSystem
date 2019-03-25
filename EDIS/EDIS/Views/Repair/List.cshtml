@@ -59,10 +59,21 @@ else
             <tr>
                 <td width="100px">
                     @* /* 流程在登入使用者身上 */ *@
+                    @* /* If 流程在使用者身上
+                          else if 使用者為工程師，顯示流程在"工務工程師"的案子
+                        */*@
                     @if (item.Flg == "?" && item.FlowUid == UserManager.GetCurrentUserId(User))
                     {
-                        @Html.ActionLink("編輯", "Edit", "Repair", new { Area = "", id = item.DocId })
-                        @Html.Raw(" |")
+                        if( item.FlowCls == "驗收人" )
+                        {
+                            @Html.ActionLink("結案", "Edit", "Repair", new { Area = "", id = item.DocId })
+                            @Html.Raw(" |")
+                        }
+                        else
+                        {
+                            @Html.ActionLink("編輯", "Edit", "Repair", new { Area = "", id = item.DocId })
+                            @Html.Raw(" |")
+                        }
                     }
                     else if (item.Flg == "?" && item.FlowCls == "工務工程師" && UserManager.IsInRole(User, "RepEngineer"))
                     {
@@ -70,10 +81,13 @@ else
                         @Html.Raw(" |")
                     }
                     @* /* 流程非登入使用者身上 */ *@
+                    @* /* If 流程非使用者身上，但為同單位須驗收的案子
+                          else if 流程非使用者
+                        */*@
                     @if ((item.Flg == "?" && item.FlowUid != UserManager.GetCurrentUserId(User) &&
                           item.ApplyDpt == UserManager.GetCurrentUserDptId(User) && item.FlowCls == "驗收人"))
                     {
-                        @Html.ActionLink("編輯", "Edit", "Repair", new { Area = "", id = item.DocId })
+                        @Html.ActionLink("結案", "Edit", "Repair", new { Area = "", id = item.DocId })
                         @Html.Raw(" |")
                     }
                     else if (!(item.Flg == "?" && item.FlowUid == UserManager.GetCurrentUserId(User)))

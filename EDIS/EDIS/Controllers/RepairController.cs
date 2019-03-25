@@ -433,6 +433,12 @@ namespace EDIS.Controllers
                 }
             }
 
+            /* Sorting search result. */
+            if( rv.Count() != 0)
+            {
+                rv = rv.OrderByDescending(r => r.ApplyDate).ToList();
+            }
+
             return View("List", rv);
         }
         [Authorize]
@@ -911,7 +917,7 @@ namespace EDIS.Controllers
         }
 
         // GET: Repairs/PrintRepairDoc/5
-        public ActionResult PrintRepairDoc(string DocId)
+        public ActionResult PrintRepairDoc(string DocId, int printType)
         {
             /* Get all print details according to the DocId. */
             RepairModel repair = _context.Repairs.Find(DocId);
@@ -990,6 +996,10 @@ namespace EDIS.Controllers
                         }
                     }
                 }
+            }
+            if( printType != 0 )
+            {
+                return View("PrintRepairDoc2", vm);
             }
             return View(vm);
         }

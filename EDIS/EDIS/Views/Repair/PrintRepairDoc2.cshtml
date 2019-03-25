@@ -49,10 +49,10 @@
                                 &nbsp; 請&nbsp; 修&nbsp; 單
                             </td>
                             @*<td colspan="2" align="center" style="border-right-style: solid;border-bottom-style: solid;border-right-width: 1px;  border-bottom-width: 1px; border-right-color: #000000" ; border-bottom-color: #000000">
-                                <div>
-                                    @Html.GenerateQrCode(Model.Docid, "", 50, 50, 0)
-                                </div>
-                            </td>*@
+                                    <div>
+                                        @Html.GenerateQrCode(Model.Docid, "", 50, 50, 0)
+                                    </div>
+                                </td>*@
                             <td style="border-right-style: solid; border-bottom-style: solid; border-right-width: 1px; border-bottom-width: 1px; border-right-color: #000000; border-bottom-color: #000000; text-align: center"
                                 width="70">
                                 表單編號
@@ -317,5 +317,277 @@
 
     </div>
 
+    <div style="margin-top: 20px">
+
+        <table cellpadding="0" cellspacing="0" class="style1">
+            <tr>
+                <td>
+                    <table cellpadding="0" cellspacing="0" class="style2"
+                           style="border: 2px solid #000000">
+                        <tr>
+                            <td colspan="4" align="center"
+                                style="font-size: 2em; border-bottom-style: solid; border-bottom-width: 1px; border-right-style: solid; border-right-width: 1px; border-right-color: #000000; border-bottom-color: #000000">
+                                &nbsp; 請&nbsp; 修&nbsp; 單
+                            </td>
+                            <td style="border-right-style: solid; border-bottom-style: solid; border-right-width: 1px; border-bottom-width: 1px; border-right-color: #000000; border-bottom-color: #000000; text-align: center"
+                                width="70">
+                                表單編號
+                            </td>
+                            <td class="style5"
+                                style="border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000"
+                                width="100">
+                                @Html.DisplayFor(model => model.Docid)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="style5"
+                                style="border-right-style: solid; border-bottom-style: solid; border-right-width: 1px; border-bottom-width: 1px; border-right-color: #000000; border-bottom-color: #000000"
+                                width="92">
+                                請修日期
+                            </td>
+                            <td style="border-right-style: solid; border-bottom-style: solid; border-right-width: 1px; border-bottom-width: 1px; border-right-color: #000000; border-bottom-color: #000000"
+                                width="150px">
+                                @Model.ApplyDate.Value.ToString("yyyy/MM/dd")
+                            </td>
+                            <td class="style5"
+                                style="border-right-style: solid; border-bottom-style: solid; border-right-width: 1px; border-bottom-width: 1px; border-right-color: #000000; border-bottom-color: #000000"
+                                width="70">
+                                成本中心
+                            </td>
+                            <td style="border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000"
+                                colspan="3">
+                                @Html.DisplayFor(model => model.AccDpt)
+                                (@Html.DisplayFor(model => model.AccDptNam))
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="style5"
+                                style="border-right-style: solid; border-bottom-style: solid; border-right-width: 1px; border-bottom-width: 1px; border-right-color: #000000; border-bottom-color: #000000"
+                                width="92">
+                                申請部門
+                            </td>
+                            <td style="border-right-style: solid; border-bottom-style: solid; border-right-width: 1px; border-bottom-width: 1px; border-right-color: #000000; border-bottom-color: #000000">
+                                @Html.DisplayFor(model => model.Company)
+                            </td>
+                            <td class="style5"
+                                style="border-right-style: solid; border-bottom-style: solid; border-right-width: 1px; border-bottom-width: 1px; border-right-color: #000000; border-bottom-color: #000000"
+                                width="70">
+                                申請人員
+                            </td>
+                            <td style="border-right-style: solid; border-bottom-style: solid; border-right-width: 1px; border-bottom-width: 1px; border-right-color: #000000; border-bottom-color: #000000">
+                                @Html.DisplayFor(model => model.UserName)
+                            </td>
+                            <td class="style5"
+                                style="border-right-style: solid; border-bottom-style: solid; border-right-width: 1px; border-bottom-width: 1px; border-right-color: #000000; border-bottom-color: #000000"
+                                width="70">
+                                聯絡電話
+                            </td>
+                            <td style="border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000">
+                                @Html.DisplayFor(model => model.Contact)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="style5"
+                                style="border-right-style: solid; border-bottom-style: solid; border-right-width: 1px; border-bottom-width: 1px; border-right-color: #000000; border-bottom-color: #000000"
+                                width="92">
+                                財產編號
+                            </td>
+                            <td style="border-right-style: solid; border-bottom-style: solid; border-right-width: 1px; border-bottom-width: 1px; border-right-color: #000000; border-bottom-color: #000000">
+                                @Html.DisplayFor(model => model.AssetNo)
+                            </td>
+                            <td class="style5"
+                                style="border-right-style: solid; border-bottom-style: solid; border-right-width: 1px; border-bottom-width: 1px; border-right-color: #000000; border-bottom-color: #000000"
+                                width="70">
+                                設備名稱
+                            </td>
+                            <td style="border-right-style: solid; border-bottom-style: solid; border-right-width: 1px; border-bottom-width: 1px; border-right-color: #000000; border-bottom-color: #000000">
+                                @Html.DisplayFor(model => model.AssetNam)
+                            </td>
+                            <td class="style5"
+                                style="border-right-style: solid; border-bottom-style: solid; border-right-width: 1px; border-bottom-width: 1px; border-right-color: #000000; border-bottom-color: #000000"
+                                width="70">
+                                MVPN
+                            </td>
+                            <td style="border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000">
+                                @Html.DisplayFor(model => model.MVPN)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="style5"
+                                style="border-right-style: solid; border-bottom-style: solid; border-right-width: 1px; border-bottom-width: 1px; border-right-color: #000000; border-bottom-color: #000000"
+                                width="92">
+                                請修地點
+                            </td>
+                            <td style="border-right-style: solid; border-bottom-style: solid; border-right-width: 1px; border-bottom-width: 1px; border-right-color: #000000; border-bottom-color: #000000">
+                                @Html.DisplayFor(model => model.PlaceLoc)
+                            </td>
+                            <td class="style5"
+                                style="border-right-style: solid; border-bottom-style: solid; border-right-width: 1px; border-bottom-width: 1px; border-right-color: #000000; border-bottom-color: #000000"
+                                width="70">
+                                維修別
+                            </td>
+                            <td style="border-right-style: solid; border-bottom-style: solid; border-right-width: 1px; border-bottom-width: 1px; border-right-color: #000000; border-bottom-color: #000000">
+                                @Html.DisplayFor(model => model.RepType)
+                            </td>
+                            <td class="style5"
+                                style="border-right-style: solid; border-bottom-style: solid; border-right-width: 1px; border-bottom-width: 1px; border-right-color: #000000; border-bottom-color: #000000"
+                                width="70">
+                                數量
+                            </td>
+                            <td style="border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000">
+                                @Html.DisplayFor(model => model.Amt)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="style5"
+                                style="border-right-style: solid; border-bottom-style: solid; border-right-width: 1px; border-bottom-width: 1px; border-right-color: #000000; border-bottom-color: #000000"
+                                width="92">
+                                故障情形
+                            </td>
+                            <td colspan="5"
+                                style="border-right-style: solid; border-bottom-style: solid; border-right-width: 1px; border-bottom-width: 1px; border-right-color: #000000; border-bottom-color: #000000">
+                                @Html.DisplayFor(model => model.TroubleDes)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="style5"
+                                style="height:80px;border-right-style: solid; border-bottom-style: solid; border-right-width: 1px; border-bottom-width: 1px; border-right-color: #000000; border-bottom-color: #000000"
+                                width="92">
+                                處理描述
+                            </td>
+                            <td colspan="5"
+                                style="border-right-style: solid; border-bottom-style: solid; border-right-width: 1px; border-bottom-width: 1px; border-right-color: #000000; border-bottom-color: #000000">
+                                @Html.DisplayFor(model => model.DealDes)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="style5"
+                                style="border-right-style: solid; border-right-width: 1px; border-right-color: #000000; "
+                                width="92">
+                                完工日期
+                            </td>
+                            <td style="border-right-style: solid; border-bottom-style: solid; border-right-width: 1px; border-bottom-width: 1px; border-right-color: #000000; border-bottom-color: #000000">
+                                @if (Model.EndDate.HasValue)
+                                {
+                                    @Model.EndDate.Value.ToString("yyyy/MM/dd")
+                                }
+                                else
+                                {
+                                    @Html.Raw("&nbsp;")
+                                }
+                            </td>
+                            <td class="style5"
+                                style="border-right-style: solid; border-bottom-style: solid; border-right-width: 1px; border-bottom-width: 1px; border-right-color: #000000; border-bottom-color: #000000"
+                                width="70">
+                                工時
+                            </td>
+                            <td style="border-right-style: solid; border-bottom-style: solid; border-right-width: 1px; border-bottom-width: 1px; border-right-color: #000000; border-bottom-color: #000000">
+                                @Html.DisplayFor(model => model.Hour)
+                            </td>
+                            <td class="style5"
+                                style="border-right-style: solid; border-bottom-style: solid; border-right-width: 1px; border-bottom-width: 1px; border-right-color: #000000; border-bottom-color: #000000"
+                                width="70">
+                                維修方式
+                            </td>
+                            <td style="border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000">
+                                @Html.DisplayFor(model => model.InOut)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="6">
+                                @await Component.InvokeAsync("RepCostPrintList", new { docId = Model.Docid })
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="6">
+                                <table cellpadding="0" cellspacing="0" class="style2">
+                                    <tr>
+                                        <td class="style4"
+                                            style="border-right-style: solid; border-bottom-style: solid; border-right-width: 1px; border-bottom-width: 1px; border-right-color: #000000; border-bottom-color: #000000">
+                                            驗收日期
+                                        </td>
+                                        <td colspan="2" class="style3"
+                                            style="border-right-style: solid; border-bottom-style: solid; border-right-width: 1px; border-bottom-width: 1px; border-right-color: #000000; border-bottom-color: #000000">
+                                            @if (Model.CloseDate.HasValue)
+                                            {
+                                                @Model.CloseDate.Value.ToString("yyyy/MM/dd")
+                                            }
+                                            else
+                                            {
+                                                @Html.Raw("&nbsp;")
+                                            }
+                                        </td>
+                                        <td class="style4"
+                                            style="border-right-style: solid; border-bottom-style: solid; border-right-width: 1px; border-bottom-width: 1px; border-right-color: #000000; border-bottom-color: #000000">
+                                            工程師
+                                        </td>
+                                        <td colspan="2" class="style3"
+                                            style="border-right-style: solid; border-bottom-style: solid; border-right-width: 1px; border-bottom-width: 1px; border-right-color: #000000; border-bottom-color: #000000">
+                                            @Model.EngName
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="style5" width="92"
+                                            style="border-right-style: solid; border-bottom-style: solid; border-right-width: 1px; border-bottom-width: 1px; border-right-color: #000000; border-bottom-color: #000000">
+                                            驗收員工代號
+                                        </td>
+                                        <td colspan="2" class="style3"
+                                            style="border-right-style: solid; border-bottom-style: solid; border-right-width: 1px; border-bottom-width: 1px; border-right-color: #000000; border-bottom-color: #000000">
+                                            @Model.DelivEmp
+                                        </td>
+                                        <td class="style4"
+                                            style="border-right-style: solid; border-bottom-style: solid; border-right-width: 1px; border-bottom-width: 1px; border-right-color: #000000; border-bottom-color: #000000">
+                                            課長
+                                        </td>
+                                        <td colspan="2" class="style3"
+                                            style="border-right-style: solid; border-bottom-style: solid; border-right-width: 1px; border-bottom-width: 1px; border-right-color: #000000; border-bottom-color: #000000">
+                                            @Model.EngMgr
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="style5" width="92"
+                                            style="border-right-style: solid; border-bottom-style: solid; border-right-width: 1px; border-bottom-width: 1px; border-right-color: #000000; border-bottom-color: #000000">
+                                            驗收員工姓名
+                                        </td>
+                                        <td colspan="2" class="style3"
+                                            style="border-right-style: solid; border-bottom-style: solid; border-right-width: 1px; border-bottom-width: 1px; border-right-color: #000000; border-bottom-color: #000000">
+                                            @Model.DelivEmpName
+                                        </td>
+                                        <td class="style4"
+                                            style="border-right-style: solid; border-bottom-style: solid; border-right-width: 1px; border-bottom-width: 1px; border-right-color: #000000; border-bottom-color: #000000">
+                                            主任
+                                        </td>
+                                        <td colspan="2" class="style3"
+                                            style="border-right-style: solid; border-bottom-style: solid; border-right-width: 1px; border-bottom-width: 1px; border-right-color: #000000; border-bottom-color: #000000">
+                                            @Model.EngDirector
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="style5" width="92"
+                                            style="border-right-style: solid; border-bottom-style: solid; border-right-width: 1px; border-bottom-width: 1px; border-right-color: #000000; border-bottom-color: #000000">
+                                            單位副院長
+                                        </td>
+                                        <td colspan="2" class="style3"
+                                            style="border-right-style: solid; border-bottom-style: solid; border-right-width: 1px; border-bottom-width: 1px; border-right-color: #000000; border-bottom-color: #000000">
+                                            @Model.ViceSuperintendent
+                                        </td>
+                                        <td class="style4"
+                                            style="border-right-style: solid; border-bottom-style: solid; border-right-width: 1px; border-bottom-width: 1px; border-right-color: #000000; border-bottom-color: #000000">
+                                            部門主任
+                                        </td>
+                                        <td colspan="2" class="style3"
+                                            style="border-right-style: solid; border-bottom-style: solid; border-right-width: 1px; border-bottom-width: 1px; border-right-color: #000000; border-bottom-color: #000000">
+                                            @Model.DelivMgr
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+
+    </div>
 </body>
 </html>
