@@ -53,6 +53,36 @@ namespace EDIS.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Login(int? docId, string dealType, string returnUrl = null)
         {
+            /* If user has already authenticated */
+            if (User.Identity.IsAuthenticated == true)
+            {
+                string MailDocId = docId.ToString();
+                string MailType = dealType;
+                /* If login from mail. */
+                if (MailDocId != "")
+                {
+                    if (MailType == "Edit")
+                    {
+                        var editDoc = _context.RepairFlows.Where(r => r.DocId == MailDocId).OrderByDescending(r => r.StepId)
+                                                          .FirstOrDefault();
+                        int userId = _context.AppUsers.Where(a => a.UserName == User.Identity.Name).First().Id;
+                        /* 編輯流程在登入者身上，進入Edit，否則導回首頁 */
+                        if (editDoc.Status == "?" && editDoc.UserId == userId)
+                        {
+                            return RedirectToAction(MailType, "Repair", new { Area = "", id = MailDocId });
+                        }
+                        else
+                        {
+                            return RedirectToAction("Index", "Home");
+                        }
+                    }
+                    return RedirectToAction(MailType, "Repair", new { Area = "", id = MailDocId });
+                }
+                else
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+            }
             // Clear the existing external cookie to ensure a clean login process
             await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
 

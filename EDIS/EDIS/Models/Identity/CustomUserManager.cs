@@ -63,5 +63,13 @@ namespace EDIS.Models.Identity
             }
             return false;
         }
+
+        public string GetCurrentUserDptId(ClaimsPrincipal principal)
+        {
+            var userName = principal.FindFirstValue(Options.ClaimsIdentity.UserNameClaimType);
+            var userId = _userStore.FindByNameAsync(userName, CancellationToken).Result.Id;
+            var dptId = _context.AppUsers.Where(u => u.UserName == userName).FirstOrDefault().DptId;
+            return dptId;
+        }
     }
 }

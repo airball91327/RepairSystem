@@ -364,12 +364,12 @@ function GetDptLocation(DptId) {
             }
             else {          
                 $("#Building").val(data.buildingId);
-                var selectFloor = $('#Floor');
-                selectFloor.empty();
-                selectFloor.append($('<option selected="selected"></option>').text(data.floorName).val(data.floorId));
-                var selectArea = $('#Area');
-                selectArea.empty();
-                selectArea.append($('<option selected="selected"></option>').text(data.placeName).val(data.placeId));
+                $('#Building').trigger("change");
+                $("#Floor").val(data.floorId);
+                $('#Floor').trigger("change");
+                $("#Area").val(data.placeId);
+                $('#Area').trigger("change");
+       
                 $("#divLocations").hide();
             }
         }
