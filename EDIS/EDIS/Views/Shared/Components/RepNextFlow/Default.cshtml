@@ -13,8 +13,16 @@
         <div class="form-group">
             @Html.LabelFor(model => model.Hint, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10" style="color: #00ff21; padding-top: 7px;">
-                @Html.DisplayFor(model => model.Hint)<br />
-                @ViewData["Hint2"]
+                請修流程：<br />
+                @Html.DisplayFor(model => model.Hint)
+                <div>
+                    增設流程：<br />
+                    @ViewData["Hint2"]
+                </div>
+                <div>
+                    列管/固資設備報廢流程：<br/>
+                    @ViewData["Hint3"]
+                </div>
             </div>
         </div>
         <div class="form-group">
@@ -44,15 +52,15 @@
         </div>
 
         @*<div id="pnlFLOWVENDOR" class="form-group">
-            @Html.HiddenFor(model => model.FlowVendor)
-            @Html.LabelFor(model => model.FlowVendor, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownListFor(model => model.FlowVendor, null, "請選擇", new { @class = "form-control" })
-                @Html.Editor("VendorName2", new { htmlAttributes = new { @class = "form-control" } })
-                <input id="btnQtyVendor" type="button" value="查詢" class="btn btn-default" data-toggle="modal" data-target="#modalVENDOR">
-                @Html.ValidationMessageFor(model => model.FlowVendor, "", new { @class = "text-danger" })
-            </div>
-        </div>*@
+                @Html.HiddenFor(model => model.FlowVendor)
+                @Html.LabelFor(model => model.FlowVendor, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownListFor(model => model.FlowVendor, null, "請選擇", new { @class = "form-control" })
+                    @Html.Editor("VendorName2", new { htmlAttributes = new { @class = "form-control" } })
+                    <input id="btnQtyVendor" type="button" value="查詢" class="btn btn-default" data-toggle="modal" data-target="#modalVENDOR">
+                    @Html.ValidationMessageFor(model => model.FlowVendor, "", new { @class = "text-danger" })
+                </div>
+            </div>*@
 
         <div class="form-group">
             @Html.LabelFor(model => model.FlowUid, htmlAttributes: new { @class = "control-label col-md-2" })

@@ -58,6 +58,8 @@ namespace EDIS.Components.RepairFlow
                 listItem.Add(new SelectListItem { Text = "工務主任", Value = "工務主任" });
                 listItem.Add(new SelectListItem { Text = "工務經辦", Value = "工務經辦" });
             }
+            listItem.Add(new SelectListItem { Text = "列管財產負責人", Value = "列管財產負責人" });
+            listItem.Add(new SelectListItem { Text = "固資財產負責人", Value = "固資財產負責人" });
             listItem.Add(new SelectListItem { Text = "其他", Value = "其他" });
             /* Insert values. */
             AssignModel assign = new AssignModel();
@@ -94,8 +96,10 @@ namespace EDIS.Components.RepairFlow
             listItem3.Add(new SelectListItem { Text = "", Value = "" });
             ViewData["FlowUid"] = new SelectList(listItem3, "Value", "Text", "");
             
-            assign.Hint = "單位請修→工程師施作完成後key工時、費用→工程師送工務主管簽核→若有費用再送主任簽核後→單位驗收結案，驗收人為請修申請人員。";
-            ViewData["Hint2"] = "增設流程提示：單位主管→單位主任→工程師(關卡選擇工程師後會自動帶入申請時的指定工程師)";
+            assign.Hint = "單位請修→工務工程師→工務主管(若有費用)→單位驗收人→結案。";
+            ViewData["Hint2"] = "單位請修→單位主管(護理長)→單位主任→工務工程師 [若費用5000元以上：單位主管(護理長)→" +
+                "單位直屬副院長→工務工程師] →工務主管→工務工程師→工務主管→單位驗收人→結案";
+            ViewData["Hint3"] = "單位請修→工務工程師→工務主管→工務主任→列管/固資財產負責人→單位驗收人→結案";
             return View(assign);
         }
     }

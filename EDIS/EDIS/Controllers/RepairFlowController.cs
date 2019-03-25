@@ -187,6 +187,8 @@ namespace EDIS.Controllers
                     mail.to = new System.Net.Mail.MailAddress(u.Email); //u.Email
                                                                         //mail.cc = new System.Net.Mail.MailAddress("99242@cch.org.tw");
                     mail.message.Subject = "工務智能請修系統[請修案]：設備名稱： " + repair.AssetName;
+                    body += "<p>表單編號：" + repair.DocId + "</p>";
+                    body += "<p>申請日期：" + repair.ApplyDate.ToString("yyyy/MM/dd") + "</p>";
                     body += "<p>申請人：" + repair.UserName + "</p>";
                     body += "<p>財產編號：" + repair.AssetNo + "</p>";
                     body += "<p>設備名稱：" + repair.AssetName + "</p>";
@@ -410,6 +412,28 @@ namespace EDIS.Controllers
                             li.Value = u.Id.ToString();
                             list.Add(li);
                         }
+                    }
+                    break;
+                case "列管財產負責人":
+                    list = new List<SelectListItem>();
+                    u = _context.AppUsers.Where(ur => ur.UserName == "181151").FirstOrDefault();
+                    if (!string.IsNullOrEmpty(u.DptId))
+                    {
+                        li = new SelectListItem();
+                        li.Text = u.FullName;
+                        li.Value = u.Id.ToString();
+                        list.Add(li);
+                    }
+                    break;
+                case "固資財產負責人":
+                    list = new List<SelectListItem>();
+                    u = _context.AppUsers.Where(ur => ur.UserName == "1814").FirstOrDefault();
+                    if (!string.IsNullOrEmpty(u.DptId))
+                    {
+                        li = new SelectListItem();
+                        li.Text = u.FullName;
+                        li.Value = u.Id.ToString();
+                        list.Add(li);
                     }
                     break;
                 default:
