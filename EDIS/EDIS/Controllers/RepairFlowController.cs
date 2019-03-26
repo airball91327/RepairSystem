@@ -48,6 +48,20 @@ namespace EDIS.Controllers
         public ActionResult NextFlow(AssignModel assign)
         {
             var ur = _userRepo.Find(u => u.UserName == this.User.Identity.Name).FirstOrDefault();
+            /* 如點選有費用、卻無輸入費用明細 */
+            if(assign.Cls == "工務工程師")
+            {
+                var isCharged = _context.RepairDtls.Where(d => d.DocId == assign.DocId).FirstOrDefault().IsCharged;
+                if( isCharged == "Y" )
+                {
+                    var CheckRepairCost = _context.RepairCosts.Where(c => c.DocId == assign.DocId).FirstOrDefault();
+                    if(CheckRepairCost == null)
+                    {
+                        string msg = "尚未輸入費用明細!!";
+                        return BadRequest(msg);
+                    }
+                }
+            }
 
             if (assign.FlowCls == "結案" || assign.FlowCls == "廢除")
                 assign.FlowUid = ur.Id;

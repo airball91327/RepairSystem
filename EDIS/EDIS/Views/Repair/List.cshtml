@@ -66,7 +66,7 @@ else
                     {
                         if( item.FlowCls == "驗收人" )
                         {
-                            @Html.ActionLink("結案", "Edit", "Repair", new { Area = "", id = item.DocId })
+                            @Html.ActionLink("結案", "Edit", "Repair", new { Area = "", id = item.DocId, page = 5 })
                             @Html.Raw(" |")
                         }
                         else
@@ -87,7 +87,7 @@ else
                     @if ((item.Flg == "?" && item.FlowUid != UserManager.GetCurrentUserId(User) &&
                           item.ApplyDpt == UserManager.GetCurrentUserDptId(User) && item.FlowCls == "驗收人"))
                     {
-                        @Html.ActionLink("結案", "Edit", "Repair", new { Area = "", id = item.DocId })
+                        @Html.ActionLink("結案", "Edit", "Repair", new { Area = "", id = item.DocId, page = 5 })
                         @Html.Raw(" |")
                     }
                     else if (!(item.Flg == "?" && item.FlowUid == UserManager.GetCurrentUserId(User)))

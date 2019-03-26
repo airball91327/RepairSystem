@@ -436,7 +436,7 @@ namespace EDIS.Controllers
             /* Sorting search result. */
             if( rv.Count() != 0)
             {
-                rv = rv.OrderByDescending(r => r.ApplyDate).ToList();
+                rv = rv.OrderByDescending(r => r.ApplyDate).ThenByDescending(r => r.DocId).ToList();
             }
 
             return View("List", rv);
@@ -653,8 +653,9 @@ namespace EDIS.Controllers
             return BadRequest(msg);
         }
 
-        public ActionResult Edit(string id)
+        public ActionResult Edit(string id, int page)
         {
+            ViewData["Page"] = page;
             RepairModel repair = _context.Repairs.Find(id);
             if (repair == null)
             {

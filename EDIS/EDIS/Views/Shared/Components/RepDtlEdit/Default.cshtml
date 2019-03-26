@@ -37,7 +37,7 @@
                 <div class="form-group">
                     <label asp-for="FailFactor" class="control-title"></label>
                     <select asp-for="FailFactor" asp-items="@Model.FailFactors" class="form-control">
-                        <option >請選擇</option>
+                        <option selected disabled>請選擇</option>
 
                     </select>
                     <span asp-validation-for="FailFactor" class="text-danger"></span>

@@ -190,6 +190,12 @@ namespace EDIS.Controllers
                 }
             }
 
+            /* Sorting search result. */
+            if (rv.Count() != 0)
+            {
+                rv = rv.OrderByDescending(r => r.ApplyDate).ThenByDescending(r => r.DocId).ToList();
+            }
+
             return View("SearchList", rv);
         }
     }
