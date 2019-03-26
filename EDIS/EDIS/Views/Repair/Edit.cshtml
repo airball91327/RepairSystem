@@ -17,6 +17,15 @@
     }
 }
 
+<script>
+    $(function () {
+        var activePage = @ViewData["Page"];
+        if (activePage != 0) {
+            $("#page" + activePage).children("a").click();
+        }
+    });
+</script>
+
 <h2>編輯</h2>
 <h4>請修單</h4>
 <hr />
@@ -46,15 +55,15 @@
     </div>
 </div>
 <ul class="nav nav-pills" style="font-size:120%">
-    <li role="presentation" class="active"><a href="#repair" data-toggle="tab" style="padding-left:20px">申請資料</a></li>
-    <li role="presentation"><a href="#repairdtl" data-toggle="tab" style="padding-left:20px">請修紀錄</a></li>
-    <li role="presentation"><a href="#repairemp" data-toggle="tab" style="padding-left:20px">工程師工時</a></li>
+    <li role="presentation" id="page1" class="active"><a href="#repair" data-toggle="tab" style="padding-left:20px">申請資料</a></li>
+    <li role="presentation" id="page2"><a href="#repairdtl" data-toggle="tab" style="padding-left:20px">請修紀錄</a></li>
+    <li role="presentation" id="page3"><a href="#repairemp" data-toggle="tab" style="padding-left:20px">工程師工時</a></li>
     @if (Model.UserId != UserManager.GetCurrentUserId(User) || 
         RoleManager.GetUsersInRole("RepEngineer").Contains(User.Identity.Name)) //申請人不能檢視維修花費
     {
-        <li role="presentation"><a href="#repaircost" data-toggle="tab" style="padding-left:20px">費用明細</a></li>
+        <li role="presentation" id="page4"><a href="#repaircost" data-toggle="tab" style="padding-left:20px">費用明細</a></li>
     }
-    <li role="presentation"><a href="#repairflow" data-toggle="tab" style="padding-left:20px">簽核作業</a></li>
+    <li role="presentation" id="page5"><a href="#repairflow" data-toggle="tab" style="padding-left:20px">簽核作業</a></li>
 </ul>
 <hr />
 <div class="tab-content">

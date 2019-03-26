@@ -18,6 +18,7 @@ namespace EDIS.Models.RepairModels
         public string DealDes { get; set; }
         [Display(Name = "處理狀態")]
         public string DealState2 { get; set; }
+        [Required(ErrorMessage = "必填項目")]
         [Display(Name = "故障原因")]
         public int FailFactor { get; set; }
         [NotMapped]

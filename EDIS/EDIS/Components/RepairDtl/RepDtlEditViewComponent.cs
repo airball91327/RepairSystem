@@ -62,7 +62,7 @@ namespace EDIS.Components.RepairDtl
             }
             if(repairDtl.IsCharged == null)  // Set default value.
             {
-                repairDtl.IsCharged = "Y";
+                repairDtl.IsCharged = "N";
             }
             /* Get assetNo. */
             repairDtl.AssetNo = _context.Repairs.Find(repairDtl.DocId).AssetNo;

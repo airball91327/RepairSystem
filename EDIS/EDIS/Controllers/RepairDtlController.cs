@@ -74,10 +74,10 @@ namespace EDIS.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (string.IsNullOrEmpty(repairDtl.DealDes))
-                {
-                    throw new Exception("請輸入[處理描述]!!");
-                }
+                //if (string.IsNullOrEmpty(repairDtl.DealDes))
+                //{
+                //    throw new Exception("請輸入[處理描述]!!");
+                //}
                 try
                 {
                     if (repairDtl.IsCharged == "N")
@@ -101,6 +101,11 @@ namespace EDIS.Controllers
 
                     var repairModel = _context.Repairs.Find(repairDtl.DocId);
                     repairModel.AssetNo = repairDtl.AssetNo;
+                    var tempAsset = _context.Assets.Where(a => a.AssetNo == repairDtl.AssetNo).FirstOrDefault();
+                    if(tempAsset != null)
+                    {
+                        repairModel.AssetName = tempAsset.Cname;
+                    }
                     _context.Entry(repairModel).State = EntityState.Modified;
 
                     _context.SaveChanges();
