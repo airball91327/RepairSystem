@@ -107,10 +107,10 @@ namespace EDIS.Controllers
                     _context.Entry(rd).State = EntityState.Modified;
 
                     //If "結案", delete 1 dealing doc to the engineer.
-                    var repairDoc = _context.Repairs.Find(assign.DocId);
-                    var eng = _context.EngDealingDocs.Find(repairDoc.EngId);
-                    eng.DealingDocs = eng.DealingDocs - 1;
-                    _context.Entry(eng).State = EntityState.Modified;
+                    //var repairDoc = _context.Repairs.Find(assign.DocId);
+                    //var eng = _context.EngDealingDocs.Find(repairDoc.EngId);
+                    //eng.DealingDocs = eng.DealingDocs - 1;
+                    //_context.Entry(eng).State = EntityState.Modified;
                     _context.SaveChanges();
 
                     //Send Mail
