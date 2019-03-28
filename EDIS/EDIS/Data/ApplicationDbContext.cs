@@ -71,7 +71,7 @@ namespace EDIS.Data
             builder.Entity<VendorModel>().HasKey(c => new { c.VendorId });
             builder.Entity<FloorEngModel>().HasKey(c => new { c.EngId, c.BuildingId, c.FloorId });
             builder.Entity<ExternalUserModel>().HasKey(c => new { c.Id });
-            builder.Entity<EngsInDeptsModel>().HasKey(c => new { c.EngId, c.DptId });
+            builder.Entity<EngsInDeptsModel>().HasKey(c => new { c.EngId, c.BuildingId, c.FloorId, c.PlaceId });
             builder.Entity<EngDealingDocs>().HasKey(c => new { c.EngId });
             builder.Entity<EngSubStaff>().HasKey(c => new { c.EngId });
             // Customize the ASP.NET Identity model and override the defaults if needed.
