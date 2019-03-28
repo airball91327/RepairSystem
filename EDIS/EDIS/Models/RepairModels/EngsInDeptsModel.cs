@@ -13,8 +13,13 @@ namespace EDIS.Models.RepairModels
         [Display(Name = "工程師代號")]
         [ForeignKey("AppUsers")]
         public int EngId { get; set; }
-
         [Key, Column(Order = 2)]
+        public int BuildingId { get; set; }
+        [Key, Column(Order = 3)]
+        public string FloorId { get; set; }
+        [Key, Column(Order = 4)]
+        public string PlaceId { get; set; }
+      
         [Display(Name = "部門代號")]
         [ForeignKey("Departments")]
         public string DptId { get; set; }
