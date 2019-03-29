@@ -38,8 +38,14 @@ namespace EDIS.Components.Repair
             {
                 int buildingId = Convert.ToInt32(repair.Building);
                 repair.BuildingName = _context.Buildings.Find(buildingId).BuildingName;
-                repair.FloorName = _context.Floors.Find(buildingId, repair.Floor).FloorName;
-                repair.AreaName = _context.Places.Find(buildingId, repair.Floor, repair.Area).PlaceName;
+                if (!string.IsNullOrEmpty(repair.Floor))
+                {
+                    repair.FloorName = _context.Floors.Find(buildingId, repair.Floor).FloorName;
+                    if (!string.IsNullOrEmpty(repair.Area))
+                    {
+                        repair.AreaName = _context.Places.Find(buildingId, repair.Floor, repair.Area).PlaceName;
+                    }
+                }
             }
 
             return View(repair);
