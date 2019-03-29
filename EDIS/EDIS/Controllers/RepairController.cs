@@ -464,7 +464,7 @@ namespace EDIS.Controllers
                 });
             repair.Buildings = bs;
 
-            ///* 擷取該使用者單位底下所有人員 */
+            /* 擷取該使用者單位底下所有人員 */
             var dptUsers = _context.AppUsers.Where(a => a.DptId == ur.DptId).ToList();
             List<SelectListItem> dptMemberList = new List<SelectListItem>();
             foreach (var item in dptUsers)
@@ -477,30 +477,6 @@ namespace EDIS.Controllers
             }
             ViewData["DptMembers"] = new SelectList(dptMemberList, "Value", "Text");
 
-            /* Get engineers according to user department. */
-            var dptEngineers = _context.EngsInDepts.Include(e => e.AppUsers).Include(e => e.Departments)
-                                                   .Where(s => s.DptId == dpt.DptId).ToList();
-
-            /* 擷取預設負責工程師 */
-            if(dptEngineers.Count() == 0)  //該部門無預設工程師
-            {
-                var tempEng = _context.AppUsers.Where(a => a.UserName == "149761").FirstOrDefault();
-                repair.EngId = tempEng.Id;
-                repair.EngName = tempEng.FullName;
-            }
-            else
-            {
-                var eng = dptEngineers.Join(_context.EngDealingDocs, ed => ed.EngId, e => e.EngId,
-                                       (ed, e) => new
-                                       {
-                                           ed.EngId,
-                                           ed.UserName,
-                                           ed.AppUsers.FullName,
-                                           e.DealingDocs
-                                       }).OrderBy(o => o.DealingDocs).FirstOrDefault();
-                repair.EngId = eng.EngId;
-                repair.EngName = eng.FullName;
-            }
             /* Get all engineers by role. */
             var allEngs = roleManager.GetUsersInRole("RepEngineer").ToList();
             List<SelectListItem> list = new List<SelectListItem>();
@@ -833,21 +809,12 @@ namespace EDIS.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetDptEngId(string DptId)
+        public JsonResult GetAreaEngId(int BuildingId, string FloorId, string PlaceId)
         {
             var engineers = _context.EngsInDepts.Include(e => e.AppUsers).Include(e => e.Departments)
-                                                .Where(e => e.DptId == DptId).ToList();
-            ///* If DB gets wrong, show all engineers. */
-            //if(engineers.Count() == 0)
-            //{
-            //    engineers = _context.EngsInDepts.Include(e => e.AppUsers).Include(e => e.Departments)
-            //                                        .GroupBy(e => e.EngId).Select(g => g.First()).ToList();
-            //}
-            //List<SelectListItem> engList = new List<SelectListItem>();
-            //foreach(var item in engineers)
-            //{
-            //    engList.Add(new SelectListItem { Text = item.AppUsers.FullName, Value = item.EngId.ToString() });
-            //}
+                                                .Where(e => e.BuildingId == BuildingId &&
+                                                            e.FloorId == FloorId &&
+                                                            e.PlaceId == PlaceId).ToList();
 
             /* 擷取預設負責工程師 */
             if (engineers.Count() == 0)  //該部門無預設工程師

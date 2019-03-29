@@ -69,10 +69,14 @@ $(function () {
         });  
         /* Get engineers. */
         $.ajax({
-            url: '../Repair/GetDptEngId',
+            url: '../Repair/GetAreaEngId',
             type: "POST",
             dataType: "json",
-            data: { DptId: dptId },
+            data: {
+                BuildingId: $('#Building').val(),
+                FloorId: $('#Floor').val(),
+                PlaceId: $('#Area').val()
+            },
             async: false,
             success: function (data) {
                 $('#EngId').val(data.engId);
@@ -127,10 +131,14 @@ $(function () {
         });    
         /* Get engineers. */
         $.ajax({
-            url: '../Repair/GetDptEngId',
+            url: '../Repair/GetAreaEngId',
             type: "POST",
             dataType: "json",
-            data: { DptId: dptId },
+            data: {
+                BuildingId: $('#Building').val(),
+                FloorId: $('#Floor').val(),
+                PlaceId: $('#Area').val()
+            },
             async: false,
             success: function (data) {
                 $('#EngId').val(data.engId);
