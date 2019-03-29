@@ -795,6 +795,23 @@ namespace EDIS.Controllers
             return Json(returnAsset);
         }
 
+        public JsonResult GetAllEngs()
+        {
+            /* Get all engineers by role. */
+            var allEngs = roleManager.GetUsersInRole("RepEngineer").ToList();
+            List<AppUserModel> list = new List<AppUserModel>();
+            foreach (string l in allEngs)
+            {
+                var u = _context.AppUsers.Where(a => a.UserName == l).FirstOrDefault();
+                if (u != null)
+                {
+                    list.Add(u);
+                }
+            }
+            list = list.OrderBy(l => l.DptId).ToList();
+            return Json(list);
+        }
+
         [HttpPost]
         public JsonResult GetFloorEngId(int buildingId, string floorId)
         {

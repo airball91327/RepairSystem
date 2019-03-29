@@ -21,6 +21,12 @@ namespace EDIS.Controllers
         // GET: RepairSearch/
         public IActionResult Index()
         {
+            List<SelectListItem> FlowlistItem = new List<SelectListItem>();
+            FlowlistItem.Add(new SelectListItem { Text = "未結案", Value = "未結案" });
+            FlowlistItem.Add(new SelectListItem { Text = "已結案", Value = "已結案" });
+            FlowlistItem.Add(new SelectListItem { Text = "報廢", Value = "報廢" });
+            ViewData["FLOWTYPE"] = new SelectList(FlowlistItem, "Value", "Text");
+
             /* 成本中心 & 申請部門的下拉選單資料 */
             var departments = _context.Departments.ToList();
             List<SelectListItem> listItem = new List<SelectListItem>();
@@ -51,7 +57,7 @@ namespace EDIS.Controllers
             string dptid = qdata.qtyDPTID;
             string qtyDate1 = qdata.qtyApplyDateFrom;
             string qtyDate2 = qdata.qtyApplyDateTo;
-            //string ftype = qdata.qtyFLOWTYPE;
+            string ftype = qdata.qtyFLOWTYPE;
 
             DateTime applyDateFrom = DateTime.Now;
             DateTime applyDateTo = DateTime.Now;
@@ -93,6 +99,8 @@ namespace EDIS.Controllers
 
             /* Querying data. */
             var rps = _context.Repairs.ToList();
+            var repairFlows = _context.RepairFlows.ToList();
+            var repairDtls = _context.RepairDtls.ToList();
             if (!string.IsNullOrEmpty(docid))   //表單編號
             {
                 rps = rps.Where(v => v.DocId == docid).ToList();
@@ -112,13 +120,35 @@ namespace EDIS.Controllers
             if (!string.IsNullOrEmpty(aname))   //財產名稱
             {
                 rps = rps.Where(v => v.AssetName != null)
-                        .Where(v => v.AssetName.Contains(aname))
-                        .ToList();
+                         .Where(v => v.AssetName.Contains(aname)).ToList();
             }
             if (string.IsNullOrEmpty(qtyDate1) == false || string.IsNullOrEmpty(qtyDate2) == false)     //時間區間
             {
                 rps = rps.Where(v => v.ApplyDate >= applyDateFrom && v.ApplyDate <= applyDateTo).ToList();
             }
+            if (!string.IsNullOrEmpty(ftype))   //流程狀態
+            {
+                switch(ftype)
+                {
+                    case "未結案":
+                        repairFlows = repairFlows.GroupBy(f => f.DocId).Where(group => group.Last().Status == "?")
+                                                                       .Select(group => group.Last()).ToList();
+                        break;
+                    case "已結案":
+                        repairFlows = repairFlows.GroupBy(f => f.DocId).Where(group => group.Last().Status == "2")
+                                                                       .Select(group => group.Last()).ToList();
+                        break;
+                    case "報廢":
+                        repairFlows = repairFlows.GroupBy(f => f.DocId).Select(group => group.Last()).ToList();
+                        repairDtls = repairDtls.Where(r => r.DealState == 4).ToList();
+                        break;
+                }
+            }
+            else
+            {
+                repairFlows = repairFlows.GroupBy(f => f.DocId).Select(group => group.Last()).ToList();
+            }
+
 
             /* If no search result. */
             if (rps.Count() == 0)
@@ -126,14 +156,13 @@ namespace EDIS.Controllers
                 return View("SearchList", rv);
             }
 
-            rps.Join(_context.RepairFlows.GroupBy(f => f.DocId).Select(group => group.Last()),
-                r => r.DocId, f => f.DocId,
+            rps.Join(repairFlows, r => r.DocId, f => f.DocId,
                 (r, f) => new
                 {
                     repair = r,
                     flow = f
                 })
-                .Join(_context.RepairDtls, m => m.repair.DocId, d => d.DocId,
+                .Join(repairDtls, m => m.repair.DocId, d => d.DocId,
                 (m, d) => new
                 {
                     repair = m.repair,

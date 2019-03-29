@@ -26,9 +26,11 @@ $(document).ready(function () {
         /* 3 = 已完成，4 = 報廢，9 = 退件 */
         if ($(this).val() == 3 || $(this).val() == 4 || $(this).val() == 9) {
             $("#DealDes").attr("required", "required");
+            $("#dealDesErrorMsg").html("必填項目");
         }
         else {
             $("#DealDes").removeAttr("required");
+            $("#dealDesErrorMsg").html("");
         }
     });
 

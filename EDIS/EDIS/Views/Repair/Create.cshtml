@@ -258,7 +258,7 @@
             <div class=form-inline>
                 <div class="form-group">
                     <label asp-for="PrimaryEngId" class="control-title"></label>
-                    <select asp-for="PrimaryEngId" asp-items="@ViewData["AllEngs"] as SelectList" class="form-control">
+                    <select asp-for="PrimaryEngId" asp-items="@ViewData["AllEngs"] as SelectList" class="form-control" id="PrimaryEngId">
                         <option value=0>無</option>
                     </select>
                     <span asp-validation-for="PrimaryEngId" class="text-danger"></span>

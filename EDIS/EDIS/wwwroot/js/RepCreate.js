@@ -17,6 +17,8 @@ $.fn.addItems = function (data) {
 
 $(function () {
 
+    SetEngsDropDown();
+
     $('#Building').change(function () {
 
         /* Get floors. */
@@ -380,6 +382,49 @@ function GetDptLocation(DptId) {
        
                 $("#divLocations").hide();
             }
+        }
+    });
+}
+
+function SetEngsDropDown() {
+    $.ajax({
+        url: '../Repair/GetAllEngs',
+        type: "GET",
+        dataType: "json",
+        data: { },
+        success: function (data) {
+            console.log(data); // For debug.
+            var select = $('#PrimaryEngId');
+            var i = 0;
+            var defaultOption = 0;
+            var displayTrigger = 0;
+            select.empty();
+            $.each(data, function (index, item) {  // item is now an object containing properties 
+                if (i === defaultOption) {
+                    select.append($('<option selected="selected"></option>').text("無").val(0));
+                }
+                else {
+                    if (item.dptId != displayTrigger) {
+                        switch (item.dptId) {
+                            case '8411':
+                                select.append($('<optgroup label="工務一課"></optgroup>'));
+                                break;
+                            case '8412':
+                                select.append($('<optgroup label="工務二課"></optgroup>'));
+                                break;
+                            case '8413':
+                                select.append($('<optgroup label="工務三課-中華院區工務組"></optgroup>'));
+                                break;
+                            case '8414':
+                                select.append($('<optgroup label="工務三課-教研工務組"></optgroup>'));
+                                break;
+                        }
+                        displayTrigger = item.dptId;
+                    }
+                    select.append($('<option></option>').text(item.fullName).val(item.id));
+                }
+                i++;
+            });
         }
     });
 }
