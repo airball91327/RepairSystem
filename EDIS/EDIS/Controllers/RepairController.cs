@@ -751,7 +751,7 @@ namespace EDIS.Controllers
         [HttpPost]
         public JsonResult GetDptLoc(string dptId)
         {
-            var dptLocations = _context.Places.Where(p => p.PlaceId == dptId).ToList();
+            var dptLocations = _context.Places.Where(p => p.PlaceId.Contains(dptId)).ToList();
             if ( dptLocations.Count() == 0 )
             {
                 return Json("查無地點");
