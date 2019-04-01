@@ -100,6 +100,17 @@ namespace EDIS.Components.RepairFlow
             ViewData["Hint2"] = "單位請修→單位主管(護理長)→單位主任→工務工程師 [若費用5000元以上：單位主管(護理長)→" +
                 "單位直屬副院長→工務工程師] →工務主管→工務工程師→工務主管→單位驗收人→結案";
             ViewData["Hint3"] = "單位請修→工務工程師→工務主管→工務主任→列管/固資財產負責人→單位驗收人→結案";
+
+            /* 於流程頁面顯示請修類型、及處理狀態*/
+            string hintRepType = repair.RepType;
+            string hintRepState = "";
+            var repDtl = _context.RepairDtls.Where(dtl => dtl.DocId == id).FirstOrDefault();
+            if(repDtl != null)
+            {
+                hintRepState = _context.DealStatuses.Find(repDtl.DealState).Title;
+            }
+            ViewData["HintRepType"] = hintRepType + " / " + hintRepState;
+
             return View(assign);
         }
     }
