@@ -50,7 +50,8 @@ $(function () {
             }
         });
 
-        var dptId = $('#Area').val();
+        var dptId = $('#Area').val().split("-", 1);
+        
         /* Get AccDptId and Name. */
         $("#AccDpt").val(dptId);
         $.ajax({

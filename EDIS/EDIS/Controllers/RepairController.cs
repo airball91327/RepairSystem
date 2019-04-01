@@ -524,7 +524,7 @@ namespace EDIS.Controllers
             if (repair.LocType == "本單位")
             {
                 /* 選擇地點與本單位不同 */
-                if(repair.DptId != repair.Area)
+                if( !repair.Area.Contains(repair.DptId))
                 {
                     return BadRequest("需選擇本單位的確切地點!");
                 }
@@ -751,7 +751,7 @@ namespace EDIS.Controllers
         [HttpPost]
         public JsonResult GetDptLoc(string dptId)
         {
-            var dptLocations = _context.Places.Where(p => p.PlaceId == dptId).ToList();
+            var dptLocations = _context.Places.Where(p => p.PlaceId.Contains(dptId)).ToList();
             if ( dptLocations.Count() == 0 )
             {
                 return Json("查無地點");
@@ -767,7 +767,7 @@ namespace EDIS.Controllers
                     BuildingName = bname,
                     FloorId = Convert.ToInt32(tempDptLoc.FloorId ),
                     FloorName = fname,
-                    PlaceId = Convert.ToInt32(tempDptLoc.PlaceId ),
+                    PlaceId = Convert.ToInt32(tempDptLoc.PlaceId.Split(new char[] {'-'})[0]),
                     PlaceName = tempDptLoc.PlaceName
                 };
                 return Json(dptLoc);
