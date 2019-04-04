@@ -11,6 +11,7 @@
                 <th style="border-right:1px solid black;">
                     料號/
                     @Html.DisplayNameFor(model => model.PartName)
+                    (發票號碼)
                 </th>
                 <th style="border-right:1px solid black;">
                     規格
@@ -43,6 +44,16 @@
                     <td style="border-right: 1px solid black;border-top: 1px solid black;">
                         <span style="color: blue;">@item.PartNo</span>
                         @Html.DisplayFor(modelItem => item.PartName)
+                        <span>(
+                            @if(item.TicketDtl != null)
+                            {
+                                @item.TicketDtl.TicketDtlNo
+                            }
+                            else
+                            {
+                                @item.SignNo
+                            }                        
+                        )</span>
                     </td>
                     <td style="border-right: 1px solid black;border-top: 1px solid black;">
                         @Html.DisplayFor(modelIterm => item.Standard)

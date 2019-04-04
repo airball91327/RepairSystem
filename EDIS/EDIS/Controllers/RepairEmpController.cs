@@ -17,6 +17,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EDIS.Controllers
 {
+    [Authorize]
     public class RepairEmpController : Controller
     {
         private readonly ApplicationDbContext _context;

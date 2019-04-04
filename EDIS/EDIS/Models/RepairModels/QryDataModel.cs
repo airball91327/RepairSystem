@@ -15,6 +15,7 @@ namespace EDIS.Models.RepairModels
         public string qtyASSETNAME { get; set; }
         public string qtyFLOWTYPE { get; set; }
         public string qtyDPTID { get; set; }
+        public string qtyDealStatus { get; set; }
         [DataType(DataType.Date)]
         [Column(TypeName = "Date")]
         public string qtyApplyDateFrom { get; set; }

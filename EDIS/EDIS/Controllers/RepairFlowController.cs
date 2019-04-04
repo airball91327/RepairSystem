@@ -12,9 +12,11 @@ using EDIS.Models.LocationModels;
 using EDIS.Models.RepairModels;
 using EDIS.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EDIS.Controllers
 {
+    [Authorize]
     public class RepairFlowController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -156,6 +158,8 @@ namespace EDIS.Controllers
                     body += "<p><a href='http://dms.cch.org.tw/EDIS/Account/Login'" + "?DocId=" + repair.DocId + "&dealType=Views" + ">檢視案件</a></p>";
                     body += "<br/>";
                     body += "<h3>此封信件為系統通知郵件，請勿回覆。</h3>";
+                    body += "<br/>";
+                    body += "<h3 style='color:red'>如有任何疑問請聯絡工務部，分機3033或7033。<h3>";
                     mail.message.Body = body;
                     mail.message.IsBodyHtml = true;
                     mail.SendMail();
@@ -211,6 +215,8 @@ namespace EDIS.Controllers
                     body += "<p><a href='http://dms.cch.org.tw/EDIS/Account/Login'" + "?docId=" + repair.DocId + "&dealType=Edit" + ">處理案件</a></p>";
                     body += "<br/>";
                     body += "<h3>此封信件為系統通知郵件，請勿回覆。</h3>";
+                    body += "<br/>";
+                    body += "<h3 style='color:red'>如有任何疑問請聯絡工務部，分機3033或7033。<h3>";
                     mail.message.Body = body;
                     mail.message.IsBodyHtml = true;
                     mail.SendMail();

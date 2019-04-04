@@ -4,11 +4,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using EDIS.Data;
 using EDIS.Models.RepairModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace EDIS.Controllers
 {
+    [Authorize]
     public class TicketController : Controller
     {
         private readonly ApplicationDbContext _context;

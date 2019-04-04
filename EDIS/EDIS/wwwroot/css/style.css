@@ -67,6 +67,10 @@ ul.nav-second-level {
             position: absolute;
             width: 220px;
         }
+
+        .mobileNavBar {
+            display:none;
+        }
     }
 
     @media (max-width: 768px) {

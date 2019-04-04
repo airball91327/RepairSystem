@@ -19,6 +19,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EDIS.Controllers
 {
+    [Authorize]
     public class RepairController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -89,6 +90,7 @@ namespace EDIS.Controllers
             string dptid = qdata.qtyDPTID;
             string qtyDate1 = qdata.qtyApplyDateFrom;
             string qtyDate2 = qdata.qtyApplyDateTo;
+            string qtyDealStatus = qdata.qtyDealStatus;
 
             DateTime applyDateFrom = DateTime.Now;
             DateTime applyDateTo = DateTime.Now;
@@ -439,6 +441,12 @@ namespace EDIS.Controllers
                 rv = rv.OrderByDescending(r => r.ApplyDate).ThenByDescending(r => r.DocId).ToList();
             }
 
+            /* Search dealStatus. */
+            if (!string.IsNullOrEmpty(qtyDealStatus))
+            {
+                rv = rv.Where(r => r.DealState == qtyDealStatus).ToList();
+            }
+
             return View("List", rv);
         }
         [Authorize]
@@ -608,6 +616,8 @@ namespace EDIS.Controllers
                     body += "<p><a href='http://dms.cch.org.tw/EDIS/Account/Login'" + "?docId=" + repair.DocId + "&dealType=Edit" + ">處理案件</a></p>";
                     body += "<br/>";
                     body += "<h3>此封信件為系統通知郵件，請勿回覆。</h3>";
+                    body += "<br/>";
+                    body += "<h3 style='color:red'>如有任何疑問請聯絡工務部，分機3033或7033。<h3>";
                     mail.message.Body = body;
                     mail.message.IsBodyHtml = true;
                     mail.SendMail();
@@ -836,7 +846,7 @@ namespace EDIS.Controllers
             /* 擷取預設負責工程師 */
             if (engineers.Count() == 0)  //該部門無預設工程師
             {
-                var tempEng = _context.AppUsers.Where(a => a.UserName == "149761").FirstOrDefault();
+                var tempEng = _context.AppUsers.Where(a => a.UserName == "181316").FirstOrDefault();
                 return Json(tempEng);
             }
             else

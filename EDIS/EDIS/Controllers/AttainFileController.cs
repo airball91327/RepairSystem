@@ -12,9 +12,11 @@ using EDIS.Repositories;
 using EDIS.Models.Identity;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EDIS.Controllers
 {
+    [Authorize]
     public class AttainFileController : Controller
     {
         private readonly ApplicationDbContext _context;

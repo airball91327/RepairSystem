@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using EDIS.Data;
 using EDIS.Models.RepairModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EDIS.Controllers
 {
+    [Authorize]
     public class RepairDtlController : Controller
     {
         private readonly ApplicationDbContext _context;

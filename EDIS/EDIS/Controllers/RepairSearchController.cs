@@ -1,5 +1,6 @@
 ﻿using EDIS.Data;
 using EDIS.Models.RepairModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
@@ -9,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace EDIS.Controllers
 {
+    [Authorize]
     public class RepairSearchController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -24,7 +26,6 @@ namespace EDIS.Controllers
             List<SelectListItem> FlowlistItem = new List<SelectListItem>();
             FlowlistItem.Add(new SelectListItem { Text = "未結案", Value = "未結案" });
             FlowlistItem.Add(new SelectListItem { Text = "已結案", Value = "已結案" });
-            FlowlistItem.Add(new SelectListItem { Text = "報廢", Value = "報廢" });
             ViewData["FLOWTYPE"] = new SelectList(FlowlistItem, "Value", "Text");
 
             /* 成本中心 & 申請部門的下拉選單資料 */
@@ -41,6 +42,20 @@ namespace EDIS.Controllers
 
             ViewData["ACCDPT"] = new SelectList(listItem, "Value", "Text");
             ViewData["APPLYDPT"] = new SelectList(listItem, "Value", "Text");
+
+            /* 處理狀態的下拉選單 */
+            var dealStatuses = _context.DealStatuses.ToList();
+            List<SelectListItem> listItem2 = new List<SelectListItem>();
+            foreach (var item in dealStatuses)
+            {
+                listItem2.Add(new SelectListItem
+                {
+                    Text = item.Title,
+                    Value = item.Id.ToString()
+                });
+            }
+            ViewData["DealStatus"] = new SelectList(listItem2, "Value", "Text");
+
             QryRepListData data = new QryRepListData();
 
             return View(data);
@@ -58,6 +73,7 @@ namespace EDIS.Controllers
             string qtyDate1 = qdata.qtyApplyDateFrom;
             string qtyDate2 = qdata.qtyApplyDateTo;
             string ftype = qdata.qtyFLOWTYPE;
+            string qtyDealStatus = qdata.qtyDealStatus;
 
             DateTime applyDateFrom = DateTime.Now;
             DateTime applyDateTo = DateTime.Now;
@@ -138,17 +154,17 @@ namespace EDIS.Controllers
                         repairFlows = repairFlows.GroupBy(f => f.DocId).Where(group => group.Last().Status == "2")
                                                                        .Select(group => group.Last()).ToList();
                         break;
-                    case "報廢":
-                        repairFlows = repairFlows.GroupBy(f => f.DocId).Select(group => group.Last()).ToList();
-                        repairDtls = repairDtls.Where(r => r.DealState == 4).ToList();
-                        break;
                 }
             }
             else
             {
-                repairFlows = repairFlows.GroupBy(f => f.DocId).Select(group => group.Last()).ToList();
+                repairFlows = repairFlows.GroupBy(f => f.DocId).Where(group => group.Last().Status != "3")
+                                                               .Select(group => group.Last()).ToList(); ;
             }
-
+            if (!string.IsNullOrEmpty(qtyDealStatus))   //處理狀態
+            {
+                repairDtls = repairDtls.Where(r => r.DealState == Convert.ToInt32(qtyDealStatus)).ToList();
+            }
 
             /* If no search result. */
             if (rps.Count() == 0)

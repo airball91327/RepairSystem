@@ -9,9 +9,11 @@ using EDIS.Data;
 using EDIS.Models.RepairModels;
 using Microsoft.AspNetCore.Http;
 using X.PagedList;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EDIS.Controllers
 {
+    [Authorize]
     public class DeptStockController : Controller
     {
         private readonly ApplicationDbContext _context;

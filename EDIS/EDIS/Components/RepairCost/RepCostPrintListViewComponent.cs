@@ -23,7 +23,7 @@ namespace EDIS.Components.RepairCost
 
         public async Task<IViewComponentResult> InvokeAsync(string docId)
         {
-            List<RepairCostModel> rc = _context.RepairCosts.Where(c => c.DocId == docId).ToList();
+            List<RepairCostModel> rc = _context.RepairCosts.Include(c => c.TicketDtl).Where(c => c.DocId == docId).ToList();
             return View(rc);
         }
     }

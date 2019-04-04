@@ -37,9 +37,22 @@ namespace EDIS.Components.Repair
                     Value = item.DptId
                 });
             }
-
             ViewData["ACCDPT"] = new SelectList(listItem, "Value", "Text");
             ViewData["APPLYDPT"] = new SelectList(listItem, "Value", "Text");
+
+            /* 處理狀態的下拉選單 */
+            var dealStatuses = _context.DealStatuses.ToList();
+            List<SelectListItem> listItem2 = new List<SelectListItem>();
+            foreach (var item in dealStatuses)
+            {
+                listItem2.Add(new SelectListItem
+                {
+                    Text = item.Title,
+                    Value = item.Title
+                });
+            }
+            ViewData["DealStatus"] = new SelectList(listItem2, "Value", "Text");
+
             QryRepListData data = new QryRepListData();
 
             return View(data);
