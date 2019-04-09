@@ -50,9 +50,11 @@ namespace EDIS.Controllers
         public ActionResult NextFlow(AssignModel assign)
         {
             var ur = _userRepo.Find(u => u.UserName == this.User.Identity.Name).FirstOrDefault();
-            /* 如點選有費用、卻無輸入費用明細 */
+            
+            /* 工程師的流程控管 */
             if(assign.Cls == "工務工程師")
             {
+                /* 如點選有費用、卻無輸入費用明細 */
                 var isCharged = _context.RepairDtls.Where(d => d.DocId == assign.DocId).FirstOrDefault().IsCharged;
                 if( isCharged == "Y" )
                 {
@@ -60,6 +62,50 @@ namespace EDIS.Controllers
                     if(CheckRepairCost == null)
                     {
                         string msg = "尚未輸入費用明細!!";
+                        return BadRequest(msg);
+                    }
+                }
+                var repairDtl = _context.RepairDtls.Where(d => d.DocId == assign.DocId).FirstOrDefault();
+                /* 3 = 已完成，4 = 報廢 */
+                if (repairDtl.DealState == 3 || repairDtl.DealState == 4)
+                {
+                    if(repairDtl.EndDate == null)
+                    {
+                        string msg = "報廢及已完成，需輸入完工日!!";
+                        return BadRequest(msg);
+                    }
+                }
+                /* 工程師做結案 */
+                if (assign.FlowCls == "結案")
+                {
+                    if (_context.RepairEmps.Where(emp => emp.DocId == assign.DocId).Count() <= 0)
+                    {
+                        string msg = "沒有維修工程師紀錄!!";
+                        return BadRequest(msg);
+                    }
+                    else if (_context.RepairDtls.Find(assign.DocId).EndDate == null)
+                    {
+                        string msg = "沒有完工日!!";
+                        return BadRequest(msg);
+                    }
+                    else if (_context.RepairDtls.Find(assign.DocId).DealState == 0)
+                    {
+                        string msg = "處理狀態不可空值!!";
+                        return BadRequest(msg);
+                    }
+                    if (_context.RepairDtls.Find(assign.DocId).FailFactor == 0)
+                    {
+                        string msg = "故障原因不可空白!!";
+                        return BadRequest(msg);
+                    }
+                    if (string.IsNullOrEmpty(_context.RepairDtls.Find(assign.DocId).InOut))
+                    {
+                        string msg = "維修方式不可空白!!";
+                        return BadRequest(msg);
+                    }
+                    if (_context.RepairDtls.Find(assign.DocId).DealState == 1 || _context.RepairDtls.Find(assign.DocId).DealState == 2)
+                    {
+                        string msg = "處理狀態不可為處理中或未處理!!";
                         return BadRequest(msg);
                     }
                 }
@@ -136,6 +182,9 @@ namespace EDIS.Controllers
                     string sto = "";
                     AppUserModel u;
                     RepairModel repair = _context.Repairs.Find(assign.DocId);
+                    repair.BuildingName = _context.Buildings.Where(b => b.BuildingId == Convert.ToInt32(repair.Building)).FirstOrDefault().BuildingName;
+                    repair.FloorName = _context.Floors.Where(f => f.BuildingId == Convert.ToInt32(repair.Building) && f.FloorId == repair.Floor).FirstOrDefault().FloorName;
+                    repair.AreaName = _context.Places.Where(p => p.BuildingId == Convert.ToInt32(repair.Building) && p.FloorId == repair.Floor && p.PlaceId == repair.Area).FirstOrDefault().PlaceName;
                     mail.from = new System.Net.Mail.MailAddress(ur.Email); //u.Email
                     _context.RepairFlows.Where(f => f.DocId == assign.DocId)
                             .ToList()
@@ -152,6 +201,7 @@ namespace EDIS.Controllers
                     body += "<p>申請人：" + repair.UserName + "</p>";
                     body += "<p>財產編號：" + repair.AssetNo + "</p>";
                     body += "<p>設備名稱：" + repair.AssetName + "</p>";
+                    body += "<p>請修地點：" + repair.PlaceLoc + " " + repair.BuildingName + " " + repair.FloorName + " " + repair.AreaName + "</p>";
                     //body += "<p>放置地點：" + repair.PlaceLoc + "</p>";
                     body += "<p>故障描述：" + repair.TroubleDes + "</p>";
                     body += "<p>處理描述：" + rd.DealDes + "</p>";
@@ -200,6 +250,9 @@ namespace EDIS.Controllers
                     string body = "";
                     AppUserModel u;
                     RepairModel repair = _context.Repairs.Find(assign.DocId);
+                    repair.BuildingName = _context.Buildings.Where(b => b.BuildingId == Convert.ToInt32(repair.Building)).FirstOrDefault().BuildingName;
+                    repair.FloorName = _context.Floors.Where(f => f.BuildingId == Convert.ToInt32(repair.Building) && f.FloorId == repair.Floor).FirstOrDefault().FloorName;
+                    repair.AreaName = _context.Places.Where(p => p.BuildingId == Convert.ToInt32(repair.Building) && p.FloorId == repair.Floor && p.PlaceId == repair.Area).FirstOrDefault().PlaceName;
                     mail.from = new System.Net.Mail.MailAddress(ur.Email); //ur.Email
                     u = _context.AppUsers.Find(flow.UserId);
                     mail.to = new System.Net.Mail.MailAddress(u.Email); //u.Email
@@ -211,6 +264,7 @@ namespace EDIS.Controllers
                     body += "<p>財產編號：" + repair.AssetNo + "</p>";
                     body += "<p>設備名稱：" + repair.AssetName + "</p>";
                     body += "<p>故障描述：" + repair.TroubleDes + "</p>";
+                    body += "<p>請修地點：" + repair.PlaceLoc + " " + repair.BuildingName + " " + repair.FloorName + " " + repair.AreaName + "</p>";
                     //body += "<p>放置地點：" + repair.PlaceLoc + "</p>";
                     body += "<p><a href='http://dms.cch.org.tw/EDIS/Account/Login'" + "?docId=" + repair.DocId + "&dealType=Edit" + ">處理案件</a></p>";
                     body += "<br/>";

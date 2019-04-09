@@ -19,18 +19,18 @@ namespace EDIS.Models.RepairModels
         public string DocId { get; set; }
         [Display(Name = "流程提示")]
         public string Hint { get; set; }
-        [Required]
+        [Required(ErrorMessage = "必填寫欄位")]
         [Display(Name = "簽核選項")]
         public string AssignCls { get; set; }
         [Display(Name = "意見描述")]
         public string AssignOpn { get; set; }
-        [Required]
+        [Required(ErrorMessage = "必填寫欄位")]
         [Display(Name = "流程關卡")]
         public string FlowCls { get; set; }
         [Display(Name = "廠商")]
         public string FlowVendor { get; set; }
         public string VendorName { get; set; }
-        [Required]
+        [Required(ErrorMessage = "必填寫欄位")]
         [Display(Name = "關卡人員")]
         public int? FlowUid { get; set; }
         [Display(Name = "目前關卡")]

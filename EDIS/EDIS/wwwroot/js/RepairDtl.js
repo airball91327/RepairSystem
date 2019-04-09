@@ -1,5 +1,6 @@
 ﻿function showmsg2() {
     alert("儲存成功!");
+    window.location.reload();   //刷新RepairDtl與RepairDtl2的頁面資訊
 }
 
 $(document).ready(function () {
@@ -21,18 +22,41 @@ $(document).ready(function () {
     //        $("#printDtlBtn").hide();
     //    }
     //});
+    $('input:radio[name="HasAssetNo"]').click(function () {
+        if ($(this).val() == 'Y') {
+            $("#AssetNo").attr("required", "required");
+        }
+        else {
+            $("#AssetNo").removeAttr("required");
+        }
+    });
 
     $("#DealState").change(function () {
         /* 3 = 已完成，4 = 報廢，9 = 退件 */
-        if ($(this).val() == 3 || $(this).val() == 4 || $(this).val() == 9) {
+        if ($(this).val() == 3 || $(this).val() == 9) {
             $("#DealDes").attr("required", "required");
-            $("#dealDesErrorMsg").html("必填項目");
+            $("#AssetNo").removeAttr("required");
+            $("#assetNoControl").hide();
+        }
+        else if ($(this).val() == 4 ) {
+            $("#DealDes").attr("required", "required");
+            $("#assetNoControl").show();
+
+            if ($('input:radio[name="HasAssetNo"]:checked').val() == 'Y') {
+                $("#AssetNo").attr("required", "required");
+            }
+            else {
+                $("#AssetNo").removeAttr("required");
+            }            
         }
         else {
             $("#DealDes").removeAttr("required");
             $("#dealDesErrorMsg").html("");
+            $("#AssetNo").removeAttr("required");
+            $("#assetNoControl").hide();
         }
     });
+    $('#DealState').trigger("change");
 
     /* Get and print repair details.*/
     $("#printDtlBtn").click(function () {

@@ -77,6 +77,13 @@ namespace EDIS.Components.RepairFlow
                 {
                     listItem.Add(new SelectListItem { Text = "結案", Value = "結案" });
                 }
+                if (repairFlow.Cls == "工務工程師")   //工務工程師自己為驗收人時
+                {
+                    if (repair.CheckerId == repairFlow.UserId)  //驗收人為自己
+                    {
+                        listItem.Add(new SelectListItem { Text = "結案", Value = "結案" });
+                    }
+                }
                 //if (repairFlow.Cls == "工務工程師")
                 //{
                 //    listItem.Clear();
@@ -99,7 +106,7 @@ namespace EDIS.Components.RepairFlow
             assign.Hint = "單位請修→工務工程師→工務主管(若有費用)→單位驗收人→結案。";
             ViewData["Hint2"] = "單位請修→單位主管(護理長)→單位主任→工務工程師 [若費用5000元以上：單位主管(護理長)→" +
                 "單位直屬副院長→工務工程師] →工務主管→工務工程師→工務主管→單位驗收人→結案";
-            ViewData["Hint3"] = "單位請修→工務工程師→工務主管→工務主任→列管/固資財產負責人→單位驗收人→結案";
+            ViewData["Hint3"] = "單位請修→工務工程師→工務主管→工務主任→列管/固資財產負責人(有財產編號時)→單位驗收人→結案";
 
             /* 於流程頁面顯示請修類型、及處理狀態*/
             string hintRepType = repair.RepType;

@@ -15,23 +15,23 @@ namespace EDIS.Models.RepairModels
         public int SeqNo { get; set; }
         [Display(Name = "零件代號")]
         public string PartNo { get; set; }
-        [Required]
+        [Required(ErrorMessage = "必填寫欄位")]
         [Display(Name = "零件名稱")]
         public string PartName { get; set; }
         [Display(Name = "規格")]
         public string Standard { get; set; }
-        [Required]
+        [Required(ErrorMessage = "必填寫欄位")]
         [Display(Name = "單位")]
         public string Unite { get; set; }
-        [Required]
+        [Required(ErrorMessage = "必填寫欄位")]
         [Display(Name = "單價")]
         public decimal Price { get; set; }
-        [Required]
+        [Required(ErrorMessage = "必填寫欄位")]
         [Display(Name = "數量")]
         public int Qty { get; set; }
         [Display(Name = "總金額")]
         public decimal TotalCost { get; set; }
-        [Required]
+        [Required(ErrorMessage = "必填寫欄位")]
         [Display(Name = "費用別")]
         public string StockType { get; set; }
         [Display(Name = "廠商代號")]

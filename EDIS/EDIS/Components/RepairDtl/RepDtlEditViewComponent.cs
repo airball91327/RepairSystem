@@ -64,8 +64,22 @@ namespace EDIS.Components.RepairDtl
             {
                 repairDtl.IsCharged = "N";
             }
-            /* Get assetNo. */
+            /* Get assetNo, and set default value for hasAssetNo. */
             repairDtl.AssetNo = _context.Repairs.Find(repairDtl.DocId).AssetNo;
+            if(repairDtl.AssetNo == null)
+            {
+                repairDtl.HasAssetNo = "N";
+            }
+            else
+            {
+                repairDtl.HasAssetNo = "Y";
+                var asset = _context.Assets.Where(a => a.AssetNo == repairDtl.AssetNo).FirstOrDefault();
+                repairDtl.AssetName = asset.Cname;
+                if(asset.AccDate.HasValue)
+                {
+                    repairDtl.AssetAccDate = asset.AccDate.Value.ToString("yyyy/MM/dd");
+                }
+            }
 
             RepairFlowModel rf = _context.RepairFlows.Where(f => f.DocId == id)
                                                      .Where(f => f.Status == "?").FirstOrDefault();

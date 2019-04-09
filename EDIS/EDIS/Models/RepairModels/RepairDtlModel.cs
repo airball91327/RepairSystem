@@ -18,7 +18,7 @@ namespace EDIS.Models.RepairModels
         public string DealDes { get; set; }
         [Display(Name = "處理狀態")]
         public string DealState2 { get; set; }
-        [Required(ErrorMessage = "必填項目")]
+        [Required(ErrorMessage = "必填寫欄位")]
         [Display(Name = "故障原因")]
         public int FailFactor { get; set; }
         [NotMapped]
@@ -28,8 +28,17 @@ namespace EDIS.Models.RepairModels
         [Display(Name = "維修方式")]
         public string InOut { get; set; }
         [NotMapped]
+        [Display(Name = "[有][無]財產編號")]
+        public string HasAssetNo { get; set; }
+        [NotMapped]
         [Display(Name = "財產編號")]
         public string AssetNo { get; set; }
+        [NotMapped]
+        [Display(Name = "設備名稱")]
+        public string AssetName { get; set; }
+        [NotMapped]
+        [Display(Name = "立帳日")]
+        public string AssetAccDate { get; set; }
         [Display(Name = "工時")]
         public decimal Hour { get; set; }
         [Display(Name = "[有][無]費用")]

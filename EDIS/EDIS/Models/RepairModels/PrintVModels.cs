@@ -57,12 +57,14 @@ namespace EDIS.Models.RepairModels
         public string DelivEmp { get; set; }
         [Display(Name = "驗收人姓名")]
         public string DelivEmpName { get; set; }
-        [Display(Name = "主管")]
+        [Display(Name = "工務主管")]
         public string EngMgr { get; set; }
-        [Display(Name = "主任")]
+        [Display(Name = "工務主任")]
         public string EngDirector { get; set; }
-        [Display(Name = "單位主任")]
+        [Display(Name = "單位主管")]
         public string DelivMgr { get; set; }
+        [Display(Name = "單位主任")]
+        public string DelivDirector { get; set; }
         [Display(Name = "單位直屬副院長")]
         public string ViceSuperintendent { get; set; }
     }

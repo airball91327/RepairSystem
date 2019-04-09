@@ -17,6 +17,10 @@ namespace EDIS.Models.RepairModels
         public string Brand { get; set; }
         [Display(Name = "請修地點")]
         public string PlaceLoc { get; set; }
+        [Display(Name = "詳細地點1")]
+        public string Location1 { get; set; }
+        [Display(Name = "詳細地點2")]
+        public string Location2 { get; set; }
         [Display(Name = "型號")]
         public string Type { get; set; }
         [Display(Name = "申請部門代號")]

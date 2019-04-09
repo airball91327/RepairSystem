@@ -87,3 +87,7 @@ ul.nav-second-level {
             float: left;
         }
     }
+
+.text-danger {
+    color: #ff9c00;
+}

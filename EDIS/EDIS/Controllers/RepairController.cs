@@ -398,6 +398,9 @@ namespace EDIS.Controllers
                         //AssetName = j.repair.AssetName,
                         //Brand = j.asset.Brand,
                         PlaceLoc = j.repair.LocType,
+                        Location1 = _context.Buildings.Where(b => b.BuildingId == Convert.ToInt32(j.repair.Building)).FirstOrDefault().BuildingName
+                                    + " " + _context.Floors.Where(f => f.BuildingId == Convert.ToInt32(j.repair.Building) && f.FloorId == j.repair.Floor).FirstOrDefault().FloorName,
+                        Location2 = " " + _context.Places.Where(p => p.BuildingId == Convert.ToInt32(j.repair.Building) && p.FloorId == j.repair.Floor && p.PlaceId == j.repair.Area).FirstOrDefault().PlaceName,
                         //Type = j.asset.Type,
                         ApplyDpt = j.repair.DptId,
                         AccDpt = j.repair.AccDpt,
@@ -558,7 +561,7 @@ namespace EDIS.Controllers
                     // Create Repair Details.
                     RepairDtlModel dtl = new RepairDtlModel();
                     dtl.DocId = repair.DocId;
-                    dtl.DealState = 1;  // 狀態"已處理"
+                    dtl.DealState = 1;  // 處理狀態"未處理"
                     _repdtlRepo.Create(dtl);
 
                     //Create first Repair Flow.
@@ -567,7 +570,7 @@ namespace EDIS.Controllers
                     flow.StepId = 1;
                     flow.UserId = ur.Id;
                     //flow.UserId = userManager.GetCurrentUserId(User);
-                    flow.Status = "1";  // 狀態"已處理"
+                    flow.Status = "1";  // 流程狀態"已處理"
                     flow.Rtp = ur.Id;
                     //flow.Rtp = userManager.GetCurrentUserId(User);
                     flow.Rtt = DateTime.Now;
@@ -596,6 +599,9 @@ namespace EDIS.Controllers
                     _context.Entry(eng).State = EntityState.Modified;
                     _context.SaveChanges();
 
+                    repair.BuildingName = _context.Buildings.Where(b => b.BuildingId == Convert.ToInt32(repair.Building)).FirstOrDefault().BuildingName;
+                    repair.FloorName = _context.Floors.Where(f => f.BuildingId == Convert.ToInt32(repair.Building) && f.FloorId == repair.Floor).FirstOrDefault().FloorName;
+                    repair.AreaName = _context.Places.Where(p => p.BuildingId == Convert.ToInt32(repair.Building) && p.FloorId == repair.Floor && p.PlaceId == repair.Area).FirstOrDefault().PlaceName;
                     //Send Mail 
                     //To user and the next flow user.
                     Tmail mail = new Tmail();
@@ -612,6 +618,7 @@ namespace EDIS.Controllers
                     body += "<p>財產編號：" + repair.AssetNo + "</p>";
                     body += "<p>設備名稱：" + repair.AssetName + "</p>";
                     body += "<p>故障描述：" + repair.TroubleDes + "</p>";
+                    body += "<p>請修地點：" + repair.PlaceLoc + " " + repair.BuildingName + " " + repair.FloorName + " " + repair.AreaName + "</p>";
                     //body += "<p>放置地點：" + repair.PlaceLoc + "</p>";
                     body += "<p><a href='http://dms.cch.org.tw/EDIS/Account/Login'" + "?docId=" + repair.DocId + "&dealType=Edit" + ">處理案件</a></p>";
                     body += "<br/>";
@@ -967,17 +974,39 @@ namespace EDIS.Controllers
                 //vm.EngName = emp == null ? "" : _context.AppUsers.Find(emp.UserId).FullName;
                 vm.EngName = emp == null ? "" : _context.AppUsers.Find(repair.EngId).FullName;
                 var engMgr = _context.RepairFlows.Where(r => r.DocId == DocId)
-                                                 .Where(r => r.Cls.Contains("工務主管")).LastOrDefault();
-                vm.EngMgr = engMgr == null ? "" : _context.AppUsers.Find(engMgr.UserId).FullName;
+                                                 .Where(r => r.Cls.Contains("工務主管")).ToList();
+                if(engMgr.Count() != 0)
+                {
+                    engMgr = engMgr.GroupBy(e => e.UserId).Select(group => group.FirstOrDefault()).ToList();
+                    foreach (var item in engMgr)
+                    {
+                        vm.EngMgr += item == null ? "" : _context.AppUsers.Find(item.UserId).FullName + "  ";
+                    }
+                }
+
                 var engDirector = _context.RepairFlows.Where(r => r.DocId == DocId)
                                                       .Where(r => r.Cls.Contains("工務主任")).LastOrDefault();
                 vm.EngDirector = engDirector == null ? "" : _context.AppUsers.Find(engDirector.UserId).FullName;
+
                 var delivMgr = _context.RepairFlows.Where(r => r.DocId == DocId)
-                                                   .Where(r => r.Cls.Contains("單位主任")).LastOrDefault();
-                vm.DelivMgr = delivMgr == null ? "" : _context.AppUsers.Find(delivMgr.UserId).FullName;
+                                                   .Where(r => r.Cls.Contains("單位主管")).ToList();
+                if (delivMgr.Count() != 0)
+                {
+                    delivMgr = delivMgr.GroupBy(e => e.UserId).Select(group => group.FirstOrDefault()).ToList();
+                    foreach (var item in delivMgr)
+                    {
+                        vm.DelivMgr += item == null ? "" : _context.AppUsers.Find(item.UserId).FullName + "  ";
+                    }
+                }
+
+                var delivDirector = _context.RepairFlows.Where(r => r.DocId == DocId)
+                                                        .Where(r => r.Cls.Contains("單位主任")).LastOrDefault();
+                vm.DelivDirector = delivDirector == null ? "" : _context.AppUsers.Find(delivDirector.UserId).FullName;
+
                 var ViceSI = _context.RepairFlows.Where(r => r.DocId == DocId)
                                                  .Where(r => r.Cls.Contains("副院長")).LastOrDefault();
                 vm.ViceSuperintendent = ViceSI == null ? "" : _context.AppUsers.Find(ViceSI.UserId).FullName;
+
                 if (flow != null)
                 {
                     if (flow.Status == "2")

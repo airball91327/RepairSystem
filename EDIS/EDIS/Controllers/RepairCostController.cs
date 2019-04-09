@@ -59,6 +59,12 @@ namespace EDIS.Controllers
             {
                 try
                 {
+                    var dupData = _context.RepairCosts.Where(c => c.DocId == repairCost.DocId && c.PartName == repairCost.PartName && c.Standard == repairCost.Standard).FirstOrDefault();
+                    if(dupData != null)
+                    {
+                        string msg = "資料重複儲存!!";
+                        return BadRequest(msg);
+                    }
                     int seqno = _context.RepairCosts.Where(c => c.DocId == repairCost.DocId)
                                                     .Select(c => c.SeqNo).DefaultIfEmpty().Max();
                     repairCost.SeqNo = seqno + 1;
@@ -66,11 +72,15 @@ namespace EDIS.Controllers
                     {
                         if (string.IsNullOrEmpty(repairCost.TicketDtl.TicketDtlNo))
                         {
-                            throw new Exception("發票號碼不可空白!!");
+                            //throw new Exception("發票號碼不可空白!!");
+                            string msg = "發票號碼不可空白!!";
+                            return BadRequest(msg);
                         }
                         if (repairCost.AccountDate == null)
                         {
-                            throw new Exception("發票日期不可空白!!");
+                            //throw new Exception("發票日期不可空白!!");
+                            string msg = "發票日期不可空白!!";
+                            return BadRequest(msg);
                         }
                         int i = _context.TicketDtls.Where(d => d.TicketDtlNo == repairCost.TicketDtl.TicketDtlNo)
                                                    .Select(d => d.SeqNo).DefaultIfEmpty().Max();

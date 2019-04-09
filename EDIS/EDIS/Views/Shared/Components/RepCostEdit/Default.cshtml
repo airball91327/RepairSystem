@@ -3,7 +3,7 @@
 <script src="~/js/RepairCost.js"></script>
 
 <form asp-controller="RepairCost" asp-action="Edit" id="repCostForm" data-ajax="true"
-      data-ajax-method="POST" data-ajax-update="#pnlREPCOSTLIST" data-ajax-success="showMsgAndPrint">
+      data-ajax-method="POST" data-ajax-update="#pnlREPCOSTLIST" data-ajax-success="showMsgAndPrint" data-ajax-failure="onFailed">
 
     @Html.AntiForgeryToken()
     @Html.HiddenFor(model => model.DocId, new { id = "costDocId" })
@@ -51,6 +51,7 @@
                     <label asp-for="PartName" class="control-title"></label>
                     <input asp-for="PartName" class="form-control" />
                     @*<input type="button" value="選擇" class="btn btn-default" data-toggle="modal" data-target="#modalSTOCK" />*@
+                    <span style="color: #ff9c00;">*</span>
                     <span asp-validation-for="PartName" class="text-danger"></span>
                 </div>
             </div>
@@ -69,6 +70,7 @@
                 <div class="form-group">
                     <label asp-for="Unite" class="control-title"></label>
                     <input asp-for="Unite" class="form-control-s" />
+                    <span style="color: #ff9c00;">*</span>
                     <span asp-validation-for="Unite" class="text-danger"></span>
                 </div>
                 <div class="form-group">
@@ -83,6 +85,7 @@
                 <div class="form-group">
                     <label asp-for="Qty" class="control-title"></label>
                     <input asp-for="Qty" class="form-control-s" />
+                    <span>&nbsp;</span>
                     <span asp-validation-for="Qty" class="text-danger"></span>
                 </div>
                 <div class="form-group">

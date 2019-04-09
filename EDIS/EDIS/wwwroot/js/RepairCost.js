@@ -7,6 +7,10 @@
     }
 }
 
+var onFailed = function (data) {
+    alert(data.responseText);
+};
+
 /* When stockType is "has stock", after save the details, print the details. */
 function printStockDtl() {
 

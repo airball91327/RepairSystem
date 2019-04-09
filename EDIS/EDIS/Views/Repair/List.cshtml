@@ -85,8 +85,8 @@ else
                         <td width="100px">
                             @* /* 流程在登入使用者身上 */ *@
                             @* /* If 流程在使用者身上
-          else if 使用者為工程師，顯示流程在"工務工程師"的案子
-        */*@
+                                  else if 使用者為工程師，顯示流程在"工務工程師"的案子
+                                */*@
                             @if (item.Flg == "?" && item.FlowUid == UserManager.GetCurrentUserId(User))
                             {
                                 if (item.FlowCls == "驗收人")
@@ -153,6 +153,10 @@ else
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.PlaceLoc)
+                            <br />
+                            @Html.DisplayFor(modelItem => item.Location1)
+                            <br />
+                            @Html.DisplayFor(modelItem => item.Location2)
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.TroubleDes)

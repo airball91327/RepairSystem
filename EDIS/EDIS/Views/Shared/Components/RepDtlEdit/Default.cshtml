@@ -28,7 +28,7 @@
                 <div class=form-group>
                     <label asp-for="DealDes" class="control-title"></label>
                     <textarea asp-for="DealDes" rows="3" class="form-control"></textarea>
-                    <span asp-validation-for="DealDes" class="text-danger" id="dealDesErrorMsg"></span>
+                    <span asp-validation-for="DealDes" class="text-danger"></span>
                 </div>
             </div>
         </div>
@@ -40,6 +40,7 @@
                         <option selected disabled>請選擇</option>
 
                     </select>
+                    <span style="color: #ff9c00;">*</span>
                     <span asp-validation-for="FailFactor" class="text-danger"></span>
                 </div>
             </div>
@@ -51,6 +52,13 @@
                 @Html.RadioButtonFor(model => model.InOut, "外修")外修
             </div>
         </div>
+        <div class="row" id="assetNoControl">
+            <div class="form-inline">
+                <label class="control-title">[有][無]<br />財產編號</label>
+                @Html.RadioButtonFor(model => model.HasAssetNo, "Y")有
+                @Html.RadioButtonFor(model => model.HasAssetNo, "N")無
+            </div>
+        </div>
         <div class="row">
             <div class="form-inline">
                 <label asp-for="AssetNo" class="control-title"></label>
@@ -58,6 +66,21 @@
                 <span asp-validation-for="AssetNo" class="text-danger"></span>
             </div>
         </div>
+        @if (Model.AssetNo != null)
+        {
+            <div class="row">
+                <div class="form-inline">
+                    <label asp-for="AssetName" class="control-title"></label>
+                    @Html.DisplayFor(model => model.AssetName)
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-inline">
+                    <label asp-for="AssetAccDate" class="control-title"></label>
+                    @Html.DisplayFor(model => model.AssetAccDate)
+                </div>
+            </div>
+        }
         @Html.HiddenFor(model => model.Hour)
         @Html.HiddenFor(model => model.Cost)
         <div class="row">
