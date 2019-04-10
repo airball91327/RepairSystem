@@ -11,7 +11,10 @@
                 <th style="border-right:1px solid black;">
                     料號/
                     @Html.DisplayNameFor(model => model.PartName)
-                    (發票號碼)
+                    (發票號碼/簽單編號)
+                </th>
+                <th style="border-right:1px solid black;">
+                    @Html.DisplayNameFor(model => model.VendorName)
                 </th>
                 <th style="border-right:1px solid black;">
                     規格
@@ -56,6 +59,9 @@
                         )</span>
                     </td>
                     <td style="border-right: 1px solid black;border-top: 1px solid black;">
+                        @Html.DisplayFor(modelIterm => item.VendorName)
+                    </td>
+                    <td style="border-right: 1px solid black;border-top: 1px solid black;">
                         @Html.DisplayFor(modelIterm => item.Standard)
                     </td>
                     <td style="border-right: 1px solid black;border-top: 1px solid black;text-align:center;">
@@ -87,13 +93,16 @@
                     <td style="border-right:1px solid black;border-top: 1px solid black;">
                         &nbsp;
                     </td>
+                    <td style="border-right:1px solid black;border-top: 1px solid black;">
+                        &nbsp;
+                    </td>
                 </tr>
             }           
             <tr>
                 <td style="border-right: 1px solid black;border-top: 1px solid black;">
                     總計
                 </td>
-                <td colspan="4" style="border-top: 1px solid black;text-align:right;">
+                <td colspan="5" style="border-top: 1px solid black;text-align:right;">
                     @Html.Raw(Convert.ToInt32(i))
                 </td>
             </tr>

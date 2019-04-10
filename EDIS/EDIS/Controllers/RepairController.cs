@@ -217,6 +217,7 @@ namespace EDIS.Controllers
                        .ForEach(j => rv.Add(new RepairListVModel
                        {
                            DocType = "請修",
+                           RepType = j.repair.RepType,
                            DocId = j.repair.DocId,
                            ApplyDate = j.repair.ApplyDate,
                            //AssetNo = j.repair.AssetNo,
@@ -303,6 +304,7 @@ namespace EDIS.Controllers
                     .ForEach(j => rv.Add(new RepairListVModel
                     {
                         DocType = "請修",
+                        RepType = j.repair.RepType,
                         DocId = j.repair.DocId,
                         ApplyDate = j.repair.ApplyDate,
                         //AssetNo = j.repair.AssetNo,
@@ -394,6 +396,7 @@ namespace EDIS.Controllers
                     .ForEach(j => rv.Add(new RepairListVModel
                     {
                         DocType = "請修",
+                        RepType = j.repair.RepType,
                         DocId = j.repair.DocId,
                         ApplyDate = j.repair.ApplyDate,
                         //AssetNo = j.repair.AssetNo,

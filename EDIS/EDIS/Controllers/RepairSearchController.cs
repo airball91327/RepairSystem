@@ -197,6 +197,7 @@ namespace EDIS.Controllers
                 .ForEach(j => rv.Add(new RepairSearchListVModel
                 {
                     DocType = "請修",
+                    RepType = j.repair.RepType,
                     DocId = j.repair.DocId,
                     ApplyDate = j.repair.ApplyDate,
                     PlaceLoc = j.repair.LocType,

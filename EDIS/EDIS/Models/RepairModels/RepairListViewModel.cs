@@ -7,6 +7,8 @@ namespace EDIS.Models.RepairModels
     {
         [Display(Name = "類別")]
         public string DocType { get; set; }
+        [Display(Name = "請修類別")]
+        public string RepType { get; set; }
         [Display(Name = "表單編號")]
         public string DocId { get; set; }
         [Display(Name = "財產編號")]

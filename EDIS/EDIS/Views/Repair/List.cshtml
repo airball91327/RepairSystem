@@ -44,7 +44,7 @@ else
             <tr>
                 <th></th>
                 <th>
-                    @Html.DisplayNameFor(model => model.DocType)
+                    @Html.DisplayNameFor(model => model.RepType)
                 </th>
                 <th>
                     @Html.DisplayNameFor(model => model.DocId)
@@ -131,7 +131,7 @@ else
                             }
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => item.DocType)
+                            @Html.DisplayFor(modelItem => item.RepType)
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.DocId)
@@ -188,7 +188,7 @@ else
             <tr>
                 <th></th>
                 <th>
-                    @Html.DisplayNameFor(model => model.DocType)
+                    @Html.DisplayNameFor(model => model.RepType)
                 </th>
                 <th>
                     @Html.DisplayNameFor(model => model.DocId)
@@ -232,7 +232,7 @@ else
                             @Html.ActionLink("列印", "PrintRepairDoc", "Repair", new { Area = "", DocId = item.DocId }, new { target = "_blank" })
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => item.DocType)
+                            @Html.DisplayFor(modelItem => item.RepType)
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.DocId)
