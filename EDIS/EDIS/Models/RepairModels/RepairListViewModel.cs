@@ -46,5 +46,6 @@ namespace EDIS.Models.RepairModels
         [Display(Name = "申請日期")]
         [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd}")]
         public DateTime ApplyDate { get; set; }
+        public RepairModel repdata { get; set; }
     }
 }

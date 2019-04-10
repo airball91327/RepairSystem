@@ -234,7 +234,8 @@ namespace EDIS.Controllers
                            Days = DateTime.Now.Subtract(j.repair.ApplyDate).Days,
                            Flg = j.flow.Status,
                            FlowUid = j.flow.UserId,
-                           FlowCls = j.flow.Cls
+                           FlowCls = j.flow.Cls,
+                           repdata = j.repair
                        }));
                        break;
                 /* 與登入者相關且結案的文件 */
@@ -319,7 +320,8 @@ namespace EDIS.Controllers
                         Days = DateTime.Now.Subtract(j.repair.ApplyDate).Days,
                         Flg = j.flow.Status,
                         FlowUid = j.flow.UserId,
-                        FlowCls = j.flow.Cls
+                        FlowCls = j.flow.Cls,
+                        repdata = j.repair
                     }));
                     break;
                 /* 與登入者相關且流程在該登入者身上的文件 */
@@ -398,9 +400,9 @@ namespace EDIS.Controllers
                         //AssetName = j.repair.AssetName,
                         //Brand = j.asset.Brand,
                         PlaceLoc = j.repair.LocType,
-                        Location1 = _context.Buildings.Where(b => b.BuildingId == Convert.ToInt32(j.repair.Building)).FirstOrDefault().BuildingName
-                                    + " " + _context.Floors.Where(f => f.BuildingId == Convert.ToInt32(j.repair.Building) && f.FloorId == j.repair.Floor).FirstOrDefault().FloorName,
-                        Location2 = " " + _context.Places.Where(p => p.BuildingId == Convert.ToInt32(j.repair.Building) && p.FloorId == j.repair.Floor && p.PlaceId == j.repair.Area).FirstOrDefault().PlaceName,
+                        //Location1 = _context.Buildings.Where(b => b.BuildingId == Convert.ToInt32(j.repair.Building)).FirstOrDefault().BuildingName
+                        //            + " " + _context.Floors.Where(f => f.BuildingId == Convert.ToInt32(j.repair.Building) && f.FloorId == j.repair.Floor).FirstOrDefault().FloorName,
+                        //Location2 = " " + _context.Places.Where(p => p.BuildingId == Convert.ToInt32(j.repair.Building) && p.FloorId == j.repair.Floor && p.PlaceId == j.repair.Area).FirstOrDefault().PlaceName,
                         //Type = j.asset.Type,
                         ApplyDpt = j.repair.DptId,
                         AccDpt = j.repair.AccDpt,
@@ -412,7 +414,8 @@ namespace EDIS.Controllers
                         Days = DateTime.Now.Subtract(j.repair.ApplyDate).Days,
                         Flg = j.flow.Status,
                         FlowUid = j.flow.UserId,
-                        FlowCls = j.flow.Cls
+                        FlowCls = j.flow.Cls,
+                        repdata = j.repair
                     }));
                     break;
             };
@@ -420,10 +423,11 @@ namespace EDIS.Controllers
             /* 設備編號"有"、"無"的對應，"有"讀取table相關data，"無"只顯示申請人輸入的設備名稱 */
             foreach(var item in rv)
             {
-                var repairDoc = _context.Repairs.Find(item.DocId);
-                if (repairDoc.AssetNo != null)
+                //var repairDoc = _context.Repairs.Find(item.DocId);
+                //if (repairDoc.AssetNo != null)
+                if(!string.IsNullOrEmpty(item.repdata.AssetNo))
                 {
-                    var asset = _context.Assets.Where(a => a.AssetNo == repairDoc.AssetNo).FirstOrDefault();
+                    var asset = _context.Assets.Where(a => a.AssetNo == item.repdata.AssetNo).FirstOrDefault();
                     if(asset != null)
                     {
                         item.AssetNo = asset.AssetNo;
@@ -434,7 +438,20 @@ namespace EDIS.Controllers
                 }
                 else
                 {
-                    item.AssetName = repairDoc.AssetName;
+                    item.AssetName = item.repdata.AssetName;
+                }
+                if (!string.IsNullOrEmpty(item.repdata.Building) && !string.IsNullOrEmpty(item.repdata.Floor)
+                    && !string.IsNullOrEmpty(item.repdata.Area))
+                {
+                    item.Location1 = _context.Buildings.Where(b => b.BuildingId == Convert.ToInt32(item.repdata.Building)).FirstOrDefault().BuildingName
+                                    + " "
+                                    + _context.Floors.Where(f => f.BuildingId == Convert.ToInt32(item.repdata.Building) && f.FloorId == item.repdata.Floor).FirstOrDefault().FloorName;
+                    item.Location2 = " " + _context.Places.Where(p => p.BuildingId == Convert.ToInt32(item.repdata.Building) && p.FloorId == item.repdata.Floor && p.PlaceId == item.repdata.Area).FirstOrDefault().PlaceName;
+                }
+                else
+                {
+                    item.Location1 = "(無資料)";
+                    item.Location2 = item.repdata.Area + item.PlaceLoc;
                 }
             }
 
