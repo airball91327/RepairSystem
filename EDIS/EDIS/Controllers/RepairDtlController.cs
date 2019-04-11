@@ -108,6 +108,10 @@ namespace EDIS.Controllers
                     {
                         repairModel.AssetName = tempAsset.Cname;
                     }
+                    else
+                    {
+                        repairModel.AssetName = "";
+                    }
                     _context.Entry(repairModel).State = EntityState.Modified;
 
                     _context.SaveChanges();

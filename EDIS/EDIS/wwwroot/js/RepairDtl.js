@@ -25,9 +25,14 @@ $(document).ready(function () {
     $('input:radio[name="HasAssetNo"]').click(function () {
         if ($(this).val() == 'Y') {
             $("#AssetNo").attr("required", "required");
+            $("#AssetNo").removeAttr("readonly");
+            $("#assetsEditBtn").removeAttr("disabled");
         }
         else {
+            $("#AssetNo").val("");
+            $("#AssetNo").attr("readonly", "readonly");
             $("#AssetNo").removeAttr("required");
+            $("#assetsEditBtn").attr("disabled", "disabled");
         }
     });
 
@@ -36,24 +41,31 @@ $(document).ready(function () {
         if ($(this).val() == 3 || $(this).val() == 9) {
             $("#DealDes").attr("required", "required");
             $("#AssetNo").removeAttr("required");
-            $("#assetNoControl").hide();
+            $("#AssetNo").removeAttr("readonly");
+            $(".assetNoControl").hide();
         }
         else if ($(this).val() == 4 ) {
             $("#DealDes").attr("required", "required");
-            $("#assetNoControl").show();
+            $(".assetNoControl").show();
 
             if ($('input:radio[name="HasAssetNo"]:checked').val() == 'Y') {
                 $("#AssetNo").attr("required", "required");
+                $("#AssetNo").removeAttr("readonly");
+                $("#assetsEditBtn").removeAttr("disabled");
             }
             else {
+                $("#AssetNo").val("");
+                $("#AssetNo").attr("readonly", "readonly");
                 $("#AssetNo").removeAttr("required");
+                $("#assetsEditBtn").attr("disabled", "disabled");
             }            
         }
         else {
             $("#DealDes").removeAttr("required");
             $("#dealDesErrorMsg").html("");
             $("#AssetNo").removeAttr("required");
-            $("#assetNoControl").hide();
+            $("#AssetNo").removeAttr("readonly");
+            $(".assetNoControl").hide();
         }
     });
     $('#DealState').trigger("change");

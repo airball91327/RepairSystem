@@ -74,11 +74,14 @@ namespace EDIS.Components.RepairDtl
             {
                 repairDtl.HasAssetNo = "Y";
                 var asset = _context.Assets.Where(a => a.AssetNo == repairDtl.AssetNo).FirstOrDefault();
-                repairDtl.AssetName = asset.Cname;
-                if(asset.AccDate.HasValue)
+                if(asset != null)
                 {
-                    repairDtl.AssetAccDate = asset.AccDate.Value.ToString("yyyy/MM/dd");
-                }
+                    repairDtl.AssetName = asset.Cname;
+                    if (asset.AccDate.HasValue)
+                    {
+                        repairDtl.AssetAccDate = asset.AccDate.Value.ToString("yyyy/MM/dd");
+                    }
+                }     
             }
 
             RepairFlowModel rf = _context.RepairFlows.Where(f => f.DocId == id)

@@ -36,6 +36,9 @@
     <Content Update="Views\Shared\Components\RepCostPrintList\Default.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
+    <Content Update="Views\Shared\Components\ScrapAssetsEdit\Default.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
     <Content Update="Views\Shared\Components\RepEmpList2\Default.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
