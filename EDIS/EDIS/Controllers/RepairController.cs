@@ -449,7 +449,14 @@ namespace EDIS.Controllers
                     item.Location1 = _context.Buildings.Where(b => b.BuildingId == Convert.ToInt32(item.repdata.Building)).FirstOrDefault().BuildingName
                                     + " "
                                     + _context.Floors.Where(f => f.BuildingId == Convert.ToInt32(item.repdata.Building) && f.FloorId == item.repdata.Floor).FirstOrDefault().FloorName;
-                    item.Location2 = " " + _context.Places.Where(p => p.BuildingId == Convert.ToInt32(item.repdata.Building) && p.FloorId == item.repdata.Floor && p.PlaceId == item.repdata.Area).FirstOrDefault().PlaceName;
+                    PlaceModel pm = _context.Places.Where(p => p.BuildingId == Convert.ToInt32(item.repdata.Building) && p.FloorId == item.repdata.Floor && p.PlaceId == item.repdata.Area).FirstOrDefault();
+                    if (pm != null)
+                        item.Location2 = " " + pm.PlaceName;
+                    else
+                    {
+                        item.Location1 = "(無資料)";
+                        item.Location2 = item.repdata.Area + item.PlaceLoc;
+                    }
                 }
                 else
                 {
