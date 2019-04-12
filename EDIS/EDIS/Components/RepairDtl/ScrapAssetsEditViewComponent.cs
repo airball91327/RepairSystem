@@ -14,21 +14,17 @@ namespace EDIS.Components.RepairDtl
     public class ScrapAssetsEditViewComponent : ViewComponent
     {
         private readonly ApplicationDbContext _context;
-        private readonly IRepository<AppUserModel, int> _userRepo;
-        private readonly CustomUserManager userManager;
 
-        public ScrapAssetsEditViewComponent(ApplicationDbContext context,
-                                            IRepository<AppUserModel, int> userRepo,
-                                            CustomUserManager customUserManager)
+        public ScrapAssetsEditViewComponent(ApplicationDbContext context)
         {
             _context = context;
-            _userRepo = userRepo;
-            userManager = customUserManager;
         }
 
-        public async Task<IViewComponentResult> InvokeAsync(string id)
+        public async Task<IViewComponentResult> InvokeAsync(string docId)
         {
-            return View();
+            ScrapAssetModel scrapAssetModel = new ScrapAssetModel();
+            scrapAssetModel.DocId = docId;
+            return View(scrapAssetModel);
         }
     }
 }

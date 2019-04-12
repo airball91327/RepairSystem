@@ -999,7 +999,18 @@ namespace EDIS.Controllers
                 vm.Hour = dtl.Hour;
                 vm.InOut = dtl.InOut;
                 //vm.EngName = emp == null ? "" : _context.AppUsers.Find(emp.UserId).FullName;
-                vm.EngName = emp == null ? "" : _context.AppUsers.Find(repair.EngId).FullName;
+                var lastFlowEng = _context.RepairFlows.Where(rf => rf.DocId == DocId)
+                                                      .Where(rf => rf.Cls.Contains("工程師"))
+                                                      .OrderByDescending(rf => rf.StepId).FirstOrDefault();
+                AppUserModel EngTemp = _context.AppUsers.Find(lastFlowEng.UserId);       
+                if (EngTemp != null)
+                {
+                    vm.EngName = EngTemp.FullName + "(" + EngTemp.UserName + ")";
+                }
+                else
+                {
+                    vm.EngName = "";
+                }
                 var engMgr = _context.RepairFlows.Where(r => r.DocId == DocId)
                                                  .Where(r => r.Cls.Contains("工務主管")).ToList();
                 if(engMgr.Count() != 0)

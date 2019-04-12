@@ -113,6 +113,13 @@
     </div>
 </form>
 
+<div id="pnlSCRAPLIST2">
+    @if (Model.DealState == 4)
+    {
+        @*@await Component.InvokeAsync("ScrapAssetList", new { id = Model.DocId, type = 2 })*@
+    }
+</div>
+
 <!-- 財編多筆輸入 Modal -->
 <div id="modalASSETS" class="modal fade" role="dialog">
     <div class="modal-dialog modal-lg">
@@ -122,7 +129,7 @@
                 <h4 class="modal-title">多筆財編輸入</h4>
             </div>
             <div class="modal-body">
-                @*@await Component.InvokeAsync(""ScrapAssetsEdit", new { id = Model.DocId }")*@
+                @*@await Component.InvokeAsync("ScrapAssetsEdit", new { docId = Model.DocId })*@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">關閉</button>
