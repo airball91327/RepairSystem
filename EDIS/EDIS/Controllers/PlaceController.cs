@@ -31,7 +31,7 @@ namespace EDIS.Controllers
         {
             List<SelectListItem> list = new List<SelectListItem>();
             _context.Places.Where(f => f.BuildingId == buildingId &&
-                                       f.FloorId == floorId).ToList()
+                                       f.FloorId == floorId && f.Flg == "Y").ToList()
                            .ForEach(f => {
                                list.Add(new SelectListItem { Text = f.PlaceName, Value = f.PlaceId });
                            });

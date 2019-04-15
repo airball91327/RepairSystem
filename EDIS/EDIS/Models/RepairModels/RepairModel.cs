@@ -46,6 +46,11 @@ namespace EDIS.Models.RepairModels
         [Required(ErrorMessage = "必填寫欄位")]
         [Display(Name = "設備名稱")]
         public string AssetName { get; set; }
+        [NotMapped]
+        [Display(Name = "立帳日")]
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd}")]
+        public DateTime? AssetAccDate { get; set; }
         [Required(ErrorMessage = "必填寫欄位")]
         [Display(Name = "請修類別")]
         public string RepType { get; set; }

@@ -31,7 +31,7 @@ namespace EDIS.Controllers
         {
             //int buildingId = _buildRepo.Find(b => b.BuildingName == bname).FirstOrDefault().BuildingId;
             List<SelectListItem> list = new List<SelectListItem>();
-            _floorRepo.Find(f => f.BuildingId == bname).ToList()
+            _floorRepo.Find(f => f.BuildingId == bname && f.Flg == "Y").ToList()
                 .ForEach(f => {
                     list.Add(new SelectListItem { Text=f.FloorName, Value=f.FloorId });
                 });

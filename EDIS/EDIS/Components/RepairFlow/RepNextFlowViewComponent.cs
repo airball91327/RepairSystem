@@ -44,18 +44,22 @@ namespace EDIS.Components.RepairFlow
                 listItem.Add(new SelectListItem { Text = "單位主管", Value = "單位主管" });
                 listItem.Add(new SelectListItem { Text = "單位主任", Value = "單位主任" });
                 listItem.Add(new SelectListItem { Text = "單位副院長", Value = "單位副院長" });
-                listItem.Add(new SelectListItem { Text = "工務工程師", Value = "工務工程師" });
+                listItem.Add(new SelectListItem { Text = "工務/營建工程師", Value = "工務/營建工程師" });
                 listItem.Add(new SelectListItem { Text = "工務主管", Value = "工務主管" });
                 listItem.Add(new SelectListItem { Text = "工務主任", Value = "工務主任" });
+                listItem.Add(new SelectListItem { Text = "營建主管", Value = "營建主管" });
+                listItem.Add(new SelectListItem { Text = "營建主任", Value = "營建主任" });
             }
             else  //維修流程
             {
                 listItem.Add(new SelectListItem { Text = "申請人", Value = "申請人" });
                 listItem.Add(new SelectListItem { Text = "驗收人", Value = "驗收人" });
                 listItem.Add(new SelectListItem { Text = "單位主管", Value = "單位主管" });
-                listItem.Add(new SelectListItem { Text = "工務工程師", Value = "工務工程師" });
+                listItem.Add(new SelectListItem { Text = "工務/營建工程師", Value = "工務/營建工程師" });
                 listItem.Add(new SelectListItem { Text = "工務主管", Value = "工務主管" });
                 listItem.Add(new SelectListItem { Text = "工務主任", Value = "工務主任" });
+                listItem.Add(new SelectListItem { Text = "營建主管", Value = "營建主管" });
+                listItem.Add(new SelectListItem { Text = "營建主任", Value = "營建主任" });
                 listItem.Add(new SelectListItem { Text = "工務經辦", Value = "工務經辦" });
             }
             listItem.Add(new SelectListItem { Text = "列管財產負責人", Value = "列管財產負責人" });
@@ -77,7 +81,7 @@ namespace EDIS.Components.RepairFlow
                 {
                     listItem.Add(new SelectListItem { Text = "結案", Value = "結案" });
                 }
-                if (repairFlow.Cls == "工務工程師")   //工務工程師自己為驗收人時
+                if (repairFlow.Cls == "工務/營建工程師")   //工務/營建工程師自己為驗收人時
                 {
                     if (repair.CheckerId == repairFlow.UserId)  //驗收人為自己
                     {

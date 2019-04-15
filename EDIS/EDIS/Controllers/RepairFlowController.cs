@@ -52,7 +52,7 @@ namespace EDIS.Controllers
             var ur = _userRepo.Find(u => u.UserName == this.User.Identity.Name).FirstOrDefault();
             
             /* 工程師的流程控管 */
-            if(assign.Cls == "工務工程師")
+            if(assign.Cls == "工務/營建工程師")
             {
                 /* 如點選有費用、卻無輸入費用明細 */
                 var isCharged = _context.RepairDtls.Where(d => d.DocId == assign.DocId).FirstOrDefault().IsCharged;
@@ -350,14 +350,18 @@ namespace EDIS.Controllers
                     }
                     break;
                 case "工務主任":
+                    s = roleManager.GetUsersInRole("RepDirector").ToList();
                     list = new List<SelectListItem>();
-                    u = _context.AppUsers.Where(ur => ur.UserName == "98883").FirstOrDefault();
-                    if (!string.IsNullOrEmpty(u.DptId))
+                    foreach (string l in s)
                     {
-                        li = new SelectListItem();
-                        li.Text = u.FullName;
-                        li.Value = u.Id.ToString();
-                        list.Add(li);
+                        u = _context.AppUsers.Where(ur => ur.UserName == l).FirstOrDefault();
+                        if (!string.IsNullOrEmpty(u.DptId))
+                        {
+                            li = new SelectListItem();
+                            li.Text = u.FullName;
+                            li.Value = u.Id.ToString();
+                            list.Add(li);
+                        }
                     }
                     break;
                 case "工務經辦":
@@ -369,6 +373,36 @@ namespace EDIS.Controllers
                         li.Text = u.FullName;
                         li.Value = u.Id.ToString();
                         list.Add(li);
+                    }
+                    break;
+                case "營建主管":
+                    s = roleManager.GetUsersInRole("CaPMgr").ToList();
+                    list = new List<SelectListItem>();
+                    foreach (string l in s)
+                    {
+                        u = _context.AppUsers.Where(ur => ur.UserName == l).FirstOrDefault();
+                        if (!string.IsNullOrEmpty(u.DptId))
+                        {
+                            li = new SelectListItem();
+                            li.Text = u.FullName;
+                            li.Value = u.Id.ToString();
+                            list.Add(li);
+                        }
+                    }
+                    break;
+                case "營建主任":
+                    s = roleManager.GetUsersInRole("CaPDirector").ToList();
+                    list = new List<SelectListItem>();
+                    foreach (string l in s)
+                    {
+                        u = _context.AppUsers.Where(ur => ur.UserName == l).FirstOrDefault();
+                        if (!string.IsNullOrEmpty(u.DptId))
+                        {
+                            li = new SelectListItem();
+                            li.Text = u.FullName;
+                            li.Value = u.Id.ToString();
+                            list.Add(li);
+                        }
                     }
                     break;
                 case "單位主管":
@@ -460,7 +494,7 @@ namespace EDIS.Controllers
                         }
                     }
                     break;
-                case "工務工程師":
+                case "工務/營建工程師":
 
                     /* Get all engineers. */
                     //s = _context.EngsInDepts.Include(e => e.AppUsers).Include(e => e.Departments)

@@ -419,6 +419,9 @@ function SetEngsDropDown() {
                             case '8414':
                                 select.append($('<optgroup label="工務三課-教研工務組"></optgroup>'));
                                 break;
+                            case '8430':
+                                select.append($('<optgroup label="營建部"></optgroup>'));
+                                break;
                         }
                         displayTrigger = item.dptId;
                     }

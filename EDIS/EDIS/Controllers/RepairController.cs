@@ -342,7 +342,7 @@ namespace EDIS.Controllers
                         /* Else return the docs belong the login engineer.  */
                         if (userManager.IsInRole(User, "RepEngineer") && searchAllDoc == true)
                         {
-                            repairFlows = repairFlows.Where(f => f.flow.Status == "?" && f.flow.Cls == "工務工程師").ToList();
+                            repairFlows = repairFlows.Where(f => f.flow.Status == "?" && f.flow.Cls == "工務/營建工程師").ToList();
                         }
                         else
                         {
@@ -495,7 +495,7 @@ namespace EDIS.Controllers
             repair.AccDptName = dpt.Name_C;
             repair.ApplyDate = DateTime.Now;
             var bs = new List<SelectListItem> { };
-            _buildRepo.Find(null).ToList()
+            _buildRepo.Find(b => b.Flg == "Y").ToList()
                 .ForEach(b =>
                 {
                     bs.Add(new SelectListItem { Text = b.BuildingName, Value = b.BuildingId.ToString() });
@@ -611,7 +611,7 @@ namespace EDIS.Controllers
                     flow.UserId = repair.EngId;
                     flow.Status = "?";  // 狀態"未處理"
                     flow.Rtt = DateTime.Now;
-                    flow.Cls = "工務工程師";
+                    flow.Cls = "工務/營建工程師";
                     // If repair type is "增設", send next flow to department manager.
                     if (repair.RepType == "增設")
                     {
@@ -622,8 +622,11 @@ namespace EDIS.Controllers
 
                     // Add 1 dealing doc to engineer.
                     var eng = _context.EngDealingDocs.Find(repair.EngId);
-                    eng.DealingDocs = eng.DealingDocs + 1;
-                    _context.Entry(eng).State = EntityState.Modified;
+                    if(eng != null)
+                    {
+                        eng.DealingDocs = eng.DealingDocs + 1;
+                        _context.Entry(eng).State = EntityState.Modified;
+                    }
                     _context.SaveChanges();
 
                     repair.BuildingName = _context.Buildings.Where(b => b.BuildingId == Convert.ToInt32(repair.Building)).FirstOrDefault().BuildingName;
@@ -1012,7 +1015,7 @@ namespace EDIS.Controllers
                     vm.EngName = "";
                 }
                 var engMgr = _context.RepairFlows.Where(r => r.DocId == DocId)
-                                                 .Where(r => r.Cls.Contains("工務主管")).ToList();
+                                                 .Where(r => r.Cls.Contains("工務主管") || r.Cls.Contains("營建主管")).ToList();
                 if(engMgr.Count() != 0)
                 {
                     engMgr = engMgr.GroupBy(e => e.UserId).Select(group => group.FirstOrDefault()).ToList();
@@ -1023,7 +1026,7 @@ namespace EDIS.Controllers
                 }
 
                 var engDirector = _context.RepairFlows.Where(r => r.DocId == DocId)
-                                                      .Where(r => r.Cls.Contains("工務主任")).LastOrDefault();
+                                                      .Where(r => r.Cls.Contains("工務主任") || r.Cls.Contains("營建主任")).LastOrDefault();
                 vm.EngDirector = engDirector == null ? "" : _context.AppUsers.Find(engDirector.UserId).FullName;
 
                 var delivMgr = _context.RepairFlows.Where(r => r.DocId == DocId)

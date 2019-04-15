@@ -85,7 +85,7 @@ else
                         <td width="100px">
                             @* /* 流程在登入使用者身上 */ *@
                             @* /* If 流程在使用者身上
-                                  else if 使用者為工程師，顯示流程在"工務工程師"的案子
+                                  else if 使用者為工程師，顯示流程在"工務/營建工程師"的案子
                                 */*@
                             @if (item.Flg == "?" && item.FlowUid == UserManager.GetCurrentUserId(User))
                             {
@@ -99,7 +99,7 @@ else
                                     /* If role為工程師，編輯時進入第一頁；else 直接進入"簽核作業" */
                                     if (UserManager.IsInRole(User, "RepEngineer") == true)
                                     {
-                                        @Html.ActionLink("編輯", "Edit", "Repair", new { Area = "", id = item.DocId })
+                                        @Html.ActionLink("編輯", "Edit", "Repair", new { Area = "", id = item.DocId }, new { target = "_blank" })
                                         @Html.Raw(" |")
                                     }
                                     else
@@ -109,9 +109,9 @@ else
                                     }
                                 }
                             }
-                            else if (item.Flg == "?" && item.FlowCls == "工務工程師" && UserManager.IsInRole(User, "RepEngineer"))
+                            else if (item.Flg == "?" && item.FlowCls == "工務/營建工程師" && UserManager.IsInRole(User, "RepEngineer"))
                             {
-                                @Html.ActionLink("編輯", "Edit", "Repair", new { Area = "", id = item.DocId })
+                                @Html.ActionLink("編輯", "Edit", "Repair", new { Area = "", id = item.DocId }, new { target = "_blank" })
                                 @Html.Raw(" |")
                             }
                             @* /* 流程非登入使用者身上 */ *@

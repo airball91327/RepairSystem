@@ -34,6 +34,14 @@ namespace EDIS.Components.Repair
             repair.DptName = _context.Departments.Find(repair.DptId).Name_C;
             repair.AccDptName = _context.Departments.Find(repair.AccDpt).Name_C;
             repair.CheckerName = _context.AppUsers.Find(repair.CheckerId).FullName;
+            if(repair.AssetNo != null && repair.AssetNo != "")
+            {
+                var tempAsset = _context.Assets.Where(a => a.AssetNo == repair.AssetNo).FirstOrDefault();
+                if(tempAsset != null)
+                {
+                    repair.AssetAccDate = tempAsset.AccDate;
+                }
+            }
             if (!string.IsNullOrEmpty(repair.Building))
             {
                 int buildingId = Convert.ToInt32(repair.Building);
