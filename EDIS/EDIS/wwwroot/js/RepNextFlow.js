@@ -169,6 +169,13 @@ $(function () {
                     $(this).prop('disabled', false);
                 }
             });
+            if ($("#Cls").val() === "驗收人") {
+                $("#FlowCls option").each(function () {
+                    if ($(this).val() !== "結案") {
+                        $(this).prop('disabled', true);
+                    }
+                });
+            }
         }
         else {
             $("#FlowCls option").each(function () {
@@ -177,6 +184,9 @@ $(function () {
                         $('#FlowCls option[value=""]').prop('selected', true);
                     }
                     $(this).prop('disabled', true);
+                }
+                else if ($("#Cls").val() === "驗收人") {
+                    $(this).prop('disabled', false);
                 }
             });
         }
