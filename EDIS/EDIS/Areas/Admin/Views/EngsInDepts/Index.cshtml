@@ -1,47 +1,102 @@
-﻿@model IEnumerable<EDIS.Models.RepairModels.EngsInDeptsModel>
+﻿@model IEnumerable<EDIS.Models.RepairModels.EngsInDeptsViewModel>
 
 @{
+    Layout = "~/Views/Shared/_PassedLayout.cshtml";
     ViewData["Title"] = "Index";
 }
+<link href="~/css/bootstrap-combobox.css" rel="stylesheet" />
+<script src="~/js/bootstrap-combobox.js"></script>
 
-<h2>Index</h2>
+<script>
+    $.fn.addItems = function (data) {
+        return this.each(function () {
+            var list = this;
+            $.each(data, function (val, text) {
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.UserName)
-                </th>
-            <th>
-                @Html.DisplayNameFor(model => model.AppUsers)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Departments)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.UserName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AppUsers.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Departments.DptId)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+                var option = new Option(text.text, text.value);
+                list.add(option);
+            });
+        });
+    };
+
+    $(function () {
+        $(".combobox").combobox();
+
+        $("#BuildingId").change(function () {
+            /* Get floors. */
+            $.ajax({
+                url: '../Floor/GetFloors',
+                type: "POST",
+                dataType: "json",
+                data: "bname=" + $(this).val(),
+                async: false,
+                success: function (data) {
+                    var select = $('#FloorId');
+                    //$('option', select).remove();
+                    select.addItems(data);
+                }
+            });
+        });
+    });
+</script>
+
+<style>
+    .panel {
+        background-color: inherit;
+        border-color: white;
+    }
+
+    form label {
+        padding-top: 7px;
+        font-size: 120%;
+    }
+</style>
+
+<h2>查詢與編輯</h2>
+
+<div class="panel panel-primary">
+    <div class="panel-body">
+        <form asp-action="GetEngList" asp-controller="EngsInDepts" asp-area="Admin"
+              data-ajax="true" data-ajax-update="#engListDiv" data-ajax-method="GET"
+              data-ajax-begin="$('#imgLOADING_Engs').show()"
+              data-ajax-complete="$('#imgLOADING_Engs').hide()"
+              data-ajax-failure="$('#imgLOADING_Engs').hide()">
+
+            <div class="form-inline">
+                <div class="form-group col-md-4">
+                    <label class="control-label col-md-4">負責人員:</label>
+                    <div class="col-md-8">
+                        @Html.DropDownList("EngineerId", null, "所有", htmlAttributes: new { @class = "form-control combobox" })
+                    </div>
+                </div>
+
+                <div class="form-group col-md-3">
+                    <label class="control-label col-md-3" style="padding-right:0px">期別:</label>
+                    <div class="col-md-9">
+                        @Html.DropDownList("BuildingId", null, "所有", htmlAttributes: new { @class = "form-control" })
+                    </div>
+                </div>
+
+                <div class="form-group col-md-3">
+                    <label class="control-label col-md-3" style="padding-right:0px">樓層:</label>
+                    <div class="col-md-9">
+                        <select class="form-control" id="FloorId" name="FloorId">
+                            <option value="">所有</option>
+
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group col-md-2">
+                    <div class="col-md-8">
+                        <input type="submit" class="btn btn-primary" id="btnQuery" value="查詢" style="width: 100%" />
+                    </div>
+                    <img id="imgLOADING_Engs" src="~/Images/opc-ajax-loader.gif" style="display: none" />
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<div id="engListDiv"></div>

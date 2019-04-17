@@ -27,6 +27,13 @@ namespace EDIS.Models.RepairModels
         [Required]
         [Display(Name = "負責工程師")]
         public string UserName { get; set; }
+        //[Display(Name = "異動人員")]
+        //public int Rtp { get; set; }
+        //[NotMapped]
+        //[Display(Name = "異動人員帳號")]
+        //public string RtpName { get; set; }
+        //[Display(Name = "異動時間")]
+        //public DateTime? Rtt { get; set; }
 
         public virtual AppUserModel AppUsers { get; set; }
         public virtual DepartmentModel Departments { get; set; }

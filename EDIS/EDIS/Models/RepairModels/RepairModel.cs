@@ -44,7 +44,7 @@ namespace EDIS.Models.RepairModels
         [Display(Name = "財產編號")]
         public string AssetNo { get; set; }
         [Required(ErrorMessage = "必填寫欄位")]
-        [Display(Name = "設備名稱")]
+        [Display(Name = "物品名稱")]
         public string AssetName { get; set; }
         [NotMapped]
         [Display(Name = "立帳日")]

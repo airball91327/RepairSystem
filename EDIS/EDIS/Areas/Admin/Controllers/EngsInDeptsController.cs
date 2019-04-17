@@ -20,21 +20,205 @@ namespace EDIS.Areas.Admin.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IRepository<AppUserModel, int> _userRepo;
         private readonly CustomUserManager userManager;
+        private readonly CustomRoleManager roleManager;
 
         public EngsInDeptsController(ApplicationDbContext context,
                                      IRepository<AppUserModel, int> userRepo,
-                                     CustomUserManager customUserManager)
+                                     CustomUserManager customUserManager,
+                                     CustomRoleManager customRoleManager)
         {
             _context = context;
             _userRepo = userRepo;
             userManager = customUserManager;
+            roleManager = customRoleManager;
         }
 
         // GET: Admin/EngsInDepts
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.EngsInDepts.Include(e => e.AppUsers).Include(e => e.Departments);
-            return View(await applicationDbContext.ToListAsync());
+            /* Get all engineers */
+            var repEngs = roleManager.GetUsersInRole("RepEngineer").ToList();
+            /* Insert engineer list into dropdownlist. */
+            List<SelectListItem> engineerList = new List<SelectListItem>();
+            foreach (string uName in repEngs)
+            {
+                AppUserModel u = _context.AppUsers.Where(ur => ur.UserName == uName).FirstOrDefault();
+                if(u != null)
+                {
+                    engineerList.Add(new SelectListItem()
+                    {
+                        Text = u.FullName,
+                        Value = u.Id.ToString()
+                    });
+                }             
+            }
+            var buildings = _context.Buildings.ToList();
+            /* Insert building list into dropdownlist. */
+            List<SelectListItem> buildingList = new List<SelectListItem>();
+            foreach (var item in buildings)
+            {
+                buildingList.Add(new SelectListItem()
+                {
+                    Text = item.BuildingName,
+                    Value = item.BuildingId.ToString()
+                });
+            }
+
+            ViewData["EngineerId"] = engineerList;
+            ViewData["BuildingId"] = buildingList;
+
+            return View();
+        }
+
+        // GET: Admin/EngsInDepts/GetEngList
+        public async Task<IActionResult> GetEngList(string EngineerId, string BuildingId, string FloorId)
+        {
+            /* Left Outer Join table "Places" and "EngsInDepts". */
+            var query = from p in _context.Places
+                        join eng in _context.EngsInDepts
+                        on
+                            new { p.BuildingId, p.FloorId, p.PlaceId } // Join with multiple fields.
+                        equals
+                            new { eng.BuildingId, eng.FloorId, eng.PlaceId } into subGrp
+                        from s in subGrp.DefaultIfEmpty()
+                        select new
+                        {
+                            EngId = (s == null ? 0 : s.EngId),                  // Outer Join need to deal "null" type
+                            UserName = (s == null ? "N/A" : s.UserName),
+                            FullName = (s == null ? "N/A" : s.AppUsers.FullName),
+                            //Rtp = (s == null ? 0 : s.Rtp),
+                            //Rtt = (s == null ? null : s.Rtt),
+                            p.BuildingId,
+                            p.FloorId,
+                            p.PlaceId,
+                            p.PlaceName
+                        };
+            var engList = query.ToList();
+
+            /* Query "BuildingId". */
+            if (BuildingId != null)
+            {
+                engList = engList.Where(e => e.BuildingId == Convert.ToInt32(BuildingId)).ToList();
+            }
+            /* Query "FloorId". */
+            if (FloorId != null)
+            {
+                engList = engList.Where(e => e.FloorId == FloorId).ToList();
+            }
+            /* Query "EngineerId". */
+            if (EngineerId != null)
+            {
+                engList = engList.Where(e => e.EngId == Convert.ToInt32(EngineerId)).ToList();
+            }
+
+            /* Insert query result into engsInDeptsVModel to display. */
+            List<EngsInDeptsViewModel> engsInDeptsList = new List<EngsInDeptsViewModel>();
+            foreach (var item in engList)
+            {
+                int? engId = item.EngId;
+                //int? rtp = item.Rtp;
+                //string userName = "N/A";
+                if (item.EngId == 0)    //If EngId is not found.
+                {
+                    engId = null;
+                }
+                //if (item.Rtp == 0)       //If Rtp is not found.
+                //{
+                //    rtp = null;
+                //}
+                //if (_context.AppUsers.Find(item.Rtp) != null)    //If Rtp is not null.
+                //{
+                //    userName = _context.AppUsers.Find(item.Rtp).UserName;
+                //}
+                engsInDeptsList.Add(new EngsInDeptsViewModel()
+                {
+                    IsSelected = false,
+                    BuildingId = item.BuildingId,
+                    BuildingName = _context.Buildings.Find(item.BuildingId).BuildingName,
+                    FloorId = item.FloorId,
+                    FloorName = _context.Floors.Find(item.BuildingId, item.FloorId).FloorName,
+                    PlaceId = item.PlaceId,
+                    PlaceName = item.PlaceName,
+                    EngId = engId,
+                    UserName = item.UserName,
+                    EngFullName = item.FullName,
+                    //Rtp = rtp,
+                    //RtpName = userName,
+                    //Rtt = item.Rtt
+                });
+            }
+            /* Order list by BuildingId then FloorId and PlaceId.*/
+            engsInDeptsList = engsInDeptsList.OrderBy(f => f.BuildingId).ThenBy(f => Convert.ToInt32(f.FloorId)).ToList();
+
+            /* Get all engineers */
+            var repEngs = roleManager.GetUsersInRole("RepEngineer").ToList();
+            /* Insert engineer list into dropdownlist. */
+            List<SelectListItem> engineerList = new List<SelectListItem>();
+            foreach (string uName in repEngs)
+            {
+                AppUserModel u = _context.AppUsers.Where(ur => ur.UserName == uName).FirstOrDefault();
+                if (u != null)
+                {
+                    engineerList.Add(new SelectListItem()
+                    {
+                        Text = u.FullName,
+                        Value = u.Id.ToString()
+                    });
+                }
+            }
+            ViewData["AsignEngId"] = engineerList;
+            ViewData["QueryEngId"] = EngineerId;
+            ViewData["QueryBuildingId"] = BuildingId;
+            ViewData["QueryFloorId"] = FloorId;
+
+            return View("EditList", engsInDeptsList);
+        }
+
+        // POST: Admin/EngsInDepts/EditEngList
+        [HttpPost]
+        public async Task<IActionResult> EditEngList(List<EngsInDeptsViewModel> data, string AsignEngId,
+                                                     string QueryEngId, string QueryBuildingId, string QueryFloorId)
+        {
+            // Get Login User's details.
+            var user = _userRepo.Find(u => u.UserName == this.User.Identity.Name).FirstOrDefault();
+            /* Target engineer ID. */
+            int asignEngId = Convert.ToInt32(AsignEngId);
+
+            /* Deal all input data. */
+            foreach (var item in data)
+            {
+                /* Create or edit the selected row data. */
+                if (item.IsSelected == true)
+                {
+                    /* Insert values to engsInDeptsModel to save or create. */
+                    EngsInDeptsModel engsInDeptsModel = new EngsInDeptsModel
+                    {
+                        EngId = asignEngId,
+                        BuildingId = item.BuildingId,
+                        FloorId = item.FloorId,
+                        PlaceId = item.PlaceId,
+                        DptId = _context.AppUsers.Find(asignEngId).DptId,
+                        UserName = _context.AppUsers.Find(asignEngId).UserName
+                        //Rtp = user.Id,
+                        //Rtt = DateTime.UtcNow.AddHours(08)
+                    };
+                    /* If data isn't in the database, create data.*/
+                    if (item.EngId == null)
+                    {
+                        _context.Add(engsInDeptsModel);
+                    }
+                    else
+                    {
+                        /* If data exist, find and delete old data, then create a new one. */
+                        int engId = item.EngId.GetValueOrDefault();
+                        var originData = _context.EngsInDepts.Find(engId, item.BuildingId, item.FloorId, item.PlaceId);
+                        _context.EngsInDepts.Remove(originData);
+                        _context.EngsInDepts.Add(engsInDeptsModel);
+                    }
+                }
+            }
+            await _context.SaveChangesAsync();
+            return RedirectToAction("GetEngList", new { EngineerId = QueryEngId, BuildingId = QueryBuildingId, FloorId = QueryFloorId });
         }
 
         // GET: Admin/EngsInDept

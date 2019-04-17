@@ -60,7 +60,7 @@
                         <a href="@Url.Action("Create", "Repair", new { Area = "" })">請修單</a>
                     </li>
                     @*<li><a href="#">保養單</a></li>
-                        <li><a href="#">巡檢單</a></li>*@
+                <li><a href="#">巡檢單</a></li>*@
                 </ul>
             </li>
             <li class="">
@@ -79,16 +79,16 @@
                 }
             }
             @*<li class="">
-                    <a href="#"><span class="nav-label">工程設施</span><span class="fa arrow"></span></a>
-                    <ul class="nav nav-second-level collapse">
-                        <li>
-                            <a href="#">設備管理</a>
-                        </li>
-                        <li>
-                            <a href="#">設施管理</a>
-                        </li>
-                    </ul>
-                </li>*@
+            <a href="#"><span class="nav-label">工程設施</span><span class="fa arrow"></span></a>
+            <ul class="nav nav-second-level collapse">
+                <li>
+                    <a href="#">設備管理</a>
+                </li>
+                <li>
+                    <a href="#">設施管理</a>
+                </li>
+            </ul>
+        </li>*@
             @{
                 if (UserManager.IsInRole(User, "Admin"))
                 {
@@ -131,27 +131,35 @@
                         </ul>
                     </li>
                     @*<li class="">
-                            <a href="#"><span class="nav-label">庫存維護</span><span class="fa arrow"></span></a>
-                            <ul class="nav nav-second-level collapse">
-                                <li>
-                                    <a href="@Url.Action("Index", "DeptStockClass", new { Area = "Admin" })">庫存類別維護</a>
-                                </li>
-                                <li>
-                                    <a href="@Url.Action("Index", "DeptStockItem", new { Area = "Admin" })">庫存品項維護</a>
-                                </li>
-                                <li>
-                                    <a href="@Url.Action("Index", "DeptStock", new { Area = "Admin" })">庫存一覽</a>
-                                </li>
-                            </ul>
-                        </li>*@
+                        <a href="#"><span class="nav-label">各區負責人維護</span><span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level collapse">
+                            <li>
+                                <a href="@Url.Action("Index", "EngsInDepts", new { Area = "Admin" })">搜尋、編輯</a>
+                            </li>
+                        </ul>
+                    </li>*@
                     @*<li class="">
-                            <a href="#"><span class="nav-label">樓層負責人維護</span><span class="fa arrow"></span></a>
-                            <ul class="nav nav-second-level collapse">
-                                <li>
-                                    <a href="@Url.Action("Index", "FloorEng", new { Area = "Admin" })">搜尋、編輯</a>
-                                </li>
-                            </ul>
-                        </li>*@
+                    <a href="#"><span class="nav-label">庫存維護</span><span class="fa arrow"></span></a>
+                    <ul class="nav nav-second-level collapse">
+                        <li>
+                            <a href="@Url.Action("Index", "DeptStockClass", new { Area = "Admin" })">庫存類別維護</a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("Index", "DeptStockItem", new { Area = "Admin" })">庫存品項維護</a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("Index", "DeptStock", new { Area = "Admin" })">庫存一覽</a>
+                        </li>
+                    </ul>
+                </li>*@
+                    @*<li class="">
+                    <a href="#"><span class="nav-label">樓層負責人維護</span><span class="fa arrow"></span></a>
+                    <ul class="nav nav-second-level collapse">
+                        <li>
+                            <a href="@Url.Action("Index", "FloorEng", new { Area = "Admin" })">搜尋、編輯</a>
+                        </li>
+                    </ul>
+                </li>*@
                 }
             }
         </ul>
