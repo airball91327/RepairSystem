@@ -107,3 +107,10 @@
 
     </dl>
 </div>
+
+@*<div>
+    @if (Model.DealState == 4)
+    {
+        @await Component.InvokeAsync("ScrapAssetList", new { id = Model.DocId, type = 2 })
+    }
+</div>*@

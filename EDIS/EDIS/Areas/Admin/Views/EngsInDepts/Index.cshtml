@@ -8,6 +8,11 @@
 <script src="~/js/bootstrap-combobox.js"></script>
 
 <script>
+    var onFailed = function (data) {
+        alert(data.responseText);
+        $('#imgLOADING_Engs').hide()
+    };
+
     $.fn.addItems = function (data) {
         return this.each(function () {
             var list = this;
@@ -60,7 +65,7 @@
               data-ajax="true" data-ajax-update="#engListDiv" data-ajax-method="GET"
               data-ajax-begin="$('#imgLOADING_Engs').show()"
               data-ajax-complete="$('#imgLOADING_Engs').hide()"
-              data-ajax-failure="$('#imgLOADING_Engs').hide()">
+              data-ajax-failure="onFailed">
 
             <div class="form-inline">
                 <div class="form-group col-md-4">

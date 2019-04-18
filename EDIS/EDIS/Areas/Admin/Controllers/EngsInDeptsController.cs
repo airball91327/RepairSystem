@@ -212,8 +212,11 @@ namespace EDIS.Areas.Admin.Controllers
                         /* If data exist, find and delete old data, then create a new one. */
                         int engId = item.EngId.GetValueOrDefault();
                         var originData = _context.EngsInDepts.Find(engId, item.BuildingId, item.FloorId, item.PlaceId);
-                        _context.EngsInDepts.Remove(originData);
-                        _context.EngsInDepts.Add(engsInDeptsModel);
+                        if (originData.EngId != asignEngId)
+                        {
+                            _context.Remove(originData);
+                            _context.Add(engsInDeptsModel);
+                        }
                     }
                 }
             }
