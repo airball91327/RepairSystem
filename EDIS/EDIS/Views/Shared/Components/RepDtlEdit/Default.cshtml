@@ -64,9 +64,9 @@
                 <label asp-for="AssetNo" class="control-title"></label>
                 <input asp-for="AssetNo" class="form-control" />
                 <span asp-validation-for="AssetNo" class="text-danger"></span>
-                @*<button type="button" class="btn btn-default assetNoControl" id="assetsEditBtn"  data-toggle="modal" data-target="#modalASSETS">
+                <button type="button" class="btn btn-default assetNoControl" id="assetsEditBtn"  data-toggle="modal" data-target="#modalASSETS">
                     多筆財編輸入
-                </button>*@
+                </button>
             </div>
         </div>
         @if (Model.AssetNo != null)
@@ -116,7 +116,7 @@
 <div id="pnlSCRAPLIST2">
     @if (Model.DealState == 4)
     {
-        @*@await Component.InvokeAsync("ScrapAssetList", new { id = Model.DocId, type = 2 })*@
+        @await Component.InvokeAsync("ScrapAssetList", new { id = Model.DocId, type = 2 })
     }
 </div>
 
@@ -129,7 +129,7 @@
                 <h4 class="modal-title">多筆財編輸入</h4>
             </div>
             <div class="modal-body">
-                @*@await Component.InvokeAsync("ScrapAssetsEdit", new { docId = Model.DocId })*@
+                @await Component.InvokeAsync("ScrapAssetsEdit", new { docId = Model.DocId })
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">關閉</button>
