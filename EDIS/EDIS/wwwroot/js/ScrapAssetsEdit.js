@@ -1,10 +1,9 @@
 ﻿function showmsg5(data) {
     if (data.isExist) {
         alert(data.error);
-        console.log(data.error);
-        // Refresh the emp table.
+        // Refresh the scrapList table.
         var id = $("#DocId").val();
-        console.log("id=" + id);
+        //console.log("id=" + id);
         $.ajax({
             url: "../../ScrapAsset/GetScrapList",
             type: "GET",
@@ -52,7 +51,7 @@ $(function () {
 
     $("#modalASSETS").on("hidden.bs.modal", function () {
         var id = $("#DocId").val();
-        console.log("id=" + id);
+        //console.log("id=" + id);
         $.ajax({
             url: "../../ScrapAsset/GetScrapList",
             type: "GET",

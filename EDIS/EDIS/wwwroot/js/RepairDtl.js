@@ -5,6 +5,8 @@
 
 $(document).ready(function () {
 
+    var originAssetNo = $("#AssetNo").val();
+
     /* If repair detail is "外修", show the print button. */
     //var inOut = $('input:radio[name="InOut"]:checked').val();    
     //if (inOut == "外修") {
@@ -92,6 +94,10 @@ $(document).ready(function () {
         printPage.document.write("<BODY onload='window.print();window.close()'>");
         printPage.document.write(printContent);
         printPage.document.close();
+    });
+
+    $("#assetsEditBtn").click(function () {
+        $("#AssetNo").val(originAssetNo);
     });
 });
 //$(function () {
