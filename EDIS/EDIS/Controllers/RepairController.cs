@@ -883,7 +883,13 @@ namespace EDIS.Controllers
             /* 擷取預設負責工程師 */
             if (engineers.Count() == 0)  //該部門無預設工程師
             {
-                var tempEng = _context.AppUsers.Where(a => a.UserName == "181316").FirstOrDefault();
+                var tempEng = _context.AppUsers.Where(a => a.UserName == "181316")
+                                               .Select(a => new
+                                               {
+                                                   EngId = a.Id,
+                                                   UserName = a.UserName,
+                                                   FullName = a.FullName
+                                               }).FirstOrDefault();
                 return Json(tempEng);
             }
             else
