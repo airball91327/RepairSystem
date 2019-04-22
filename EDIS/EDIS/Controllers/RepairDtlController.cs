@@ -85,6 +85,7 @@ namespace EDIS.Controllers
                     if (repairDtl.IsCharged == "N")
                     {
                         _context.RepairCosts.RemoveRange(_context.RepairCosts.Where(c => c.DocId == repairDtl.DocId));
+                        repairDtl.Cost = 0;
                     }
                     else
                     {
