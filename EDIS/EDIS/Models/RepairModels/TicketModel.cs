@@ -9,7 +9,7 @@ namespace EDIS.Models.RepairModels
     public class TicketModel
     {
         [Key]
-        [Display(Name = "發票號碼")]
+        [Display(Name = "發票/簽單號碼")]
         public string TicketNo { get; set; }
         [Display(Name = "發票日期")]
         [DataType(DataType.Date)]

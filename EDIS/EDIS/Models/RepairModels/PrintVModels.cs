@@ -31,6 +31,10 @@ namespace EDIS.Models.RepairModels
         public string AssetNo { get; set; }
         [Display(Name = "物品名稱")]
         public string AssetNam { get; set; }
+        [Display(Name = "立帳日")]
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd}")]
+        public DateTime? AssetAccDate { get; set; }
         [Display(Name = "數量")]
         public int Amt { get; set; }
         [Display(Name = "送修儀器附件")]

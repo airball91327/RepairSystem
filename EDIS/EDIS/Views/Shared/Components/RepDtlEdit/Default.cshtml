@@ -5,8 +5,13 @@
     ViewData["Title"] = "Edit";
 }
 
-<form asp-action="Edit" asp-controller="RepairDtl" data-ajax="true"
-      data-ajax-method="POST" data-ajax-loading="imgLOADING2" data-ajax-success="showmsg2">
+<form asp-action="Edit" asp-controller="RepairDtl" data-ajax="true" data-ajax-method="POST" 
+    data-ajax-begin="$.Toast.showToast({
+      'title':'作業進行中，請稍待...',
+      'icon':'loading',
+      'duration':0
+      })"
+    data-ajax-loading="imgLOADING2" data-ajax-success="showmsg2">
 
     <div class="container">
         @Html.HiddenFor(model => model.DocId)

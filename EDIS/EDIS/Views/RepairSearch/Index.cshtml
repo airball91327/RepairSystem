@@ -20,7 +20,13 @@
 <hr />
 
 <form asp-controller="RepairSearch" asp-action="GetQueryList" asp-area="" data-ajax="true"
-      data-ajax-update="#pnlREPLIST" data-ajax-method="POST" id="repSearchForm">
+    data-ajax-update="#pnlREPLIST" data-ajax-method="POST" id="repSearchForm"
+    data-ajax-begin="$.Toast.showToast({
+      'title':'查詢中，請稍待...',
+      'icon':'loading',
+      'duration':0
+      })"
+    data-ajax-complete="$.Toast.hideToast()">
 
     <h4>查詢條件 - 全院案件</h4>
 

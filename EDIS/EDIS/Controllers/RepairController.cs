@@ -236,6 +236,7 @@ namespace EDIS.Controllers
                            Flg = j.flow.Status,
                            FlowUid = j.flow.UserId,
                            FlowCls = j.flow.Cls,
+                           FlowDptId = _context.AppUsers.Find(j.flow.UserId).DptId,
                            repdata = j.repair
                        }));
                        break;
@@ -323,6 +324,7 @@ namespace EDIS.Controllers
                         Flg = j.flow.Status,
                         FlowUid = j.flow.UserId,
                         FlowCls = j.flow.Cls,
+                        FlowDptId = _context.AppUsers.Find(j.flow.UserId).DptId,
                         repdata = j.repair
                     }));
                     break;
@@ -342,13 +344,13 @@ namespace EDIS.Controllers
                         /* Else return the docs belong the login engineer.  */
                         if (userManager.IsInRole(User, "RepEngineer") && searchAllDoc == true)
                         {
-                            repairFlows = repairFlows.Where(f => f.flow.Status == "?" && f.flow.Cls == "工務/營建工程師").ToList();
+                            repairFlows = repairFlows.Where(f => f.flow.Status == "?" && f.flow.Cls.Contains("工程師")).ToList();
                         }
                         else
                         {
-
                             repairFlows = repairFlows.Where(f => (f.flow.Status == "?" && f.flow.UserId == ur.Id) ||
-                                                             (f.flow.Status == "?" && f.flow.Cls == "驗收人" && f.repair.DptId == ur.DptId)).ToList();
+                                                                 (f.flow.Status == "?" && f.flow.Cls == "驗收人" && 
+                                                                  _context.AppUsers.Find(f.flow.UserId).DptId == ur.DptId)).ToList();
                         }
                     }
                     else
@@ -418,6 +420,7 @@ namespace EDIS.Controllers
                         Flg = j.flow.Status,
                         FlowUid = j.flow.UserId,
                         FlowCls = j.flow.Cls,
+                        FlowDptId = _context.AppUsers.Find(j.flow.UserId).DptId,
                         repdata = j.repair
                     }));
                     break;
@@ -652,6 +655,9 @@ namespace EDIS.Controllers
                     //body += "<p>放置地點：" + repair.PlaceLoc + "</p>";
                     body += "<p><a href='http://dms.cch.org.tw/EDIS/Account/Login'" + "?docId=" + repair.DocId + "&dealType=Edit" + ">處理案件</a></p>";
                     body += "<br/>";
+                    body += "<p>使用ＩＥ瀏覽器注意事項：</p>";
+                    body += "<p>「工具」→「相容性檢視設定」→移除cch.org.tw</p>";
+                    body += "<br/>";
                     body += "<h3>此封信件為系統通知郵件，請勿回覆。</h3>";
                     body += "<br/>";
                     body += "<h3 style='color:red'>如有任何疑問請聯絡工務部，分機3033或7033。<h3>";
@@ -684,6 +690,17 @@ namespace EDIS.Controllers
             {
                 return StatusCode(404);
             }
+            /* If user selected edited doc, send error message, 
+             * the _blank function is only open for RepEngineers.(Not finished.)*/
+            //if( userManager.IsInRole(User, "RepEngineer") == true )
+            //{
+            //    RepairFlowModel repairFlow = _context.RepairFlows.Where(rf => rf.DocId == id).LastOrDefault();
+            //    if (repairFlow != null)
+            //    {
+            //        if ( !(repairFlow.Cls.Contains("工程師") && repairFlow.Status == "?"))
+            //    }
+            //}
+
             return View(repair);
         }
 
@@ -981,6 +998,17 @@ namespace EDIS.Controllers
                 vm.ApplyDate = repair.ApplyDate;
                 vm.AssetNo = repair.AssetNo;
                 vm.AssetNam = repair.AssetName;
+                if(repair.AssetNo != null && repair.AssetNo != "")
+                {
+                    try
+                    {
+                        vm.AssetAccDate = _context.Assets.Where(a => a.AssetNo == repair.AssetNo).First().AccDate;
+                    }
+                    catch
+                    {
+                        vm.AssetAccDate = null;
+                    }
+                }
                 vm.Company = _context.Departments.Find(repair.DptId).Name_C;
                 //vm.Amt = repair.Amt;
                 vm.Contact = repair.Ext;
@@ -1011,7 +1039,11 @@ namespace EDIS.Controllers
                 var lastFlowEng = _context.RepairFlows.Where(rf => rf.DocId == DocId)
                                                       .Where(rf => rf.Cls.Contains("工程師"))
                                                       .OrderByDescending(rf => rf.StepId).FirstOrDefault();
-                AppUserModel EngTemp = _context.AppUsers.Find(lastFlowEng.UserId);       
+                AppUserModel EngTemp = null;
+                if(lastFlowEng != null)
+                {
+                    EngTemp = _context.AppUsers.Find(lastFlowEng.UserId);
+                }                  
                 if (EngTemp != null)
                 {
                     vm.EngName = EngTemp.FullName + "(" + EngTemp.UserName + ")";

@@ -14,7 +14,7 @@
         {
             /* 該單位需要結案的文件 */
             @if ((item.Flg == "?" && item.FlowUid != UserManager.GetCurrentUserId(User) &&
-                item.ApplyDpt == UserManager.GetCurrentUserDptId(User) && item.FlowCls == "驗收人"))
+                item.FlowDptId == UserManager.GetCurrentUserDptId(User) && item.FlowCls == "驗收人"))
             {
                 countDptDoc++;
             }
@@ -79,7 +79,7 @@ else
             {
                 /* 非該單位需要結案的文件 */
                 @if (!((item.Flg == "?" && item.FlowUid != UserManager.GetCurrentUserId(User) &&
-                    item.ApplyDpt == UserManager.GetCurrentUserDptId(User) && item.FlowCls == "驗收人")))
+                    item.FlowDptId == UserManager.GetCurrentUserDptId(User) && item.FlowCls == "驗收人")))
                 {
                     <tr>
                         <td width="100px">
@@ -223,7 +223,7 @@ else
             {
                 /* 該單位需要結案的文件 */
                 @if ((item.Flg == "?" && item.FlowUid != UserManager.GetCurrentUserId(User) &&
-                   item.ApplyDpt == UserManager.GetCurrentUserDptId(User) && item.FlowCls == "驗收人"))
+                   item.FlowDptId == UserManager.GetCurrentUserDptId(User) && item.FlowCls == "驗收人"))
                 {
                     <tr>
                         <td width="100px">

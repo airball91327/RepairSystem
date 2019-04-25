@@ -9,7 +9,7 @@ namespace EDIS.Models.RepairModels
     public class TicketDtlModel
     {
         [Key, Column(Order = 1)]
-        [Display(Name = "發票號碼")]
+        [Display(Name = "發票/簽單號碼")]
         public string TicketDtlNo { get; set; }
         [Key, Column(Order = 2)]
         [Display(Name = "序號")]

@@ -3,7 +3,14 @@
 <script src="~/js/RepairCost.js"></script>
 
 <form asp-controller="RepairCost" asp-action="Edit" id="repCostForm" data-ajax="true"
-      data-ajax-method="POST" data-ajax-update="#pnlREPCOSTLIST" data-ajax-success="showMsgAndPrint" data-ajax-failure="onFailed">
+    data-ajax-method="POST" data-ajax-update="#pnlREPCOSTLIST" 
+    data-ajax-begin="$.Toast.showToast({
+      'title':'作業進行中，請稍待...',
+      'icon':'loading',
+      'duration':0
+      })"
+    data-ajax-complete="$.Toast.hideToast()"
+    data-ajax-success="showMsgAndPrint" data-ajax-failure="onFailed">
 
     @Html.AntiForgeryToken()
     @Html.HiddenFor(model => model.DocId, new { id = "costDocId" })

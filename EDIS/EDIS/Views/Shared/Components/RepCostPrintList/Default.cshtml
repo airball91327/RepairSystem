@@ -103,7 +103,14 @@
                     總計
                 </td>
                 <td colspan="5" style="border-top: 1px solid black;text-align:right;">
-                    @Html.Raw(Convert.ToInt32(i))
+                    @if (Convert.ToInt32(i) == 0)
+                    {
+                        @:&nbsp;
+                    }
+                    else
+                    {
+                        @Html.Raw(Convert.ToInt32(i))
+                    }
                 </td>
             </tr>
         </table>

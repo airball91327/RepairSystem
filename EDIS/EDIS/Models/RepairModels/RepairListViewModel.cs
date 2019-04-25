@@ -45,6 +45,7 @@ namespace EDIS.Models.RepairModels
         public string Flg { get; set; }
         public int FlowUid { get; set; }
         public string FlowCls { get; set; }
+        public string FlowDptId { get; set; }
         [Display(Name = "申請日期")]
         [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd}")]
         public DateTime ApplyDate { get; set; }

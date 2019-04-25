@@ -1,14 +1,16 @@
-﻿function showMsgAndPrint() {
+﻿function showMsgAndPrint(data) {
     alert("儲存成功!");
-    var stockType = $('input:radio[name="StockType"]:checked').val();
-    /* If stock type is 庫存, print before submit. */
-    if (stockType == 0) {
-        window.printStockDtl();
-    }
+    
+    //var stockType = $('input:radio[name="StockType"]:checked').val();
+    ///* If stock type is 庫存, print before submit. */
+    //if (stockType == 0) {
+    //    window.printStockDtl();
+    //}
 }
 
 var onFailed = function (data) {
     alert(data.responseText);
+    $.Toast.hideToast();
 };
 
 /* When stockType is "has stock", after save the details, print the details. */

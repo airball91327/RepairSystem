@@ -2,7 +2,14 @@
 <script src="~/js/RepairEmp.js"></script>
 
 <form asp-controller="RepairEmp" asp-action="Edit" data-ajax="true"
-      data-ajax-method="POST" data-ajax-update="#pnlREPEMPLIST" data-ajax-success="showmsg4">
+    data-ajax-method="POST" data-ajax-update="#pnlREPEMPLIST" 
+    data-ajax-begin="$.Toast.showToast({
+      'title':'作業進行中，請稍待...',
+      'icon':'loading',
+      'duration':0
+      })"
+    data-ajax-complete="$.Toast.hideToast()"
+    data-ajax-success="showmsg4">
 
     @Html.AntiForgeryToken()
     <div class="container">

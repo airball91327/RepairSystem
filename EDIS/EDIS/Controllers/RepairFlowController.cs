@@ -207,6 +207,9 @@ namespace EDIS.Controllers
                     body += "<p>處理描述：" + rd.DealDes + "</p>";
                     body += "<p><a href='http://dms.cch.org.tw/EDIS/Account/Login'" + "?DocId=" + repair.DocId + "&dealType=Views" + ">檢視案件</a></p>";
                     body += "<br/>";
+                    body += "<p>使用ＩＥ瀏覽器注意事項：</p>";
+                    body += "<p>「工具」→「相容性檢視設定」→移除cch.org.tw</p>";
+                    body += "<br/>";
                     body += "<h3>此封信件為系統通知郵件，請勿回覆。</h3>";
                     body += "<br/>";
                     body += "<h3 style='color:red'>如有任何疑問請聯絡工務部，分機3033或7033。<h3>";
@@ -267,6 +270,9 @@ namespace EDIS.Controllers
                     body += "<p>請修地點：" + repair.PlaceLoc + " " + repair.BuildingName + " " + repair.FloorName + " " + repair.AreaName + "</p>";
                     //body += "<p>放置地點：" + repair.PlaceLoc + "</p>";
                     body += "<p><a href='http://dms.cch.org.tw/EDIS/Account/Login'" + "?docId=" + repair.DocId + "&dealType=Edit" + ">處理案件</a></p>";
+                    body += "<br/>";
+                    body += "<p>使用ＩＥ瀏覽器注意事項：</p>";
+                    body += "<p>「工具」→「相容性檢視設定」→移除cch.org.tw</p>";
                     body += "<br/>";
                     body += "<h3>此封信件為系統通知郵件，請勿回覆。</h3>";
                     body += "<br/>";
@@ -462,8 +468,9 @@ namespace EDIS.Controllers
                     }
                     if (r != null)
                     {
-                        /* 與申請人同單位的成員(包括申請人) */
-                        List<AppUserModel> ul = _context.AppUsers.Where(f => f.DptId == r.DptId)
+                        /* 與驗收人同單位的成員(包括驗收人) */
+                        var checkerDptId = _context.AppUsers.Find(r.CheckerId).DptId;
+                        List<AppUserModel> ul = _context.AppUsers.Where(f => f.DptId == checkerDptId)
                                                                  .Where(f => f.Status == "Y").ToList();
                         if (asset != null)
                         {

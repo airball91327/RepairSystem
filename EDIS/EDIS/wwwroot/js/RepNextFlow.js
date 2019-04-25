@@ -5,7 +5,8 @@
     }
     else {
         alert("送出成功!");
-        location.replace("../../Home");
+        //location.replace("../../Home");
+        window.close();
     }
 }
 
@@ -16,6 +17,7 @@ function presend() {
 
 var onFailed = function (data) {
     alert(data.responseText);
+    $.Toast.hideToast();
     $('#imgLOADING_Flow').hide();
 };
 
@@ -167,12 +169,18 @@ $(function () {
             $("#FlowCls option").each(function () {
                 if ($(this).val() === "結案") {
                     $(this).prop('disabled', false);
+                    $(this).show();
                 }
             });
             if ($("#Cls").val() === "驗收人") {
                 $("#FlowCls option").each(function () {
+                    if ($(this).is(":selected")) {
+                        $('#FlowCls option[value=""]').prop('selected', true);
+                        $('#FlowUid').val("");
+                    }
                     if ($(this).val() !== "結案") {
                         $(this).prop('disabled', true);
+                        $(this).hide();
                     }
                 });
             }
@@ -184,9 +192,11 @@ $(function () {
                         $('#FlowCls option[value=""]').prop('selected', true);
                     }
                     $(this).prop('disabled', true);
+                    $(this).hide();
                 }
                 else if ($("#Cls").val() === "驗收人") {
                     $(this).prop('disabled', false);
+                    $(this).show();
                 }
             });
         }

@@ -149,6 +149,14 @@
                             <td class="style5"
                                 style="border-right-style: solid; border-bottom-style: solid; border-right-width: 1px; border-bottom-width: 1px; border-right-color: #000000; border-bottom-color: #000000"
                                 width="92">
+                                立帳日
+                            </td>
+                            <td style="border-right-style: solid; border-bottom-style: solid; border-right-width: 1px; border-bottom-width: 1px; border-right-color: #000000; border-bottom-color: #000000">
+                                @Html.DisplayFor(model => model.AssetAccDate)
+                            </td>
+                            <td class="style5"
+                                style="border-right-style: solid; border-bottom-style: solid; border-right-width: 1px; border-bottom-width: 1px; border-right-color: #000000; border-bottom-color: #000000"
+                                width="70">
                                 請修地點
                             </td>
                             <td style="border-right-style: solid; border-bottom-style: solid; border-right-width: 1px; border-bottom-width: 1px; border-right-color: #000000; border-bottom-color: #000000">
@@ -157,20 +165,10 @@
                             <td class="style5"
                                 style="border-right-style: solid; border-bottom-style: solid; border-right-width: 1px; border-bottom-width: 1px; border-right-color: #000000; border-bottom-color: #000000"
                                 width="70">
-                                @*送修附件*@
                                 維修別
                             </td>
-                            <td style="border-right-style: solid; border-bottom-style: solid; border-right-width: 1px; border-bottom-width: 1px; border-right-color: #000000; border-bottom-color: #000000">
-                                @*@Html.DisplayFor(model => model.PlantDoc)*@
-                                @Html.DisplayFor(model => model.RepType)
-                            </td>
-                            <td class="style5"
-                                style="border-right-style: solid; border-bottom-style: solid; border-right-width: 1px; border-bottom-width: 1px; border-right-color: #000000; border-bottom-color: #000000"
-                                width="70">
-                                維修方式
-                            </td>
                             <td style="border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000">
-                                @Html.DisplayFor(model => model.InOut)
+                                @Html.DisplayFor(model => model.RepType)
                             </td>
                         </tr>
                         <tr>
