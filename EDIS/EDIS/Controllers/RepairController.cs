@@ -653,7 +653,7 @@ namespace EDIS.Controllers
                     body += "<p>故障描述：" + repair.TroubleDes + "</p>";
                     body += "<p>請修地點：" + repair.PlaceLoc + " " + repair.BuildingName + " " + repair.FloorName + " " + repair.AreaName + "</p>";
                     //body += "<p>放置地點：" + repair.PlaceLoc + "</p>";
-                    body += "<p><a href='http://dms.cch.org.tw/EDIS/Account/Login'" + "?docId=" + repair.DocId + "&dealType=Edit" + ">處理案件</a></p>";
+                    body += "<p><a href='http://dms.cch.org.tw/EDIS/Account/Login" + "?docId=" + repair.DocId + "&dealType=Edit'" + ">處理案件</a></p>";
                     body += "<br/>";
                     body += "<p>使用ＩＥ瀏覽器注意事項：</p>";
                     body += "<p>「工具」→「相容性檢視設定」→移除cch.org.tw</p>";

@@ -177,45 +177,52 @@ namespace EDIS.Controllers
 
                     //Send Mail
                     //To all users in this repair's flow.
-                    Tmail mail = new Tmail();
-                    string body = "";
-                    string sto = "";
-                    AppUserModel u;
-                    RepairModel repair = _context.Repairs.Find(assign.DocId);
-                    repair.BuildingName = _context.Buildings.Where(b => b.BuildingId == Convert.ToInt32(repair.Building)).FirstOrDefault().BuildingName;
-                    repair.FloorName = _context.Floors.Where(f => f.BuildingId == Convert.ToInt32(repair.Building) && f.FloorId == repair.Floor).FirstOrDefault().FloorName;
-                    repair.AreaName = _context.Places.Where(p => p.BuildingId == Convert.ToInt32(repair.Building) && p.FloorId == repair.Floor && p.PlaceId == repair.Area).FirstOrDefault().PlaceName;
-                    mail.from = new System.Net.Mail.MailAddress(ur.Email); //u.Email
-                    _context.RepairFlows.Where(f => f.DocId == assign.DocId)
-                            .ToList()
-                            .ForEach(f =>
-                            {
-                                u = _context.AppUsers.Find(f.UserId);
-                                sto += u.Email + ",";
-                            });
-                    mail.sto = sto.TrimEnd(new char[] { ',' });
+                    try
+                    {
+                        Tmail mail = new Tmail();
+                        string body = "";
+                        string sto = "";
+                        AppUserModel u;
+                        RepairModel repair = _context.Repairs.Find(assign.DocId);
+                        repair.BuildingName = _context.Buildings.Where(b => b.BuildingId == Convert.ToInt32(repair.Building)).FirstOrDefault().BuildingName;
+                        repair.FloorName = _context.Floors.Where(f => f.BuildingId == Convert.ToInt32(repair.Building) && f.FloorId == repair.Floor).FirstOrDefault().FloorName;
+                        repair.AreaName = _context.Places.Where(p => p.BuildingId == Convert.ToInt32(repair.Building) && p.FloorId == repair.Floor && p.PlaceId == repair.Area).FirstOrDefault().PlaceName;
+                        mail.from = new System.Net.Mail.MailAddress(ur.Email); //u.Email
+                        _context.RepairFlows.Where(f => f.DocId == assign.DocId)
+                                .ToList()
+                                .ForEach(f =>
+                                {
+                                    u = _context.AppUsers.Find(f.UserId);
+                                    sto += u.Email + ",";
+                                });
+                        mail.sto = sto.TrimEnd(new char[] { ',' });
 
-                    mail.message.Subject = "工務智能請修系統[請修案-結案通知]：設備名稱： " + repair.AssetName;
-                    body += "<p>表單編號：" + repair.DocId + "</p>";
-                    body += "<p>申請日期：" + repair.ApplyDate.ToString("yyyy/MM/dd") + "</p>";
-                    body += "<p>申請人：" + repair.UserName + "</p>";
-                    body += "<p>財產編號：" + repair.AssetNo + "</p>";
-                    body += "<p>設備名稱：" + repair.AssetName + "</p>";
-                    body += "<p>請修地點：" + repair.PlaceLoc + " " + repair.BuildingName + " " + repair.FloorName + " " + repair.AreaName + "</p>";
-                    //body += "<p>放置地點：" + repair.PlaceLoc + "</p>";
-                    body += "<p>故障描述：" + repair.TroubleDes + "</p>";
-                    body += "<p>處理描述：" + rd.DealDes + "</p>";
-                    body += "<p><a href='http://dms.cch.org.tw/EDIS/Account/Login'" + "?DocId=" + repair.DocId + "&dealType=Views" + ">檢視案件</a></p>";
-                    body += "<br/>";
-                    body += "<p>使用ＩＥ瀏覽器注意事項：</p>";
-                    body += "<p>「工具」→「相容性檢視設定」→移除cch.org.tw</p>";
-                    body += "<br/>";
-                    body += "<h3>此封信件為系統通知郵件，請勿回覆。</h3>";
-                    body += "<br/>";
-                    body += "<h3 style='color:red'>如有任何疑問請聯絡工務部，分機3033或7033。<h3>";
-                    mail.message.Body = body;
-                    mail.message.IsBodyHtml = true;
-                    mail.SendMail();
+                        mail.message.Subject = "工務智能請修系統[請修案-結案通知]：設備名稱： " + repair.AssetName;
+                        body += "<p>表單編號：" + repair.DocId + "</p>";
+                        body += "<p>申請日期：" + repair.ApplyDate.ToString("yyyy/MM/dd") + "</p>";
+                        body += "<p>申請人：" + repair.UserName + "</p>";
+                        body += "<p>財產編號：" + repair.AssetNo + "</p>";
+                        body += "<p>設備名稱：" + repair.AssetName + "</p>";
+                        body += "<p>請修地點：" + repair.PlaceLoc + " " + repair.BuildingName + " " + repair.FloorName + " " + repair.AreaName + "</p>";
+                        //body += "<p>放置地點：" + repair.PlaceLoc + "</p>";
+                        body += "<p>故障描述：" + repair.TroubleDes + "</p>";
+                        body += "<p>處理描述：" + rd.DealDes + "</p>";
+                        body += "<p><a href='http://dms.cch.org.tw/EDIS/Account/Login" + "?DocId=" + repair.DocId + "&dealType=Views'" + ">檢視案件</a></p>";
+                        body += "<br/>";
+                        body += "<p>使用ＩＥ瀏覽器注意事項：</p>";
+                        body += "<p>「工具」→「相容性檢視設定」→移除cch.org.tw</p>";
+                        body += "<br/>";
+                        body += "<h3>此封信件為系統通知郵件，請勿回覆。</h3>";
+                        body += "<br/>";
+                        body += "<h3 style='color:red'>如有任何疑問請聯絡工務部，分機3033或7033。<h3>";
+                        mail.message.Body = body;
+                        mail.message.IsBodyHtml = true;
+                        mail.SendMail();
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new Exception(ex.Message);
+                    }
                 }
                 else if (assign.FlowCls == "廢除")
                 {
@@ -249,37 +256,44 @@ namespace EDIS.Controllers
 
                     //Send Mail
                     //To user and the next flow user.
-                    Tmail mail = new Tmail();
-                    string body = "";
-                    AppUserModel u;
-                    RepairModel repair = _context.Repairs.Find(assign.DocId);
-                    repair.BuildingName = _context.Buildings.Where(b => b.BuildingId == Convert.ToInt32(repair.Building)).FirstOrDefault().BuildingName;
-                    repair.FloorName = _context.Floors.Where(f => f.BuildingId == Convert.ToInt32(repair.Building) && f.FloorId == repair.Floor).FirstOrDefault().FloorName;
-                    repair.AreaName = _context.Places.Where(p => p.BuildingId == Convert.ToInt32(repair.Building) && p.FloorId == repair.Floor && p.PlaceId == repair.Area).FirstOrDefault().PlaceName;
-                    mail.from = new System.Net.Mail.MailAddress(ur.Email); //ur.Email
-                    u = _context.AppUsers.Find(flow.UserId);
-                    mail.to = new System.Net.Mail.MailAddress(u.Email); //u.Email
-                                                                        //mail.cc = new System.Net.Mail.MailAddress("99242@cch.org.tw");
-                    mail.message.Subject = "工務智能請修系統[請修案]：設備名稱： " + repair.AssetName;
-                    body += "<p>表單編號：" + repair.DocId + "</p>";
-                    body += "<p>申請日期：" + repair.ApplyDate.ToString("yyyy/MM/dd") + "</p>";
-                    body += "<p>申請人：" + repair.UserName + "</p>";
-                    body += "<p>財產編號：" + repair.AssetNo + "</p>";
-                    body += "<p>設備名稱：" + repair.AssetName + "</p>";
-                    body += "<p>故障描述：" + repair.TroubleDes + "</p>";
-                    body += "<p>請修地點：" + repair.PlaceLoc + " " + repair.BuildingName + " " + repair.FloorName + " " + repair.AreaName + "</p>";
-                    //body += "<p>放置地點：" + repair.PlaceLoc + "</p>";
-                    body += "<p><a href='http://dms.cch.org.tw/EDIS/Account/Login'" + "?docId=" + repair.DocId + "&dealType=Edit" + ">處理案件</a></p>";
-                    body += "<br/>";
-                    body += "<p>使用ＩＥ瀏覽器注意事項：</p>";
-                    body += "<p>「工具」→「相容性檢視設定」→移除cch.org.tw</p>";
-                    body += "<br/>";
-                    body += "<h3>此封信件為系統通知郵件，請勿回覆。</h3>";
-                    body += "<br/>";
-                    body += "<h3 style='color:red'>如有任何疑問請聯絡工務部，分機3033或7033。<h3>";
-                    mail.message.Body = body;
-                    mail.message.IsBodyHtml = true;
-                    mail.SendMail();
+                    try
+                    {
+                        Tmail mail = new Tmail();
+                        string body = "";
+                        AppUserModel u;
+                        RepairModel repair = _context.Repairs.Find(assign.DocId);
+                        repair.BuildingName = _context.Buildings.Where(b => b.BuildingId == Convert.ToInt32(repair.Building)).FirstOrDefault().BuildingName;
+                        repair.FloorName = _context.Floors.Where(f => f.BuildingId == Convert.ToInt32(repair.Building) && f.FloorId == repair.Floor).FirstOrDefault().FloorName;
+                        repair.AreaName = _context.Places.Where(p => p.BuildingId == Convert.ToInt32(repair.Building) && p.FloorId == repair.Floor && p.PlaceId == repair.Area).FirstOrDefault().PlaceName;
+                        mail.from = new System.Net.Mail.MailAddress(ur.Email); //ur.Email
+                        u = _context.AppUsers.Find(flow.UserId);
+                        mail.to = new System.Net.Mail.MailAddress(u.Email); //u.Email
+                                                                            //mail.cc = new System.Net.Mail.MailAddress("99242@cch.org.tw");
+                        mail.message.Subject = "工務智能請修系統[請修案]：設備名稱： " + repair.AssetName;
+                        body += "<p>表單編號：" + repair.DocId + "</p>";
+                        body += "<p>申請日期：" + repair.ApplyDate.ToString("yyyy/MM/dd") + "</p>";
+                        body += "<p>申請人：" + repair.UserName + "</p>";
+                        body += "<p>財產編號：" + repair.AssetNo + "</p>";
+                        body += "<p>設備名稱：" + repair.AssetName + "</p>";
+                        body += "<p>故障描述：" + repair.TroubleDes + "</p>";
+                        body += "<p>請修地點：" + repair.PlaceLoc + " " + repair.BuildingName + " " + repair.FloorName + " " + repair.AreaName + "</p>";
+                        //body += "<p>放置地點：" + repair.PlaceLoc + "</p>";
+                        body += "<p><a href='http://dms.cch.org.tw/EDIS/Account/Login" + "?docId=" + repair.DocId + "&dealType=Edit'" + ">處理案件</a></p>";
+                        body += "<br/>";
+                        body += "<p>使用ＩＥ瀏覽器注意事項：</p>";
+                        body += "<p>「工具」→「相容性檢視設定」→移除cch.org.tw</p>";
+                        body += "<br/>";
+                        body += "<h3>此封信件為系統通知郵件，請勿回覆。</h3>";
+                        body += "<br/>";
+                        body += "<h3 style='color:red'>如有任何疑問請聯絡工務部，分機3033或7033。<h3>";
+                        mail.message.Body = body;
+                        mail.message.IsBodyHtml = true;
+                        mail.SendMail();
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new Exception(ex.Message);
+                    }
                 }
 
                 return new JsonResult(assign)
