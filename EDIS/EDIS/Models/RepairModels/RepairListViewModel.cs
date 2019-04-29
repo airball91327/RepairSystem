@@ -27,6 +27,8 @@ namespace EDIS.Models.RepairModels
         public string Type { get; set; }
         [Display(Name = "申請部門代號")]
         public string ApplyDpt { get; set; }
+        [Display(Name = "申請部門")]
+        public string ApplyDptName { get; set; }
         [Display(Name = "成本中心代號")]
         public string AccDpt { get; set; }
         [Display(Name = "成本中心名稱")]

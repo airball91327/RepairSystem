@@ -404,29 +404,27 @@ function SetEngsDropDown() {
                 if (i === defaultOption) {
                     select.append($('<option selected="selected"></option>').text("無").val(0));
                 }
-                else {
-                    if (item.dptId != displayTrigger) {
-                        switch (item.dptId) {
-                            case '8411':
-                                select.append($('<optgroup label="工務一課"></optgroup>'));
-                                break;
-                            case '8412':
-                                select.append($('<optgroup label="工務二課"></optgroup>'));
-                                break;
-                            case '8413':
-                                select.append($('<optgroup label="工務三課-中華院區工務組"></optgroup>'));
-                                break;
-                            case '8414':
-                                select.append($('<optgroup label="工務三課-教研工務組"></optgroup>'));
-                                break;
-                            case '8430':
-                                select.append($('<optgroup label="營建部"></optgroup>'));
-                                break;
-                        }
-                        displayTrigger = item.dptId;
+                if (item.dptId != displayTrigger) {
+                    switch (item.dptId) {
+                        case '8411':
+                            select.append($('<optgroup label="工務一課"></optgroup>'));
+                            break;
+                        case '8412':
+                            select.append($('<optgroup label="工務二課"></optgroup>'));
+                            break;
+                        case '8413':
+                            select.append($('<optgroup label="工務三課-中華院區工務組"></optgroup>'));
+                            break;
+                        case '8414':
+                            select.append($('<optgroup label="工務三課-教研工務組"></optgroup>'));
+                            break;
+                        case '8430':
+                            select.append($('<optgroup label="營建部"></optgroup>'));
+                            break;
                     }
-                    select.append($('<option></option>').text(item.fullName).val(item.id));
+                    displayTrigger = item.dptId;
                 }
+                select.append($('<option></option>').text(item.fullName).val(item.id));
                 i++;
             });
         }
