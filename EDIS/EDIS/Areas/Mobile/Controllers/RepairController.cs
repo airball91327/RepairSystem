@@ -17,8 +17,9 @@ using Microsoft.EntityFrameworkCore;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
-namespace EDIS.Controllers
+namespace EDIS.Areas.Mobile.Controllers
 {
+    [Area("Mobile")]
     [Authorize]
     public class RepairController : Controller
     {
@@ -59,26 +60,23 @@ namespace EDIS.Controllers
             roleManager = customRoleManager;
         }
 
-        // GET: /<controller>/
-        //Not Used
+        // GET: Mobile/Repair/
         public ActionResult Index()
         {
-            List<SelectListItem> FlowlistItem = new List<SelectListItem>();
-            FlowlistItem.Add(new SelectListItem { Text = "待處理", Value = "待處理" });
-            FlowlistItem.Add(new SelectListItem { Text = "已處理", Value = "已處理" });
-            FlowlistItem.Add(new SelectListItem { Text = "已結案", Value = "已結案" });
-            ViewData["FLOWTYPE"] = new SelectList(FlowlistItem, "Value", "Text");
-            //
-            List<SelectListItem> listItem = new List<SelectListItem>();
-            listItem.Add(new SelectListItem {
-                Text = "醫工部",
-                Value = "8420"
-            });
-            ViewData["ACCDPT"] = new SelectList(listItem, "Value", "Text");
-            ViewData["APPLYDPT"] = new SelectList(listItem, "Value", "Text");
-            return View();
+            /* Get user details. */
+            var ur = _userRepo.Find(u => u.UserName == this.User.Identity.Name).FirstOrDefault();
+
+            var repairCount = _context.RepairFlows.Where(f => f.Status == "?")
+                                                  .Where(f => f.UserId == ur.Id).Count();
+
+            UnsignCounts v = new UnsignCounts();
+            v.RepairCount = repairCount;
+            v.KeepCount = 0;
+
+            return View(v);
         }
 
+        // POST: Mobile/Repair/
         [HttpPost]
         public ActionResult Index(QryRepListData qdata)
         {
@@ -356,8 +354,7 @@ namespace EDIS.Controllers
                     else
                     {
                         repairFlows = repairFlows.Where(f => ( f.flow.Status == "?" && f.flow.UserId == ur.Id ) ||
-                                                             ( f.flow.Status == "?" && f.flow.Cls == "驗收人" &&
-                                                               _context.AppUsers.Find(f.flow.UserId).DptId == ur.DptId)).ToList();
+                                                             ( f.flow.Status == "?" && f.flow.Cls == "驗收人" && f.repair.DptId == ur.DptId )).ToList();
                     }
 
                     //repairFlows.Select(f => new
@@ -411,6 +408,7 @@ namespace EDIS.Controllers
                         //Location2 = " " + _context.Places.Where(p => p.BuildingId == Convert.ToInt32(j.repair.Building) && p.FloorId == j.repair.Floor && p.PlaceId == j.repair.Area).FirstOrDefault().PlaceName,
                         //Type = j.asset.Type,
                         ApplyDpt = j.repair.DptId,
+                        ApplyDptName = _context.Departments.Find(j.repair.DptId).Name_C,
                         AccDpt = j.repair.AccDpt,
                         AccDptName = j.dpt.Name_C,
                         TroubleDes = j.repair.TroubleDes,
@@ -483,205 +481,6 @@ namespace EDIS.Controllers
 
             return View("List", rv);
         }
-        [Authorize]
-        public ActionResult Create()
-        {
-            RepairModel repair = new RepairModel();
-            var ur = _userRepo.Find(u => u.UserName == this.User.Identity.Name).FirstOrDefault();
-            var dpt = _dptRepo.FindById(ur.DptId);
-            repair.DocId = GetID2();
-            repair.UserId = ur.Id;
-            repair.UserName = ur.FullName;
-            repair.UserAccount = ur.UserName;
-            repair.DptId = ur.DptId;
-            repair.DptName = dpt.Name_C;
-            repair.AccDpt = ur.DptId;
-            repair.AccDptName = dpt.Name_C;
-            repair.ApplyDate = DateTime.Now;
-            var bs = new List<SelectListItem> { };
-            _buildRepo.Find(b => b.Flg == "Y").ToList()
-                .ForEach(b =>
-                {
-                    bs.Add(new SelectListItem { Text = b.BuildingName, Value = b.BuildingId.ToString() });
-                });
-            repair.Buildings = bs;
-
-            /* 擷取該使用者單位底下所有人員 */
-            var dptUsers = _context.AppUsers.Where(a => a.DptId == ur.DptId).ToList();
-            List<SelectListItem> dptMemberList = new List<SelectListItem>();
-            foreach (var item in dptUsers)
-            {
-                dptMemberList.Add(new SelectListItem
-                {
-                    Text = item.FullName,
-                    Value = item.Id.ToString()
-                });
-            }
-            ViewData["DptMembers"] = new SelectList(dptMemberList, "Value", "Text");
-
-            /* Get all engineers by role. */
-            var allEngs = roleManager.GetUsersInRole("RepEngineer").ToList();
-            List<SelectListItem> list = new List<SelectListItem>();
-            SelectListItem li = new SelectListItem();
-            foreach (string l in allEngs)
-            {
-                var u = _context.AppUsers.Where(a => a.UserName == l).FirstOrDefault();
-                if (u != null)
-                {
-                    li = new SelectListItem();
-                    li.Text = u.FullName;
-                    li.Value = u.Id.ToString();
-                    list.Add(li);
-                }
-            }
-            ViewData["AllEngs"] = new SelectList(list, "Value", "Text");
-            repair.CheckerId = ur.Id;
-
-            return View(repair);
-        }
-
-        [HttpPost]
-        public IActionResult Create([FromForm]RepairModel repair)
-        {
-            /* 如有指定工程師，將預設工程師改為指定 */
-            if(repair.PrimaryEngId != null && repair.PrimaryEngId != 0)
-            {
-                repair.EngId = Convert.ToInt32(repair.PrimaryEngId);
-            }
-            /* 如有代理人，將工程師改為代理人*/
-            var subStaff = _context.EngSubStaff.SingleOrDefault(e => e.EngId == repair.EngId);
-            if(subStaff != null)
-            {
-                int startDate = Convert.ToInt32(subStaff.StartDate.ToString("yyyyMMdd"));
-                int endDate = Convert.ToInt32(subStaff.EndDate.ToString("yyyyMMdd"));
-                int today = Convert.ToInt32(DateTime.UtcNow.AddHours(08).ToString("yyyyMMdd"));
-                /* 如在代理期間內，將代理人指定為負責工程師 */
-                if(today >= startDate && today <= endDate)
-                {
-                    repair.EngId = subStaff.SubstituteId;
-                }
-            }
-
-            /* 請修地點為"本單位" */
-            if (repair.LocType == "本單位")
-            {
-                /* 選擇地點與本單位不同 */
-                if( !repair.Area.Contains(repair.DptId))
-                {
-                    return BadRequest("需選擇本單位的確切地點!");
-                }
-            }
-
-            if (repair.RepType != "增設")
-            {
-                ModelState.Remove("DptMgrId");      //移除DptMgrId的Model驗證
-            }
-
-            var ur = _userRepo.Find(u => u.UserName == this.User.Identity.Name).First();
-            string msg = "";
-            try
-            {
-                if (ModelState.IsValid)
-                {
-                    // Create Repair Doc.
-                    //repair.DocId = "12345678";
-                    repair.ApplyDate = DateTime.Now;
-                    _repRepo.Create(repair);
-                    //_repRepo.Update(repair);
-
-                    // Create Repair Details.
-                    RepairDtlModel dtl = new RepairDtlModel();
-                    dtl.DocId = repair.DocId;
-                    dtl.DealState = 1;  // 處理狀態"未處理"
-                    _repdtlRepo.Create(dtl);
-
-                    //Create first Repair Flow.
-                    RepairFlowModel flow = new RepairFlowModel();
-                    flow.DocId = repair.DocId;
-                    flow.StepId = 1;
-                    flow.UserId = ur.Id;
-                    //flow.UserId = userManager.GetCurrentUserId(User);
-                    flow.Status = "1";  // 流程狀態"已處理"
-                    flow.Rtp = ur.Id;
-                    //flow.Rtp = userManager.GetCurrentUserId(User);
-                    flow.Rtt = DateTime.Now;
-                    flow.Cls = "申請人";
-                    _repflowRepo.Create(flow);
-
-                    // Create next flow.
-                    flow = new RepairFlowModel();
-                    flow.DocId = repair.DocId;
-                    flow.StepId = 2;
-                    flow.UserId = repair.EngId;
-                    flow.Status = "?";  // 狀態"未處理"
-                    flow.Rtt = DateTime.Now;
-                    flow.Cls = "工務/營建工程師";
-                    // If repair type is "增設", send next flow to department manager.
-                    if (repair.RepType == "增設")
-                    {
-                        flow.UserId = Convert.ToInt32(repair.DptMgrId);
-                        flow.Cls = "單位主管";
-                    }
-                    _repflowRepo.Create(flow);
-
-                    // Add 1 dealing doc to engineer.
-                    var eng = _context.EngDealingDocs.Find(repair.EngId);
-                    if(eng != null)
-                    {
-                        eng.DealingDocs = eng.DealingDocs + 1;
-                        _context.Entry(eng).State = EntityState.Modified;
-                    }
-                    _context.SaveChanges();
-
-                    repair.BuildingName = _context.Buildings.Where(b => b.BuildingId == Convert.ToInt32(repair.Building)).FirstOrDefault().BuildingName;
-                    repair.FloorName = _context.Floors.Where(f => f.BuildingId == Convert.ToInt32(repair.Building) && f.FloorId == repair.Floor).FirstOrDefault().FloorName;
-                    repair.AreaName = _context.Places.Where(p => p.BuildingId == Convert.ToInt32(repair.Building) && p.FloorId == repair.Floor && p.PlaceId == repair.Area).FirstOrDefault().PlaceName;
-                    //Send Mail 
-                    //To user and the next flow user.
-                    Tmail mail = new Tmail();
-                    string body = "";
-                    var mailToUser = _userRepo.Find(u => u.UserName == this.User.Identity.Name).FirstOrDefault();
-                    mail.from = new System.Net.Mail.MailAddress(mailToUser.Email); //u.Email
-                    mailToUser = _context.AppUsers.Find(flow.UserId);
-                    mail.to = new System.Net.Mail.MailAddress(mailToUser.Email); //u.Email
-                    //mail.cc = new System.Net.Mail.MailAddress("344027@cch.org.tw");
-                    mail.message.Subject = "工務智能請修系統[請修案]：設備名稱： " + repair.AssetName;
-                    body += "<p>表單編號：" + repair.DocId + "</p>";
-                    body += "<p>申請日期：" + repair.ApplyDate.ToString("yyyy/MM/dd") + "</p>";
-                    body += "<p>申請人：" + repair.UserName + "</p>";
-                    body += "<p>財產編號：" + repair.AssetNo + "</p>";
-                    body += "<p>設備名稱：" + repair.AssetName + "</p>";
-                    body += "<p>故障描述：" + repair.TroubleDes + "</p>";
-                    body += "<p>請修地點：" + repair.PlaceLoc + " " + repair.BuildingName + " " + repair.FloorName + " " + repair.AreaName + "</p>";
-                    //body += "<p>放置地點：" + repair.PlaceLoc + "</p>";
-                    body += "<p><a href='http://dms.cch.org.tw/EDIS/Account/Login" + "?docId=" + repair.DocId + "&dealType=Edit'" + ">處理案件</a></p>";
-                    body += "<br/>";
-                    body += "<p>使用ＩＥ瀏覽器注意事項：</p>";
-                    body += "<p>「工具」→「相容性檢視設定」→移除cch.org.tw</p>";
-                    body += "<br/>";
-                    body += "<h3>此封信件為系統通知郵件，請勿回覆。</h3>";
-                    body += "<br/>";
-                    body += "<h3 style='color:red'>如有任何疑問請聯絡工務部，分機3033或7033。<h3>";
-                    mail.message.Body = body;
-                    mail.message.IsBodyHtml = true;
-                    mail.SendMail();
-
-                    return Ok(repair);
-                }
-                else
-                {
-                    foreach (var error in ViewData.ModelState.Values.SelectMany(modelState => modelState.Errors))
-                    {
-                        msg += error.ErrorMessage + Environment.NewLine;
-                    }
-                }
-            }catch(Exception ex)
-            {
-                msg = ex.Message;
-            }
-
-            return BadRequest(msg);
-        }
 
         public ActionResult Edit(string id, int page)
         {
@@ -693,91 +492,6 @@ namespace EDIS.Controllers
             }
 
             return View(repair);
-        }
-
-        public ActionResult Detail()
-        {
-            RepairModel repair = new RepairModel();
-            repair.Buildings = new List<SelectListItem>
-            {
-                new SelectListItem{Text = "第一醫療大樓",Value="第一醫療大樓"},
-                new SelectListItem{Text = "第二醫療大樓",Value="第二醫療大樓"},
-                new SelectListItem{Text = "第三醫療大樓",Value="第三醫療大樓"},
-                new SelectListItem{Text = "中華路院區",Value="中華路院區"},
-                new SelectListItem{Text = "兒童醫院",Value="兒童醫院"},
-                new SelectListItem{Text = "向上大樓",Value="向上大樓"}
-            };
-            return PartialView(repair);
-        }
-
-        public ActionResult List()
-        {
-            return PartialView();
-        }
-        public string GetID()
-        {
-            DocIdStore ds = new DocIdStore();
-            ds.DocType = "請修";
-            string s = _dsRepo.Find(x => x.DocType == "請修").Select(x => x.DocId).Max();
-            string did = "";
-            int yymm = (System.DateTime.Now.Year - 1911) * 100 + System.DateTime.Now.Month;
-            if (!string.IsNullOrEmpty(s))
-            {
-                did = s;
-            }
-            if (did != "")
-            {
-                if (Convert.ToInt64(did) / 100000 == yymm)
-                    did = Convert.ToString(Convert.ToInt64(did) + 1);
-                else
-                    did = Convert.ToString(yymm * 100000 + 1);
-                ds.DocId = did;
-                _dsRepo.Update(ds);
-            }
-            else
-            {
-                did = Convert.ToString(yymm * 100000 + 1);
-                ds.DocId = did;
-                _dsRepo.Create(ds);
-            }
-
-            return did;
-        }
-
-        public string GetID2()
-        {
-            string did = "";
-            try
-            {
-                DocIdStore ds = new DocIdStore();
-                ds.DocType = "請修";
-                string s = _dsRepo.Find(x => x.DocType == "請修").Select(x => x.DocId).Max();
-                int yymmdd = (System.DateTime.Now.Year - 1911) * 10000 + (System.DateTime.Now.Month) * 100 + System.DateTime.Now.Day;
-                if (!string.IsNullOrEmpty(s))
-                {
-                    did = s;
-                }
-                if (did != "")
-                {
-                    if (Convert.ToInt64(did) / 1000 == yymmdd)
-                        did = Convert.ToString(Convert.ToInt64(did) + 1);
-                    else
-                        did = Convert.ToString(yymmdd * 1000 + 1);
-                    ds.DocId = did;
-                    _dsRepo.Update(ds);
-                }
-                else
-                {
-                    did = Convert.ToString(yymmdd * 1000 + 1);
-                    ds.DocId = did;
-                    _dsRepo.Create(ds);
-                }
-            }
-            catch (Exception e)
-            {
-                RedirectToAction("Create", "Repair", new { Area = "" });
-            }
-            return did;
         }
 
         public ActionResult Views(string id)

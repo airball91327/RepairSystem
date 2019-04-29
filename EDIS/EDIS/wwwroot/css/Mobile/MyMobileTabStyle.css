@@ -1,0 +1,25 @@
+﻿/* Style the tab */
+.tab {
+    background-color: #346076;
+}
+
+/* Style the buttons inside the tab */
+.tab button {
+    background-color: #f1f1f1;
+    color: black;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+    border: ridge;
+    border-radius:15px;
+    border-color:#346076;
+}
+
+.tab h4 {
+    font-weight: bold;
+}
+
+.tab span {
+    padding-left:15px;
+    padding-right:15px;
+}
