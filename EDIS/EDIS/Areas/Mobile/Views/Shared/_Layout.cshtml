@@ -9,7 +9,7 @@
     <environment include="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="~/css/site.css" />
-        <link rel="stylesheet" href="~/css/style.css" />
+        @*<link rel="stylesheet" href="~/css/style.css" />*@
         <link rel="stylesheet" href="~/fonts/font-awesome/css/font-awesome.min.css" />
         <script src="~/lib/jquery/dist/jquery.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
@@ -21,7 +21,7 @@
             <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />*@
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="~/css/site.css" />
-        <link rel="stylesheet" href="~/css/style.css" />
+        @*<link rel="stylesheet" href="~/css/style.css" />*@
         <link rel="stylesheet" href="~/fonts/font-awesome/css/font-awesome.min.css" />
         <script src="~/lib/jquery/dist/jquery.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
@@ -33,7 +33,7 @@
 <body>
     <!-- Navigation -->
     @Html.Partial("_Navigation")
-    <div id="page-wrapper" class="container body-content">
+    <div id="page-wrapper" class="container body-content" style="padding-top:60px;">
         @RenderBody()
 
         <footer>

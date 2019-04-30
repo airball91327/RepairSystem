@@ -22,16 +22,16 @@ else
         <div class="tab row">
             <button class="col-xs-12" onclick="location.href='@Url.Action("Edit", "Repair", new { area = "Mobile", id = item.DocId, page = 5 })'">
 
-                <div>
-                    <h4 class="col-xs-12">
+                <div class="col-xs-12">
+                    <h4>
                         @Html.DisplayFor(modelItem => item.DocId)
                     </h4>
                 </div>
 
-                <div>
-                    <span>@Html.DisplayFor(model => item.ApplyDptName)</span>
-                    <span>@Html.DisplayFor(model => item.ApplyDate)</span>
-                    <span>@Html.DisplayFor(model => item.AssetName)</span>
+                <div class="col-xs-12 myStyle">
+                    <span>@Html.DisplayFor(model => item.ApplyDptName)</span>&nbsp;
+                    <span>@Html.DisplayFor(model => item.ApplyDate)</span>&nbsp;
+                    <span>@Html.DisplayFor(model => item.AssetName)</span>&nbsp;
                     <span>@Html.DisplayFor(model => item.TroubleDes)</span>
                 </div>
 
