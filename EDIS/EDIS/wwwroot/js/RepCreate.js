@@ -310,7 +310,13 @@ function onSuccess() {
         window.printRepairDoc(DocId);
     }
 
-    location.href = '../Home/Index';
+    var isMobile = $("#isMobile").val();
+    if (isMobile == 'Y') {
+        location.href = '../../Mobile/Repair/Index';
+    }
+    else {
+        location.href = '../Home/Index';
+    }  
 }
 
 function getAssetName() {

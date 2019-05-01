@@ -1,7 +1,15 @@
 ﻿@model EDIS.Models.RepairModels.RepairModel
 
 @{
-    Layout = "~/Views/Shared/_PassedLayout.cshtml";
+    var isMobile = (string)ViewData["IsMobile"];
+    if (isMobile == "Y")
+    {
+        Layout = "~/Areas/Mobile/Views/Shared/_Layout.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_PassedLayout.cshtml";
+    }
     ViewData["Title"] = "Create";
 }
 <script src="~/js/RepCreate.js"></script>
@@ -157,11 +165,11 @@
                     </label>
                 </div>
                 @*<div class="radio">
-                    <label>
-                        <input type="radio" name="LocType" id="LocType3" value="其他單位">
-                        其他單位
-                    </label>
-                </div>*@
+                        <label>
+                            <input type="radio" name="LocType" id="LocType3" value="其他單位">
+                            其他單位
+                        </label>
+                    </div>*@
             </div>
         </div>
         <div class="row">
@@ -304,9 +312,20 @@
         </div>
     </div>
 </form>
-<div>
-    <a asp-action="Index" asp-controller="Home" style="color:deepskyblue">回到列表</a>
-</div>
+
+<input type="hidden" id="isMobile" value="@isMobile" />
+@if (isMobile == "Y")
+{
+    <div>
+        <a asp-action="Index" asp-controller="Repair" asp-area="Mobile" style="color:deepskyblue">回到列表</a>
+    </div>
+}
+else
+{
+    <div>
+        <a asp-action="Index" asp-controller="Home" style="color:deepskyblue">回到列表</a>
+    </div>
+}
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

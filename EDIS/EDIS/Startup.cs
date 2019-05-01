@@ -50,6 +50,7 @@ namespace EDIS
             services.AddScoped<IRepository<RepairEmpModel, string[]>, RepairEmpRepository>();
             services.AddScoped<IRepository<AppRoleModel, int>, AppRoleRepository>();
 
+            services.Configure<SecurityStampValidatorOptions>(options => options.ValidationInterval = TimeSpan.FromHours(10));
             //services.AddIdentity<ApplicationUser, IdentityRole>()
             services.AddIdentity<ApplicationUser, ApplicationRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -58,6 +59,13 @@ namespace EDIS
                 .AddDefaultTokenProviders()
                 .AddUserManager<CustomUserManager>()
                 .AddRoleManager<CustomRoleManager>();
+
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.Cookie.Name = "Asp.Net.Core.Identity.RepairSys";
+                options.ExpireTimeSpan = TimeSpan.FromHours(2);
+                options.SlidingExpiration = true;   //動態更新Cookie的過期時間，超過50%自動更新，無設定時預設值為true
+            });
 
             //
             services.AddScoped<UserManager<ApplicationUser>, CustomUserManager>();

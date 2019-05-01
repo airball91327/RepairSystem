@@ -45,14 +45,14 @@ namespace EDIS.Controllers
             v.RepairCount = repairCount;
             v.KeepCount = 0;
 
-            //if (fBrowserIsMobile())
-            //{
-            //    if (userManager.IsInRole(User, "RepEngineer") == true)
-            //    {
-            //        // go to mobile pages
-            //        return RedirectToAction("Index", "Repair", new { Area = "Mobile" });
-            //    }
-            //}
+            if (fBrowserIsMobile())
+            {
+                if (userManager.IsInRole(User, "RepEngineer") == true)
+                {
+                    // go to mobile pages
+                    return RedirectToAction("Index", "Repair", new { Area = "Mobile" });
+                }
+            }
 
             return View(v);
         }

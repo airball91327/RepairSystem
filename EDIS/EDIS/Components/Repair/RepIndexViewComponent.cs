@@ -53,7 +53,15 @@ namespace EDIS.Components.Repair
             }
             ViewData["DealStatus"] = new SelectList(listItem2, "Value", "Text");
 
+            /* 處理有無費用的下拉選單 */
+            List<SelectListItem> listItem3 = new List<SelectListItem>();
+            listItem3.Add(new SelectListItem { Text = "有", Value = "Y" });
+            listItem3.Add(new SelectListItem { Text = "無", Value = "N" });
+            ViewData["IsCharged"] = new SelectList(listItem3, "Value", "Text");
+
             QryRepListData data = new QryRepListData();
+            /* Set Default search value. */
+            data.qtyDateType = "申請日";
 
             return View(data);
         }
