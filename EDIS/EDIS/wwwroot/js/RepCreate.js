@@ -312,7 +312,7 @@ function onSuccess() {
 
     var isMobile = $("#isMobile").val();
     if (isMobile == 'Y') {
-        location.href = '../../Mobile/Repair/Index';
+        location.href = '../Mobile/Repair/Index';
     }
     else {
         location.href = '../Home/Index';
