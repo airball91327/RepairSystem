@@ -1,5 +1,7 @@
 ﻿using EDIS.Data;
+using EDIS.Models.Identity;
 using EDIS.Models.RepairModels;
+using EDIS.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
@@ -12,29 +14,43 @@ namespace EDIS.Areas.Mobile.Components.Repair
     public class mRepIndexViewComponent : ViewComponent
     {
         private readonly ApplicationDbContext _context;
+        private readonly IRepository<AppUserModel, int> _userRepo;
 
-        public mRepIndexViewComponent(ApplicationDbContext context)
+        public mRepIndexViewComponent(ApplicationDbContext context,
+                                      IRepository<AppUserModel, int> userRepo)
         {
             _context = context;
+            _userRepo = userRepo;
         }
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
+            var ur = _userRepo.Find(us => us.UserName == this.User.Identity.Name).FirstOrDefault();
+
             List<SelectListItem> FlowlistItem = new List<SelectListItem>();
             FlowlistItem.Add(new SelectListItem { Text = "待簽核", Value = "待簽核" });
             FlowlistItem.Add(new SelectListItem { Text = "流程中", Value = "流程中" });
             FlowlistItem.Add(new SelectListItem { Text = "已結案", Value = "已結案" });
             ViewData["FLOWTYPE"] = new SelectList(FlowlistItem, "Value", "Text", "待簽核");
 
-            /* 成本中心 & 申請部門的下拉選單資料 */
+            /* 成本中心的下拉選單資料(關卡在登入者身上的案件) */
+            var userRepairs = _context.Repairs.Join(_context.RepairFlows.Where(f => f.Status == "?" && f.UserId == ur.Id),
+                                               r => r.DocId, f => f.DocId,
+                                               (r, f) => new
+                                               {
+                                                   repair = r,
+                                                   flow = f
+                                               }).ToList();
+            var accDpts = userRepairs.GroupBy(r => r.repair.AccDpt).Select(group => group.FirstOrDefault()).ToList();
             var departments = _context.Departments.ToList();
             List<SelectListItem> listItem = new List<SelectListItem>();
-            foreach(var item in departments)
+            foreach(var item in accDpts)
             {
+                var dpt = departments.Where(d => d.DptId == item.repair.AccDpt).FirstOrDefault();
                 listItem.Add(new SelectListItem
                 {
-                    Text = item.Name_C + "(" + item.DptId + ")",    //show DptName(DptId)
-                    Value = item.DptId
+                    Text = dpt.Name_C + "(" + dpt.DptId + ")",    //show DptName(DptId)
+                    Value = dpt.DptId
                 });
             }
             ViewData["ACCDPT"] = new SelectList(listItem, "Value", "Text");

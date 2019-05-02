@@ -1,11 +1,9 @@
 ﻿@model EDIS.Models.RepairModels.QryRepListData
 
-<link href="~/css/bootstrap-combobox.css" rel="stylesheet" />
-<script src="~/js/bootstrap-combobox.js"></script>
 
 <script type="text/javascript">
     $(document).ready(function () {
-        $('.combobox').combobox();
+
         /* While loading this page, default search repairDocs. */
         $("#repSearchForm").submit();
     });
@@ -33,7 +31,7 @@
                 </div>
                 <div class="form-group">
                     <label for="qtyACCDPT" class="control-title">成本中心</label>
-                    <select asp-for="qtyACCDPT" asp-items="@ViewData["ACCDPT"] as SelectList" class="form-control combobox">
+                    <select asp-for="qtyACCDPT" asp-items="@ViewData["ACCDPT"] as SelectList" class="form-control">
                         <option value="">請選擇</option>
                     </select>
                 </div>

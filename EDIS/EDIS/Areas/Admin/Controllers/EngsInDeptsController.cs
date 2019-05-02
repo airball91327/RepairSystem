@@ -47,7 +47,7 @@ namespace EDIS.Areas.Admin.Controllers
                 {
                     engineerList.Add(new SelectListItem()
                     {
-                        Text = u.FullName,
+                        Text = u.FullName + "(" + u.UserName + ")",
                         Value = u.Id.ToString()
                     });
                 }             
@@ -161,7 +161,7 @@ namespace EDIS.Areas.Admin.Controllers
                 {
                     engineerList.Add(new SelectListItem()
                     {
-                        Text = u.FullName,
+                        Text = u.FullName + "(" + u.UserName + ")",
                         Value = u.Id.ToString()
                     });
                 }
@@ -184,43 +184,51 @@ namespace EDIS.Areas.Admin.Controllers
             /* Target engineer ID. */
             int asignEngId = Convert.ToInt32(AsignEngId);
 
-            /* Deal all input data. */
-            foreach (var item in data)
+            try
             {
-                /* Create or edit the selected row data. */
-                if (item.IsSelected == true)
+                /* Deal all input data. */
+                foreach (var item in data)
                 {
-                    /* Insert values to engsInDeptsModel to save or create. */
-                    EngsInDeptsModel engsInDeptsModel = new EngsInDeptsModel
+                    /* Create or edit the selected row data. */
+                    if (item.IsSelected == true)
                     {
-                        EngId = asignEngId,
-                        BuildingId = item.BuildingId,
-                        FloorId = item.FloorId,
-                        PlaceId = item.PlaceId,
-                        DptId = _context.AppUsers.Find(asignEngId).DptId,
-                        UserName = _context.AppUsers.Find(asignEngId).UserName
-                        //Rtp = user.Id,
-                        //Rtt = DateTime.UtcNow.AddHours(08)
-                    };
-                    /* If data isn't in the database, create data.*/
-                    if (item.EngId == null)
-                    {
-                        _context.Add(engsInDeptsModel);
-                    }
-                    else
-                    {
-                        /* If data exist, find and delete old data, then create a new one. */
-                        int engId = item.EngId.GetValueOrDefault();
-                        var originData = _context.EngsInDepts.Find(engId, item.BuildingId, item.FloorId, item.PlaceId);
-                        if (originData.EngId != asignEngId)
+                        /* Insert values to engsInDeptsModel to save or create. */
+                        EngsInDeptsModel engsInDeptsModel = new EngsInDeptsModel
                         {
-                            _context.Remove(originData);
+                            EngId = asignEngId,
+                            BuildingId = item.BuildingId,
+                            FloorId = item.FloorId,
+                            PlaceId = item.PlaceId,
+                            DptId = _context.AppUsers.Find(asignEngId).DptId,
+                            UserName = _context.AppUsers.Find(asignEngId).UserName
+                            //Rtp = user.Id,
+                            //Rtt = DateTime.UtcNow.AddHours(08)
+                        };
+                        /* If data isn't in the database, create data.*/
+                        if (item.EngId == null)
+                        {
                             _context.Add(engsInDeptsModel);
+                        }
+                        else
+                        {
+                            /* If data exist, find and delete old data, then create a new one. */
+                            int engId = item.EngId.GetValueOrDefault();
+                            var originData = _context.EngsInDepts.Find(engId, item.BuildingId, item.FloorId, item.PlaceId);
+                            if (originData.EngId != asignEngId)
+                            {
+                                _context.Remove(originData);
+                                _context.Add(engsInDeptsModel);
+                            }
                         }
                     }
                 }
+                await _context.SaveChangesAsync();
             }
-            await _context.SaveChangesAsync();
+            catch (Exception e)
+            {
+                var msg = "資料更新錯誤!";
+                return StatusCode(500, msg);
+            }
             return RedirectToAction("GetEngList", new { EngineerId = QueryEngId, BuildingId = QueryBuildingId, FloorId = QueryFloorId });
         }
 

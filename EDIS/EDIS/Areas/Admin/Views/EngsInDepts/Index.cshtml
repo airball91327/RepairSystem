@@ -10,7 +10,7 @@
 <script>
     var onFailed = function (data) {
         alert(data.responseText);
-        $('#imgLOADING_Engs').hide()
+        $.Toast.hideToast();
     };
 
     $.fn.addItems = function (data) {
@@ -42,6 +42,13 @@
                 }
             });
         });
+
+        $("#getEngForm").submit(function () {
+            if ($("#EngineerId").val() == "" && $("#BuildingId").val() == "") {
+                alert("【期別】或【負責人員】請至少選取一項後搜尋。");
+                return false;
+            }
+        });
     });
 </script>
 
@@ -59,12 +66,21 @@
 
 <h2>查詢與編輯</h2>
 
+<div>
+    <input id="btnDes" type="button" value="操作說明" class="btn btn-primary" data-toggle="modal" data-target="#modalDes">
+</div>
+<br />
+
 <div class="panel panel-primary">
     <div class="panel-body">
-        <form asp-action="GetEngList" asp-controller="EngsInDepts" asp-area="Admin"
+        <form asp-action="GetEngList" asp-controller="EngsInDepts" asp-area="Admin" id="getEngForm"
               data-ajax="true" data-ajax-update="#engListDiv" data-ajax-method="GET"
-              data-ajax-begin="$('#imgLOADING_Engs').show()"
-              data-ajax-complete="$('#imgLOADING_Engs').hide()"
+              data-ajax-begin="$.Toast.showToast({
+              'title':'查詢中，請稍待...',
+              'icon':'loading',
+              'duration':0
+              })"
+              data-ajax-complete="$.Toast.hideToast()"
               data-ajax-failure="onFailed">
 
             <div class="form-inline">
@@ -96,7 +112,6 @@
                     <div class="col-md-8">
                         <input type="submit" class="btn btn-primary" id="btnQuery" value="查詢" style="width: 100%" />
                     </div>
-                    <img id="imgLOADING_Engs" src="~/Images/opc-ajax-loader.gif" style="display: none" />
                 </div>
             </div>
 
@@ -105,3 +120,33 @@
 </div>
 
 <div id="engListDiv"></div>
+
+
+<!-- 夾帶檔案 Modal -->
+<div id="modalDes" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content" style="background-color: #1D3C4C">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" style="color:#fff">&times;</button>
+                <h4 class="modal-title">操作說明</h4>
+            </div>
+            <div class="modal-body">
+                <div>
+                    <h4>【如何設定】</h4>
+                    <p>1.需先依序新增【期別】→【樓層】→【地點】。</p>
+                    <p>2.依照【期別】、【樓層】或依照【負責人員】搜尋。</p>
+                    <p>3.勾選欲設定的地點，於【轉移負責人員至】選擇負責人員。</p>
+                    <p>4.點選【確定送出】。</p>
+                </div>
+                <br />
+                <div>
+                    <h4>【注意事項】</h4>
+                    <p>1.一個地點只可設定一位負責人員。</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">離開</button>
+            </div>
+        </div>
+    </div>
+</div>

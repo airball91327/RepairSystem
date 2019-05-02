@@ -12,12 +12,12 @@ namespace EDIS.Models.Identity
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        [Required]
+        [Required(ErrorMessage = "必填寫欄位")]
         [Display(Name = "使用者名稱")]
         public string UserName { get; set; }
         [Display(Name = "使用者全名")]
         public string FullName { get; set; }
-        [Required]
+        [Required(ErrorMessage = "必填寫欄位")]
         [DataType(DataType.Password)]
         [Display(Name = "密碼")]
         public string Password { get; set; }
@@ -25,7 +25,7 @@ namespace EDIS.Models.Identity
         [DataType(DataType.Password)]
         [Display(Name = "新密碼")]
         public string NewPassword { get; set; }
-        [Required]
+        [Required(ErrorMessage = "必填寫欄位")]
         [DataType(DataType.EmailAddress)]
         [Display(Name = "電子信箱")]
         public new string Email { get; set; }

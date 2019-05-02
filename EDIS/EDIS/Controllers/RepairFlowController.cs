@@ -571,5 +571,20 @@ namespace EDIS.Controllers
             }
             return Json(list);
         }
+
+        [HttpPost]
+        public JsonResult CheckDealStatus(string docId)
+        {
+            bool checkResult = false;
+            var repairDtl = _context.RepairDtls.Find(docId);
+            var repairFlow = _context.RepairFlows.Where(rf => rf.DocId == docId)
+                                                 .OrderByDescending(o => o.StepId).FirstOrDefault();
+
+            if (repairFlow.Cls.Contains("工程師") && repairDtl.DealState == 1)
+            {
+                checkResult = true;
+            }
+            return Json(checkResult);
+        }
     }
 }

@@ -7,6 +7,11 @@
 <script src="~/js/bootstrap-combobox.js"></script>
 
 <script>
+    var updateFailed = function (data) {
+        alert(data.responseText);
+        $.Toast.hideToast();
+    };
+
     $(function () {
         $(".combobox2").combobox();
 
@@ -31,9 +36,13 @@
 
 <form asp-action="EditEngList" asp-controller="EngsInDepts" asp-area="Admin"
       data-ajax="true" data-ajax-update="#engListDiv" data-ajax-method="POST"
-      data-ajax-begin="$('#imgLOADING_EditEngList').show()"
-      data-ajax-complete="$('#imgLOADING_EditEngList').hide()"
-      data-ajax-failure="$('#imgLOADING_EditEngList').hide()">
+      data-ajax-begin="$.Toast.showToast({
+              'title':'作業進行中，請稍待...',
+              'icon':'loading',
+              'duration':0
+              })"
+      data-ajax-complete="$.Toast.hideToast()"
+      data-ajax-failure="updateFailed">
 
     <input type="hidden" name="QueryEngId" value="@ViewData["QueryEngId"]" />
     <input type="hidden" name="QueryBuildingId" value="@ViewData["QueryBuildingId"]" />
@@ -47,7 +56,6 @@
             </div>
             <div class="col-md-4">
                 <input type="submit" class="btn btn-primary" value="確定送出" />
-                <img id="imgLOADING_EditEngList" src="~/Images/opc-ajax-loader.gif" style="display: none" />
             </div>
         </div>
     </div>
@@ -74,12 +82,12 @@
                 <th>
                     @Html.DisplayNameFor(model => model.EngFullName)
                 </th>
-                <th>
+                @*<th>
                     @Html.DisplayNameFor(model => model.RtpName)
                 </th>
                 <th>
                     @Html.DisplayNameFor(model => model.Rtt)
-                </th>
+                </th>*@
                 <th></th>
             </tr>
         </thead>
@@ -111,12 +119,12 @@
                     <td>
                         @Html.DisplayFor(modelItem => item.EngFullName)
                     </td>
-                    <td>
+                    @*<td>
                         @Html.DisplayFor(modelItem => item.RtpName)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.Rtt)
-                    </td>
+                    </td>*@
                     <td></td>
                 </tr>
                 i++;

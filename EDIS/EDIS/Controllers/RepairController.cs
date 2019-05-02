@@ -84,12 +84,12 @@ namespace EDIS.Controllers
         [HttpPost]
         public ActionResult Index(QryRepListData qdata)
         {
-            string docid = qdata.qtyDOCID;
-            string ano = qdata.qtyASSETNO;
-            string acc = qdata.qtyACCDPT;
-            string aname = qdata.qtyASSETNAME;
+            string docid = qdata.qtyDOCID;     //Search all engineers' docs,when user's role is engineer.
+            string ano = qdata.qtyASSETNO;     //Search all engineers' docs,when user's role is engineer.
+            string acc = qdata.qtyACCDPT;      //Search all engineers' docs,when user's role is engineer.
+            string aname = qdata.qtyASSETNAME; //Search all engineers' docs,when user's role is engineer.
             string ftype = qdata.qtyFLOWTYPE;
-            string dptid = qdata.qtyDPTID;
+            string dptid = qdata.qtyDPTID;     //Search all engineers' docs,when user's role is engineer.
             string qtyDate1 = qdata.qtyApplyDateFrom;
             string qtyDate2 = qdata.qtyApplyDateTo;
             string qtyDealStatus = qdata.qtyDealStatus;

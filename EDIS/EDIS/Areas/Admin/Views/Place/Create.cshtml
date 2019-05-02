@@ -71,7 +71,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.PlaceId, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10" id="radioBtns">
-                @Html.EditorFor(model => model.PlaceId, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.EditorFor(model => model.PlaceId, new { htmlAttributes = new { @class = "form-control", @required = "required" } })
                 <p id="IdCheckResult"></p>
                 @Html.ValidationMessageFor(model => model.PlaceId, "", new { @class = "text-danger" })
             </div>
@@ -99,6 +99,10 @@
             <div class="col-md-offset-2 col-md-10">
                 <input type="submit" value="新增" class="btn btn-primary" />
             </div>
+        </div>
+
+        <div class="col-md-offset-1">
+            <p style="color:#ff9c00">*【地點代號】如已存在有相同成本中心編號的地區，請依【成本中心 - 編號】之方式命名，例8410-1、8410-2。</p>
         </div>
     </div>
 }
