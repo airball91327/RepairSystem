@@ -946,7 +946,9 @@ namespace EDIS.Controllers
             }
             else
             {
-                var eng = engineers.Join(_context.EngDealingDocs, ed => ed.EngId, e => e.EngId,
+                if(engineers.Count() > 1)
+                {
+                    var eng = engineers.Join(_context.EngDealingDocs, ed => ed.EngId, e => e.EngId,
                                 (ed, e) => new
                                 {
                                     ed.EngId,
@@ -954,7 +956,18 @@ namespace EDIS.Controllers
                                     ed.AppUsers.FullName,
                                     e.DealingDocs
                                 }).OrderBy(o => o.DealingDocs).FirstOrDefault();
-                return Json(eng);
+                    return Json(eng);
+                }
+                else
+                {
+                    var eng = engineers.Select(e => new
+                                       {
+                                           e.EngId,
+                                           e.UserName,
+                                           e.AppUsers.FullName,
+                                       }).FirstOrDefault();
+                    return Json(eng);
+                }            
             }
         }
         

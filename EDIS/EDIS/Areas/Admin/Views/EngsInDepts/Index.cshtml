@@ -37,8 +37,9 @@
                 async: false,
                 success: function (data) {
                     var select = $('#FloorId');
-                    //$('option', select).remove();
+                    $('option', select).remove();          
                     select.addItems(data);
+                    select.append($('<option></option>').text('所有').val(""));
                 }
             });
         });
