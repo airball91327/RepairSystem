@@ -18,7 +18,7 @@ namespace EDIS.Models.RepairModels
         [Key, Column(Order = 3)]
         [Display(Name = "序號")]
         public int SeqNo { get; set; }
-        [Required]
+        [Required(ErrorMessage = "必填寫欄位")]
         [Display(Name = "摘要")]
         public string Title { get; set; }
         [Required]
