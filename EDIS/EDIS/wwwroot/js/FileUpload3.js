@@ -32,10 +32,10 @@ function uploadFiles() {
             contentType: false,
             type: "POST",
             success: function (data) {
-                alert("Files Uploaded!");
+                alert("上傳成功!");
             },
             error: function (data) {
-                alert(data);
+                alert("檔案上傳有誤，請檢查欄位是否填寫齊全!");
             }
         }
     );
