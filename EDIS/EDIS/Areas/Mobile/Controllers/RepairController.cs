@@ -132,12 +132,12 @@ namespace EDIS.Areas.Mobile.Controllers
 
             /* Check search type for engineer, if no search value search users's doc, else search all. */
             var searchAllDoc = false;
-            if (!(string.IsNullOrEmpty(docid) && string.IsNullOrEmpty(ano) && string.IsNullOrEmpty(acc) 
-                                              && string.IsNullOrEmpty(aname) && string.IsNullOrEmpty(dptid)))
-            {
-                if (userManager.IsInRole(User, "RepEngineer") == true)
-                    searchAllDoc = true;
-            }
+            //if (!(string.IsNullOrEmpty(docid) && string.IsNullOrEmpty(ano) && string.IsNullOrEmpty(acc) 
+            //                                  && string.IsNullOrEmpty(aname) && string.IsNullOrEmpty(dptid)))
+            //{
+            //    if (userManager.IsInRole(User, "RepEngineer") == true)
+            //        searchAllDoc = true;
+            //}
 
             var rps = _context.Repairs.ToList();
             if (!string.IsNullOrEmpty(docid))

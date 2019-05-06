@@ -49,6 +49,7 @@ namespace EDIS.Controllers
         [TempData]
         public string ErrorMessage { get; set; }
 
+        [NoCache]
         [HttpGet]
         [AllowAnonymous]
         public async Task<IActionResult> Login(int? docId, string dealType, string returnUrl = null)

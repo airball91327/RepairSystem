@@ -86,17 +86,18 @@ namespace EDIS.Controllers
         [HttpPost]
         public ActionResult Index(QryRepListData qdata)
         {
-            string docid = qdata.qtyDOCID;     //Search all engineers' docs,when user's role is engineer.
-            string ano = qdata.qtyASSETNO;     //Search all engineers' docs,when user's role is engineer.
-            string acc = qdata.qtyACCDPT;      //Search all engineers' docs,when user's role is engineer.
-            string aname = qdata.qtyASSETNAME; //Search all engineers' docs,when user's role is engineer.
+            string docid = qdata.qtyDOCID;     
+            string ano = qdata.qtyASSETNO;     
+            string acc = qdata.qtyACCDPT;      
+            string aname = qdata.qtyASSETNAME; 
             string ftype = qdata.qtyFLOWTYPE;
-            string dptid = qdata.qtyDPTID;     //Search all engineers' docs,when user's role is engineer.
+            string dptid = qdata.qtyDPTID;     
             string qtyDate1 = qdata.qtyApplyDateFrom;
             string qtyDate2 = qdata.qtyApplyDateTo;
             string qtyDealStatus = qdata.qtyDealStatus;
             string qtyIsCharged = qdata.qtyIsCharged;
             string qtyDateType = qdata.qtyDateType;
+            bool searchAllDoc = qdata.qtySearchAllDoc;
 
             DateTime applyDateFrom = DateTime.Now;
             DateTime applyDateTo = DateTime.Now;
@@ -139,17 +140,18 @@ namespace EDIS.Controllers
             var ur = _userRepo.Find(u => u.UserName == this.User.Identity.Name).FirstOrDefault();
 
             /* Check search type for engineer, if no search value search users's doc, else search all. */
-            var searchAllDoc = false;
-            if (!(string.IsNullOrEmpty(docid) && string.IsNullOrEmpty(ano) && string.IsNullOrEmpty(acc) 
-                                              && string.IsNullOrEmpty(aname) && string.IsNullOrEmpty(dptid)))
-            {
-                if (userManager.IsInRole(User, "RepEngineer") == true)
-                    searchAllDoc = true;
-            }
+            //var searchAllDoc = false;
+            //if (!(string.IsNullOrEmpty(docid) && string.IsNullOrEmpty(ano) && string.IsNullOrEmpty(acc) 
+            //                                  && string.IsNullOrEmpty(aname) && string.IsNullOrEmpty(dptid)))
+            //{
+            //    if (userManager.IsInRole(User, "RepEngineer") == true)
+            //        searchAllDoc = true;
+            //}
 
             var rps = _context.Repairs.ToList();
             if (!string.IsNullOrEmpty(docid))
             {
+                docid = docid.Trim();
                 rps = rps.Where(v => v.DocId == docid).ToList();
             }
             if (!string.IsNullOrEmpty(ano))
@@ -1197,19 +1199,20 @@ namespace EDIS.Controllers
 
         public ActionResult ExportToExcel(string qtyDocId, string qtyAssetNo, string qtyAccDpt, string qtyAssetName,
                                           string qtyFlowType, string qtyDptId, string Date1, string Date2,
-                                          string DealStatus, string IsCharged, string DateType)
+                                          string DealStatus, string IsCharged, string DateType, bool SearchAllDoc)
         {
-            string docid = qtyDocId;     //Search all engineers' docs,when user's role is engineer.
-            string ano = qtyAssetNo;     //Search all engineers' docs,when user's role is engineer.
-            string acc = qtyAccDpt;      //Search all engineers' docs,when user's role is engineer.
-            string aname = qtyAssetName; //Search all engineers' docs,when user's role is engineer.
+            string docid = qtyDocId;     
+            string ano = qtyAssetNo;    
+            string acc = qtyAccDpt;      
+            string aname = qtyAssetName; 
             string ftype = qtyFlowType;
-            string dptid = qtyDptId;     //Search all engineers' docs,when user's role is engineer.
+            string dptid = qtyDptId;     
             string qtyDate1 = Date1;
             string qtyDate2 = Date2;
             string qtyDealStatus = DealStatus;
             string qtyIsCharged = IsCharged;
             string qtyDateType = DateType;
+            bool searchAllDoc = SearchAllDoc;
 
             DateTime applyDateFrom = DateTime.Now;
             DateTime applyDateTo = DateTime.Now;
@@ -1252,17 +1255,18 @@ namespace EDIS.Controllers
             var ur = _userRepo.Find(u => u.UserName == this.User.Identity.Name).FirstOrDefault();
 
             /* Check search type for engineer, if no search value search users's doc, else search all. */
-            var searchAllDoc = false;
-            if (!(string.IsNullOrEmpty(docid) && string.IsNullOrEmpty(ano) && string.IsNullOrEmpty(acc)
-                                              && string.IsNullOrEmpty(aname) && string.IsNullOrEmpty(dptid)))
-            {
-                if (userManager.IsInRole(User, "RepEngineer") == true)
-                    searchAllDoc = true;
-            }
+            //var searchAllDoc = false;
+            //if (!(string.IsNullOrEmpty(docid) && string.IsNullOrEmpty(ano) && string.IsNullOrEmpty(acc)
+            //                                  && string.IsNullOrEmpty(aname) && string.IsNullOrEmpty(dptid)))
+            //{
+            //    if (userManager.IsInRole(User, "RepEngineer") == true)
+            //        searchAllDoc = true;
+            //}
 
             var rps = _context.Repairs.ToList();
             if (!string.IsNullOrEmpty(docid))
             {
+                docid = docid.Trim();
                 rps = rps.Where(v => v.DocId == docid).ToList();
             }
             if (!string.IsNullOrEmpty(ano))

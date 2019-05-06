@@ -119,6 +119,7 @@ namespace EDIS.Controllers
             var repairDtls = _context.RepairDtls.ToList();
             if (!string.IsNullOrEmpty(docid))   //表單編號
             {
+                docid = docid.Trim();
                 rps = rps.Where(v => v.DocId == docid).ToList();
             }
             if (!string.IsNullOrEmpty(ano))     //財產編號

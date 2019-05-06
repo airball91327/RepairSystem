@@ -47,7 +47,8 @@ namespace EDIS.Controllers
 
             if (fBrowserIsMobile())
             {
-                if (userManager.IsInRole(User, "RepEngineer") == true)
+                if (userManager.IsInRole(User, "RepEngineer") == true &&
+                    userManager.IsInRole(User, "RepMgr") == false)
                 {
                     // go to mobile pages
                     return RedirectToAction("Index", "Repair", new { Area = "Mobile" });

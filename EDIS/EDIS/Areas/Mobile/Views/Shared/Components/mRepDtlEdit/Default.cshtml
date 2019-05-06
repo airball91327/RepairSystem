@@ -29,7 +29,6 @@
                 <div class=form-group>
                     <label asp-for="DealState" class="control-title"></label>
                     <select asp-for="DealState" asp-items="@Model.DealStates" class="form-control" required>
-                        <option selected disabled>請選擇</option>
 
                     </select>
                     <span asp-validation-for="DealState" class="text-danger"></span>

@@ -24,15 +24,17 @@ else
 
                 <div class="col-xs-12">
                     <h4>
-                        @Html.DisplayFor(modelItem => item.DocId)
+                        @Html.DisplayFor(modelItem => item.DocId)                  
                     </h4>
                 </div>
 
                 <div class="col-xs-12 myStyle">
-                    <span>@Html.DisplayFor(model => item.ApplyDptName)</span>&nbsp;
-                    <span>@Html.DisplayFor(model => item.ApplyDate)</span>&nbsp;
-                    <span>@Html.DisplayFor(model => item.AssetName)</span>&nbsp;
-                    <span>@Html.DisplayFor(model => item.TroubleDes)</span>
+                    <span>@Html.DisplayFor(modelItem => item.repdata.UserName)&nbsp;</span>
+                    <span>分機 @Html.DisplayFor(modelItem => item.repdata.Ext)&nbsp;</span>
+                    <span>@Html.DisplayFor(modelItem => item.ApplyDptName)&nbsp;</span>
+                    <span>@Html.DisplayFor(modelItem => item.ApplyDate)&nbsp;</span>
+                    <span>@Html.DisplayFor(modelItem => item.AssetName)&nbsp;</span>
+                    <span>@Html.DisplayFor(modelItem => item.TroubleDes)</span>
                 </div>
 
             </button>
