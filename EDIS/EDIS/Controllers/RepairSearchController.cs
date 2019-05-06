@@ -29,7 +29,8 @@ namespace EDIS.Controllers
             ViewData["FLOWTYPE"] = new SelectList(FlowlistItem, "Value", "Text");
 
             /* 成本中心 & 申請部門的下拉選單資料 */
-            var departments = _context.Departments.ToList();
+            var dptList = new[] { "K", "P", "C" };  //本院部門
+            var departments = _context.Departments.Where(d => dptList.Contains(d.Loc)).ToList();
             List<SelectListItem> listItem = new List<SelectListItem>();
             foreach (var item in departments)
             {
