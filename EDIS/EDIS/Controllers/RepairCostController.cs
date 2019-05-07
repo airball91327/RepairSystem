@@ -59,12 +59,33 @@ namespace EDIS.Controllers
             {
                 try
                 {
-                    var dupData = _context.RepairCosts.Where(c => c.DocId == repairCost.DocId && c.PartName == repairCost.PartName && c.Standard == repairCost.Standard).FirstOrDefault();
-                    if(dupData != null)
+                    if(repairCost.StockType == "2")
                     {
-                        string msg = "資料重複儲存!!";
-                        return BadRequest(msg);
+                        var dupData = _context.RepairCosts.Include(c => c.TicketDtl)
+                                                          .Where(c => c.DocId == repairCost.DocId &&
+                                                                 c.PartName == repairCost.PartName &&
+                                                                 c.Standard == repairCost.Standard &&
+                                                                 c.TicketDtl.TicketDtlNo == repairCost.TicketDtl.TicketDtlNo).FirstOrDefault();
+                        if (dupData != null)
+                        {
+                            string msg = "資料重複儲存!!";
+                            return BadRequest(msg);
+                        }
                     }
+                    else
+                    {
+                        var dupData = _context.RepairCosts.Include(c => c.TicketDtl)
+                                                          .Where(c => c.DocId == repairCost.DocId &&
+                                                                 c.PartName == repairCost.PartName &&
+                                                                 c.Standard == repairCost.Standard &&
+                                                                 c.SignNo == repairCost.SignNo).FirstOrDefault();
+                        if (dupData != null)
+                        {
+                            string msg = "資料重複儲存!!";
+                            return BadRequest(msg);
+                        }
+                    }  
+                    
                     int seqno = _context.RepairCosts.Where(c => c.DocId == repairCost.DocId)
                                                     .Select(c => c.SeqNo).DefaultIfEmpty().Max();
                     repairCost.SeqNo = seqno + 1;

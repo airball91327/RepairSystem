@@ -84,6 +84,7 @@ $(function () {
         var item = $(this).val();
         if (item === "2") {             // 點選"發票"
             $('#btnQtyStok').hide();
+            $("#SignNo").val('');
             $("#pnlSIGN").hide();
             $("#pnlACCDATE").show();
             $("#CVendor").show();
@@ -91,6 +92,7 @@ $(function () {
             $('label[for="AccountDate"]').text("發票日期");
         }
         else if (item === "3") {        // 點選"簽單"
+            $("#TicketDtl_TicketDtlNo").val('');
             $("#pnlTICKET").hide();
             $("#pnlACCDATE").show();
             $("#pnlSIGN").show();
