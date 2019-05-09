@@ -66,6 +66,7 @@
 
 <div>
     <a class="btn btn-default" href="@Url.Action("Index", "Home", new { Area = "" } )">回到簽核列表</a>
+    <a class="btn btn-primary" href="@Url.Action("PrintRepairDoc", "Repair", new { Area = "", DocId = Model.DocId } )" target="_blank" id="printBtn">列印</a>
 </div>
 
 @section Scripts {
