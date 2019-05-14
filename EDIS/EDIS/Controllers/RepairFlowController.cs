@@ -184,9 +184,18 @@ namespace EDIS.Controllers
                         string sto = "";
                         AppUserModel u;
                         RepairModel repair = _context.Repairs.Find(assign.DocId);
-                        repair.BuildingName = _context.Buildings.Where(b => b.BuildingId == Convert.ToInt32(repair.Building)).FirstOrDefault().BuildingName;
-                        repair.FloorName = _context.Floors.Where(f => f.BuildingId == Convert.ToInt32(repair.Building) && f.FloorId == repair.Floor).FirstOrDefault().FloorName;
-                        repair.AreaName = _context.Places.Where(p => p.BuildingId == Convert.ToInt32(repair.Building) && p.FloorId == repair.Floor && p.PlaceId == repair.Area).FirstOrDefault().PlaceName;
+                        if (repair.Building != null)
+                        {
+                            repair.BuildingName = _context.Buildings.Where(b => b.BuildingId == Convert.ToInt32(repair.Building)).FirstOrDefault().BuildingName;
+                            repair.FloorName = _context.Floors.Where(f => f.BuildingId == Convert.ToInt32(repair.Building) && f.FloorId == repair.Floor).FirstOrDefault().FloorName;
+                            repair.AreaName = _context.Places.Where(p => p.BuildingId == Convert.ToInt32(repair.Building) && p.FloorId == repair.Floor && p.PlaceId == repair.Area).FirstOrDefault().PlaceName;
+                        }
+                        else
+                        {
+                            repair.BuildingName = "(無資料)";
+                            repair.FloorName = "";
+                            repair.AreaName = "";
+                        }
                         mail.from = new System.Net.Mail.MailAddress(ur.Email); //u.Email
                         _context.RepairFlows.Where(f => f.DocId == assign.DocId)
                                 .ToList()
@@ -262,9 +271,18 @@ namespace EDIS.Controllers
                         string body = "";
                         AppUserModel u;
                         RepairModel repair = _context.Repairs.Find(assign.DocId);
-                        repair.BuildingName = _context.Buildings.Where(b => b.BuildingId == Convert.ToInt32(repair.Building)).FirstOrDefault().BuildingName;
-                        repair.FloorName = _context.Floors.Where(f => f.BuildingId == Convert.ToInt32(repair.Building) && f.FloorId == repair.Floor).FirstOrDefault().FloorName;
-                        repair.AreaName = _context.Places.Where(p => p.BuildingId == Convert.ToInt32(repair.Building) && p.FloorId == repair.Floor && p.PlaceId == repair.Area).FirstOrDefault().PlaceName;
+                        if(repair.Building != null)
+                        {
+                            repair.BuildingName = _context.Buildings.Where(b => b.BuildingId == Convert.ToInt32(repair.Building)).FirstOrDefault().BuildingName;
+                            repair.FloorName = _context.Floors.Where(f => f.BuildingId == Convert.ToInt32(repair.Building) && f.FloorId == repair.Floor).FirstOrDefault().FloorName;
+                            repair.AreaName = _context.Places.Where(p => p.BuildingId == Convert.ToInt32(repair.Building) && p.FloorId == repair.Floor && p.PlaceId == repair.Area).FirstOrDefault().PlaceName;
+                        }
+                        else
+                        {
+                            repair.BuildingName = "(無資料)";
+                            repair.FloorName = "";
+                            repair.AreaName = "";
+                        }
                         mail.from = new System.Net.Mail.MailAddress(ur.Email); //ur.Email
                         u = _context.AppUsers.Find(flow.UserId);
                         mail.to = new System.Net.Mail.MailAddress(u.Email); //u.Email
