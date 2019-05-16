@@ -39,15 +39,26 @@ $(document).ready(function () {
     });
 
     $("#DealState").change(function () {
-        /* 3 = 已完成，4 = 報廢，9 = 退件 */
-        if ($(this).val() == 3 || $(this).val() == 9) {
+        /* 3 = 已完成，4 = 報廢，6 = 待發票，9 = 退件 */
+        if ($(this).val() == 3) {
+            $("#DealDes").attr("required", "required");
+            $("#EndDate").attr("required", "required");
+            $("#AssetNo").removeAttr("required");
+            $("#AssetNo").removeAttr("readonly");
+            $(".assetNoControl").hide();
+        }
+        else if ($(this).val() == 9) {
             $("#DealDes").attr("required", "required");
             $("#AssetNo").removeAttr("required");
             $("#AssetNo").removeAttr("readonly");
             $(".assetNoControl").hide();
         }
+        else if ($(this).val() == 6) {
+            $("#EndDate").attr("required", "required");
+        }
         else if ($(this).val() == 4 ) {
             $("#DealDes").attr("required", "required");
+            $("#EndDate").attr("required", "required");
             $(".assetNoControl").show();
 
             if ($('input:radio[name="HasAssetNo"]:checked').val() == 'Y') {
@@ -64,6 +75,7 @@ $(document).ready(function () {
         }
         else {
             $("#DealDes").removeAttr("required");
+            $("#EndDate").removeAttr("required");
             $("#dealDesErrorMsg").html("");
             $("#AssetNo").removeAttr("required");
             $("#AssetNo").removeAttr("readonly");

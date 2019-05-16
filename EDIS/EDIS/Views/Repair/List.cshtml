@@ -109,7 +109,7 @@ else
                                     }
                                 }
                             }
-                            else if (item.Flg == "?" && item.FlowCls == "工務/營建工程師" && UserManager.IsInRole(User, "RepEngineer"))
+                            else if (item.Flg == "?" && item.FlowCls.Contains("工程師") && UserManager.IsInRole(User, "RepEngineer"))
                             {
                                 @Html.ActionLink("編輯", "Edit", "Repair", new { Area = "", id = item.DocId }, new { target = "_blank" })
                                 @Html.Raw(" |")
