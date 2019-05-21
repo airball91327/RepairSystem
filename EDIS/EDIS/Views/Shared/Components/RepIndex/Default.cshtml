@@ -39,7 +39,7 @@
             var Date2 = $("#qtyApplyDateTo").val();
             var DealStatus = $("#qtyDealStatus").val();
             var IsCharged = $("#qtyIsCharged").val();
-            var DateType = $('input[name="qtyDateType"]:checked').val();
+            var DateType = $("#qtyDateType").val();
             var SearchAllDoc = false;
             if ($("#qtySearchAllDoc").is(':checked') == true) {           
                 SearchAllDoc = true;
@@ -154,9 +154,9 @@
                 <div class=form-inline>
                     <div class="form-group">
                         <label for="qtyApplyDateFrom" class="control-title">日期查詢</label>
-                        <span style="padding-top: 7px;">
-                            @Html.RadioButtonFor(model => model.qtyDateType, "申請日")&nbsp;申請日
-                            @Html.RadioButtonFor(model => model.qtyDateType, "結案日")&nbsp;結案日
+                        <span>
+                            <select asp-for="qtyDateType" asp-items="@ViewData["DateType"] as SelectList" class="form-control-s">
+                            </select>
                         </span>
                         <input asp-for="qtyApplyDateFrom" class="form-control" />
                         <span> ~ </span>

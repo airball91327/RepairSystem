@@ -78,7 +78,11 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="qtyApplyDateFrom" class="control-title">申請日期</label>
+                    <label for="qtyApplyDateFrom" class="control-title">日期查詢</label>
+                    <span>
+                        <select asp-for="qtyDateType" asp-items="@ViewData["DateType"] as SelectList" class="form-control-s">
+                        </select>
+                    </span>
                     <input asp-for="qtyApplyDateFrom" class="form-control" />
                     <span> ~ </span>
                     <input asp-for="qtyApplyDateTo" class="form-control" />

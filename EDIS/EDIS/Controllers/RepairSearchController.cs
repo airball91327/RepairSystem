@@ -57,6 +57,13 @@ namespace EDIS.Controllers
             }
             ViewData["DealStatus"] = new SelectList(listItem2, "Value", "Text");
 
+            /* 處理日期查詢的下拉選單 */
+            List<SelectListItem> listItem4 = new List<SelectListItem>();
+            listItem4.Add(new SelectListItem { Text = "申請日", Value = "申請日" });
+            listItem4.Add(new SelectListItem { Text = "完工日", Value = "完工日" });
+            listItem4.Add(new SelectListItem { Text = "結案日", Value = "結案日" });
+            ViewData["DateType"] = new SelectList(listItem4, "Value", "Text", "申請日");
+
             QryRepListData data = new QryRepListData();
 
             return View(data);
@@ -75,6 +82,7 @@ namespace EDIS.Controllers
             string qtyDate2 = qdata.qtyApplyDateTo;
             string ftype = qdata.qtyFLOWTYPE;
             string qtyDealStatus = qdata.qtyDealStatus;
+            string qtyDateType = qdata.qtyDateType;
 
             DateTime applyDateFrom = DateTime.Now;
             DateTime applyDateTo = DateTime.Now;
@@ -140,9 +148,12 @@ namespace EDIS.Controllers
                 rps = rps.Where(v => v.AssetName != null)
                          .Where(v => v.AssetName.Contains(aname)).ToList();
             }
-            if (string.IsNullOrEmpty(qtyDate1) == false || string.IsNullOrEmpty(qtyDate2) == false)     //時間區間
+            if (string.IsNullOrEmpty(qtyDate1) == false || string.IsNullOrEmpty(qtyDate2) == false)  //申請日
             {
-                rps = rps.Where(v => v.ApplyDate >= applyDateFrom && v.ApplyDate <= applyDateTo).ToList();
+                if (qtyDateType == "申請日")
+                {
+                    rps = rps.Where(v => v.ApplyDate >= applyDateFrom && v.ApplyDate <= applyDateTo).ToList();
+                }
             }
             if (!string.IsNullOrEmpty(ftype))   //流程狀態
             {
@@ -214,7 +225,10 @@ namespace EDIS.Controllers
                     Flg = j.flow.Status,
                     FlowUid = j.flow.UserId,
                     FlowCls = j.flow.Cls,
-                    FlowUidName = _context.AppUsers.Find(j.flow.UserId).FullName
+                    FlowUidName = _context.AppUsers.Find(j.flow.UserId).FullName,
+                    EndDate = j.repdtl.EndDate,
+                    CloseDate = j.repdtl.CloseDate,
+                    repdata = j.repair
                 }));
 
             /* 設備編號"有"、"無"的對應，"有"讀取table相關data，"無"只顯示申請人輸入的設備名稱 */
@@ -238,10 +252,34 @@ namespace EDIS.Controllers
                 }
             }
 
+            /* Search date by DateType. */
+            if (string.IsNullOrEmpty(qtyDate1) == false || string.IsNullOrEmpty(qtyDate2) == false)
+            {
+                if (qtyDateType == "結案日")
+                {
+                    rv = rv.Where(v => v.CloseDate >= applyDateFrom && v.CloseDate <= applyDateTo).ToList();
+                }
+                else if (qtyDateType == "完工日")
+                {
+                    rv = rv.Where(v => v.EndDate >= applyDateFrom && v.EndDate <= applyDateTo).ToList();
+                }
+            }
+
             /* Sorting search result. */
             if (rv.Count() != 0)
             {
-                rv = rv.OrderByDescending(r => r.ApplyDate).ThenByDescending(r => r.DocId).ToList();
+                if (qtyDateType == "結案日")
+                {
+                    rv = rv.OrderByDescending(r => r.CloseDate).ThenByDescending(r => r.DocId).ToList();
+                }
+                else if (qtyDateType == "完工日")
+                {
+                    rv = rv.OrderByDescending(r => r.EndDate).ThenByDescending(r => r.DocId).ToList();
+                }
+                else
+                {
+                    rv = rv.OrderByDescending(r => r.ApplyDate).ThenByDescending(r => r.DocId).ToList();
+                }
             }
 
             return View("SearchList", rv);

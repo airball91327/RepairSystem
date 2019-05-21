@@ -60,9 +60,14 @@ namespace EDIS.Components.Repair
             listItem3.Add(new SelectListItem { Text = "無", Value = "N" });
             ViewData["IsCharged"] = new SelectList(listItem3, "Value", "Text");
 
+            /* 處理日期查詢的下拉選單 */
+            List<SelectListItem> listItem4 = new List<SelectListItem>();
+            listItem4.Add(new SelectListItem { Text = "申請日", Value = "申請日" });
+            listItem4.Add(new SelectListItem { Text = "完工日", Value = "完工日" });
+            listItem4.Add(new SelectListItem { Text = "結案日", Value = "結案日" });
+            ViewData["DateType"] = new SelectList(listItem4, "Value", "Text", "申請日");
+
             QryRepListData data = new QryRepListData();
-            /* Set Default search value. */
-            data.qtyDateType = "申請日";
 
             return View(data);
         }
