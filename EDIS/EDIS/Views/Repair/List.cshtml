@@ -91,7 +91,7 @@ else
                             {
                                 if (item.FlowCls == "驗收人")
                                 {
-                                    @Html.ActionLink("結案", "Edit", "Repair", new { Area = "", id = item.DocId, page = 5 })
+                                    @Html.ActionLink("結案", "Edit", "Repair", new { Area = "", id = item.DocId, page = 5 }, new { target = "_blank" })
                                     @Html.Raw(" |")
                                 }
                                 else
@@ -104,7 +104,7 @@ else
                                     }
                                     else
                                     {
-                                        @Html.ActionLink("編輯", "Edit", "Repair", new { Area = "", id = item.DocId, page = 5 })
+                                        @Html.ActionLink("編輯", "Edit", "Repair", new { Area = "", id = item.DocId, page = 5 }, new { target = "_blank" })
                                         @Html.Raw(" |")
                                     }
                                 }
@@ -121,7 +121,6 @@ else
                                 @Html.ActionLink("預覽", "Views", "Repair", new { Area = "", id = item.DocId })
                                 @Html.Raw(" |")
                             }
-                            @*@Html.ActionLink("列印", "PrintRepairDoc", "Repair", new { Area = "", DocId = item.DocId }, new { target = "_blank" })*@
                             @Html.ActionLink("列印", "PrintRepairDoc", "Repair", new { Area = "", DocId = item.DocId }, new { target = "_blank" })
                             @* /* 該單的申請人 */ *@
                             @if (item.Flg == "?" && item.FlowUid == UserManager.GetCurrentUserId(User) && item.FlowCls == "申請人")
@@ -227,7 +226,7 @@ else
                 {
                     <tr>
                         <td width="100px">
-                            @Html.ActionLink("結案", "Edit", "Repair", new { Area = "", id = item.DocId, page = 5 })
+                            @Html.ActionLink("結案", "Edit", "Repair", new { Area = "", id = item.DocId, page = 5 }, new { target = "_blank" })
                             @Html.Raw(" |")
                             @Html.ActionLink("列印", "PrintRepairDoc", "Repair", new { Area = "", DocId = item.DocId }, new { target = "_blank" })
                         </td>
