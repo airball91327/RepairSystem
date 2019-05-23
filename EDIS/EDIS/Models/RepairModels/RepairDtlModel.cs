@@ -44,7 +44,7 @@ namespace EDIS.Models.RepairModels
         [Display(Name = "[有][無]費用")]
         public string IsCharged { get; set; }
         [Display(Name = "費用")]
-        [DisplayFormat(DataFormatString = "{0:0}")]
+        [DisplayFormat(DataFormatString = "{0:N0}")]
         public decimal Cost { get; set; }
         [DataType(DataType.Date)]
         [Display(Name = "完工日期")]

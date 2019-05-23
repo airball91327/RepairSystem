@@ -24,11 +24,13 @@ namespace EDIS.Models.RepairModels
         [Display(Name = "單位")]
         public string Unite { get; set; }
         [Required(ErrorMessage = "必填寫欄位")]
+        [DisplayFormat(DataFormatString = "{0:N0}")]
         [Display(Name = "單價")]
         public decimal Price { get; set; }
         [Required(ErrorMessage = "必填寫欄位")]
         [Display(Name = "數量")]
         public int Qty { get; set; }
+        [DisplayFormat(DataFormatString = "{0:N0}")]
         [Display(Name = "總金額")]
         public decimal TotalCost { get; set; }
         [Required(ErrorMessage = "必填寫欄位")]

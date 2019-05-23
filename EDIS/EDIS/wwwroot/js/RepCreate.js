@@ -221,7 +221,8 @@ $(function () {
                 }
                 $("#AccDptName").val(data);  
             }
-        });    
+        });
+        GetAccDptLocation(AccDptId);
     });
 
     /* If user select "本單位", hide select location options. */
@@ -314,9 +315,9 @@ function onSuccess() {
 
     var DocId = $("#DocId").val();
     var repType = $('input:radio[name="RepType"]:checked').val();
-    /* If repair type is 送修, print before submit. */
-    //console.log(repType);
-    if (repType == "送修") {
+    /* Print confirm before submit. */
+    var r = confirm("是否列印?");
+    if (r == true) {
         window.printRepairDoc(DocId);
     }
 
@@ -384,7 +385,7 @@ function GetDptLocation(DptId) {
             //console.log(data); //Debug
             if (data == "查無地點") {
                 $("#divLocations").hide();
-                alert("查無部門資料!");
+                alert("查無部門地點!");
             }
             else if (data == "多個地點") {
                 $("#divLocations").show();
@@ -398,6 +399,33 @@ function GetDptLocation(DptId) {
                 $('#Area').trigger("change");
        
                 $("#divLocations").hide();
+            }
+        }
+    });
+}
+
+/* Get and check the AccDpt's location. */
+function GetAccDptLocation(DptId) {
+    $.ajax({
+        url: '../Repair/GetDptLoc',
+        type: "POST",
+        dataType: "json",
+        data: { dptId: DptId },
+        success: function (data) {
+            //console.log(data); //Debug
+            if (data == "查無地點") {
+                alert("查無部門地點!");
+            }
+            else if (data == "多個地點") {
+                alert("地點不只一處，請自行選取!");
+            }
+            else {
+                $("#Building").val(data.buildingId);
+                $('#Building').trigger("change");
+                $("#Floor").val(data.floorId);
+                $('#Floor').trigger("change");
+                $("#Area").val(data.placeId);
+                $('#Area').trigger("change");
             }
         }
     });

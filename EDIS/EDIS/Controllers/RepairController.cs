@@ -865,7 +865,12 @@ namespace EDIS.Controllers
         [HttpPost]
         public JsonResult GetDptLoc(string dptId)
         {
-            var dptLocations = _context.Places.Where(p => p.PlaceId.Contains(dptId)).ToList();
+            // LIKE operator is added in Entity Framework Core 2.0
+            var compareDptId = dptId + "%";
+            var dptLocations = from p in _context.Places
+                               where EF.Functions.Like(p.PlaceId, compareDptId)
+                               select p;
+
             if ( dptLocations.Count() == 0 )
             {
                 return Json("查無地點");
