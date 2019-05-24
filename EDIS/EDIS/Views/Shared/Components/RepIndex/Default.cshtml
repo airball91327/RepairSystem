@@ -41,7 +41,7 @@
             var IsCharged = $("#qtyIsCharged").val();
             var DateType = $("#qtyDateType").val();
             var SearchAllDoc = false;
-            if ($("#qtySearchAllDoc").is(':checked') == true) {           
+            if ($("#qtySearchAllDoc").is(':checked') == true) {
                 SearchAllDoc = true;
             }
 
@@ -78,7 +78,7 @@
         $("#repSearchForm").submit();
         /* Refresh repair count. */
         $.ajax({
-            url: '../Repair/GetRepairCounts',
+            url: '@Url.Action("GetRepairCounts", "Repair", new { Area = "" })',
             type: "GET",
             success: function (data) {
                 $("#repairCount").html(data);
