@@ -991,6 +991,15 @@ namespace EDIS.Controllers
             }
         }
         
+        public JsonResult GetRepairCounts()
+        {
+            /* Get user details. */
+            var ur = _userRepo.Find(u => u.UserName == this.User.Identity.Name).FirstOrDefault();
+            var repairCount = _context.RepairFlows.Where(f => f.Status == "?")
+                                                  .Where(f => f.UserId == ur.Id).Count();
+            return Json(repairCount);
+        }
+
         public JsonResult QueryUsers(string QueryStr)
         {
             /* Search user by fullname or username. */

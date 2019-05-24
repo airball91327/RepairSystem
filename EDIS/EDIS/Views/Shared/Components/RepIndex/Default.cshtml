@@ -76,6 +76,14 @@
     });
     function ReSubmit() {
         $("#repSearchForm").submit();
+        /* Refresh repair count. */
+        $.ajax({
+            url: '../Repair/GetRepairCounts',
+            type: "GET",
+            success: function (data) {
+                $("#repairCount").html(data);
+            }
+        });
     }
 </script>
 
