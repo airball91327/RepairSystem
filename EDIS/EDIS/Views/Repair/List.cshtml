@@ -85,8 +85,8 @@ else
                         <td width="100px">
                             @* /* 流程在登入使用者身上 */ *@
                             @* /* If 流程在使用者身上
-                                  else if 使用者為工程師，顯示流程在"工務/營建工程師"的案子
-                                */*@
+          else if 使用者為工程師，顯示流程在"工務/營建工程師"的案子
+        */*@
                             @if (item.Flg == "?" && item.FlowUid == UserManager.GetCurrentUserId(User))
                             {
                                 if (item.FlowCls == "驗收人")
@@ -125,8 +125,16 @@ else
                             @* /* 該單的申請人 */ *@
                             @if (item.Flg == "?" && item.FlowUid == UserManager.GetCurrentUserId(User) && item.FlowCls == "申請人")
                             {
-                                @Html.Raw(" |")
+                                @Html.Raw(" | ")
                                 @Html.ActionLink("廢除", "Delete", "Repair", new { id = item.DocId })
+                            }
+                            @* /* 該單的申請人於【流程中】查詢，並且廢除。【流程於工程師、狀態為未處理、無完工日】 */ *@
+                            @if (item.Flg == "?" && item.FlowCls.Contains("工程師") &&
+                                 item.repdata.UserId == UserManager.GetCurrentUserId(User) &&
+                                 item.DealState == "未處理" && item.EndDate == null)
+                            {
+                                @Html.Raw(" | ")
+                                @Html.ActionLink("廢除", "CheckBeforeDelete", "Repair", new { id = item.DocId })
                             }
                         </td>
                         <td>

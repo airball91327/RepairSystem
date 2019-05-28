@@ -1016,38 +1016,6 @@ namespace EDIS.Controllers
             return Json(list);
         }
 
-        // GET: Repair/Delete/5
-        public ActionResult Delete(string id)
-        {
-            // Find document.
-            RepairModel repair = _context.Repairs.Find(id);
-            // Find names to view.
-            if (!string.IsNullOrEmpty(repair.Building))
-            {
-                int buildingId = System.Convert.ToInt32(repair.Building);
-                repair.BuildingName = _context.Buildings.Find(buildingId).BuildingName;
-                if (!string.IsNullOrEmpty(repair.Floor))
-                {
-                    repair.FloorName = _context.Floors.Find(buildingId, repair.Floor).FloorName;
-                    repair.AreaName = _context.Places.Find(buildingId, repair.Floor, repair.Area).PlaceName;
-                }
-            }
-            //int buildingId = System.Convert.ToInt32(repair.Building);
-            repair.DptName = _context.Departments.Find(repair.DptId).Name_C;
-            repair.AccDptName = _context.Departments.Find(repair.AccDpt).Name_C;
-            //repair.BuildingName = _context.Buildings.Find(buildingId).BuildingName;
-            //repair.FloorName = _context.Floors.Find(buildingId, repair.Floor).FloorName;
-            //repair.AreaName = _context.Places.Find(buildingId, repair.Floor, repair.Area).PlaceName;
-            repair.EngName = _context.AppUsers.Find(repair.EngId).FullName;
-            repair.UserAccount = _context.AppUsers.Find(repair.UserId).UserName;
-
-            if (repair == null)
-            {
-                return StatusCode(404);
-            }
-            return View(repair);
-        }
-
         // GET: Repairs/PrintRepairDoc/5
         public ActionResult PrintRepairDoc(string DocId, int printType)
         {
@@ -1182,6 +1150,51 @@ namespace EDIS.Controllers
                 return View("PrintRepairDoc2", vm);
             }
             return View(vm);
+        }
+
+        // Get: Repairs/CheckBeforeDelete/5
+        public ActionResult CheckBeforeDelete(string id)
+        {
+            // Find document.
+            RepairDtlModel repairDtl = _context.RepairDtls.Find(id);
+            // If has EndDate or DealState is not 未處理, redirect to home.
+            if (repairDtl.EndDate != null || repairDtl.DealState != 1)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            return RedirectToAction("Delete", "Repair", new { id = id });
+        }
+
+        // GET: Repair/Delete/5
+        public ActionResult Delete(string id)
+        {
+            // Find document.
+            RepairModel repair = _context.Repairs.Find(id);
+            // Find names to view.
+            if (!string.IsNullOrEmpty(repair.Building))
+            {
+                int buildingId = System.Convert.ToInt32(repair.Building);
+                repair.BuildingName = _context.Buildings.Find(buildingId).BuildingName;
+                if (!string.IsNullOrEmpty(repair.Floor))
+                {
+                    repair.FloorName = _context.Floors.Find(buildingId, repair.Floor).FloorName;
+                    repair.AreaName = _context.Places.Find(buildingId, repair.Floor, repair.Area).PlaceName;
+                }
+            }
+            //int buildingId = System.Convert.ToInt32(repair.Building);
+            repair.DptName = _context.Departments.Find(repair.DptId).Name_C;
+            repair.AccDptName = _context.Departments.Find(repair.AccDpt).Name_C;
+            //repair.BuildingName = _context.Buildings.Find(buildingId).BuildingName;
+            //repair.FloorName = _context.Floors.Find(buildingId, repair.Floor).FloorName;
+            //repair.AreaName = _context.Places.Find(buildingId, repair.Floor, repair.Area).PlaceName;
+            repair.EngName = _context.AppUsers.Find(repair.EngId).FullName;
+            repair.UserAccount = _context.AppUsers.Find(repair.UserId).UserName;
+
+            if (repair == null)
+            {
+                return StatusCode(404);
+            }
+            return View(repair);
         }
 
         // POST: Repairs/Delete/5
