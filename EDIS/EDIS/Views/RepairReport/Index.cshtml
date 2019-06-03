@@ -1,0 +1,60 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_PassedLayout.cshtml";
+    ViewData["Title"] = "Index";
+}
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        $("#exportExcelBtn").click(function () {
+            var QtyMonth = $("#qtyMonth").val();
+
+            $.ajax({
+                url: "@Url.Action("ExportToExcel", "RepairReport", new { Area = "" })",
+                data: {
+                    qtyMonth: QtyMonth
+                },
+                success: function (response, textStatus, jqXHR) {
+
+                    window.location.href = '@Url.Action("ExportToExcel", "RepairReport", new { Area = "" })' + '?qtyMonth=' + QtyMonth;
+                },
+                error: function (xhr, status, error) {
+                    alert(error);
+                }
+            });
+        });
+    });
+</script>
+
+<style>
+    .panel {
+        background-color: inherit;
+        border-color: white;
+    }
+
+    form label {
+        padding-top: 7px;
+        font-size: 120%;
+    }
+</style>
+
+<h2>維護月指標</h2>
+<hr />
+<div class="panel panel-primary">
+    <div class="panel-body">
+        <row class="col-md-12">
+            <div class="form-inline">
+                <div class="form-group col-md-4">
+                    <label class="control-label col-md-4">選擇月份:</label>
+                    <div class="col-md-8">
+                        <input type="month" class="form-control" id="qtyMonth" />
+                    </div>
+                </div>
+                <div>
+                    <input type="button" class="btn btn-primary" value="匯出Excel" id="exportExcelBtn" />
+                </div>
+            </div>
+        </row>
+    </div>
+</div>
