@@ -17,6 +17,8 @@ namespace EDIS.Models.RepairModels
         public int RepInOuts { get; set; }
         [Display(Name = "報廢件數")]
         public int RepScraps { get; set; }
+        [Display(Name = "未處理件數")]
+        public int RepNoDeals { get; set; }
         [Display(Name = "總件數")]
         public int RepTotals { get; set; }
         [Display(Name = "增設完成率")]
