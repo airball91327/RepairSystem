@@ -40,10 +40,17 @@ namespace EDIS.Controllers
         // GET: /RepairReport/Index
         public ActionResult Index()
         {
+            List<SelectListItem> listItem = new List<SelectListItem>();
+            listItem.Add(new SelectListItem { Text = "工務一課", Value = "8411" });
+            listItem.Add(new SelectListItem { Text = "工務二課", Value = "8412" });
+            listItem.Add(new SelectListItem { Text = "工務三課－中華工務組", Value = "8413" });
+            listItem.Add(new SelectListItem { Text = "工務三課－教研工務組", Value = "8414" });
+            ViewData["DPTID"] = new SelectList(listItem, "Value", "Text", "");
+
             return View();
         }
 
-        public IActionResult ExportToExcel(DateTime qtyMonth)
+        public IActionResult ExportToExcel(DateTime qtyMonth, string qtyDptId)
         {
             DateTime reportMonth = qtyMonth;
 
@@ -66,7 +73,7 @@ namespace EDIS.Controllers
                                              }).ToList();
 
             //找出各案件的負責工程師(流程最後一位工程師)
-            foreach(var item in qtyRepairs)
+            foreach (var item in qtyRepairs)
             {
                 var tempEng = _context.RepairFlows.Where(rf => rf.DocId == item.repair.DocId)
                                                   .Where(rf => rf.Cls.Contains("工程師"))
@@ -83,12 +90,37 @@ namespace EDIS.Controllers
                 }
             }
 
+            // 依照搜尋部門篩選資料
+            var qtyRepairs2 = qtyRepairs.ToList();
+            if (qtyDptId == "8411")
+            {
+                qtyRepairs2 = qtyRepairs2.Where(r => r.repair.EngName == "8411").ToList();
+            }
+            else if(qtyDptId == "8412")
+            {
+                qtyRepairs2 = qtyRepairs2.Where(r => r.repair.EngName == "8412").ToList();
+            }
+            else if(qtyDptId == "8413")
+            {
+                qtyRepairs2 = qtyRepairs2.Where(r => r.repair.EngName == "8413").ToList();
+            }
+            else if(qtyDptId == "8414")
+            {
+                qtyRepairs2 = qtyRepairs2.Where(r => r.repair.EngName == "8414").ToList();
+            }
+            else
+            {
+                qtyRepairs2 = qtyRepairs2.Where(r => r.repair.EngName == "8410" || r.repair.EngName == "8411" ||
+                                                     r.repair.EngName == "8412" || r.repair.EngName == "8413" ||
+                                                     r.repair.EngName == "8414").ToList();
+            }
+
             // 增設、內修、外修、內外修、報廢件數(月為單位)
-            var repAdds = qtyRepairs.Where(r => r.repair.RepType == "增設");
-            var repIns = qtyRepairs.Where(r => r.repair.RepType != "增設" && r.repdtl.InOut == "內修" && r.repdtl.DealState != 4);
-            var repOuts = qtyRepairs.Where(r => r.repair.RepType != "增設" && r.repdtl.InOut == "外修" && r.repdtl.DealState != 4);
-            var repInOuts = qtyRepairs.Where(r => r.repair.RepType != "增設" && r.repdtl.InOut == "內外修" && r.repdtl.DealState != 4);
-            var repScraps = qtyRepairs.Where(r => r.repair.RepType != "增設" && r.repdtl.DealState == 4);
+            var repAdds = qtyRepairs2.Where(r => r.repair.RepType == "增設");
+            var repIns = qtyRepairs2.Where(r => r.repair.RepType != "增設" && r.repdtl.InOut == "內修" && r.repdtl.DealState != 4);
+            var repOuts = qtyRepairs2.Where(r => r.repair.RepType != "增設" && r.repdtl.InOut == "外修" && r.repdtl.DealState != 4);
+            var repInOuts = qtyRepairs2.Where(r => r.repair.RepType != "增設" && r.repdtl.InOut == "內外修" && r.repdtl.DealState != 4);
+            var repScraps = qtyRepairs2.Where(r => r.repair.RepType != "增設" && r.repdtl.DealState == 4);
 
             //ClosedXML的用法 先new一個Excel Workbook
             using (XLWorkbook workbook = new XLWorkbook())
@@ -114,10 +146,10 @@ namespace EDIS.Controllers
                 ws.Cell(3, 3).Value = repOuts.Count();
                 ws.Cell(3, 4).Value = repInOuts.Count();
                 ws.Cell(3, 5).Value = repScraps.Count();
-                ws.Cell(3, 6).Value = qtyRepairs.Where(r => r.repair.RepType != "增設" && r.repdtl.InOut == null).Count();
-                ws.Cell(3, 7).Value = qtyRepairs.Count();
+                ws.Cell(3, 6).Value = qtyRepairs2.Where(r => r.repair.RepType != "增設" && r.repdtl.InOut == null).Count();
+                ws.Cell(3, 7).Value = qtyRepairs2.Count();
 
-                //Title2    【維修完成、結案率 (該月申請且已完成或已結案案件 / 該月申請總件數)】
+                //Title2    【維修完成、結案率 (該月申請且已完成或已結案案件 / 該月申請各相對總件數)】
                 ws.Cell(5, 1).Value = "【維修完成率】";
                 ws.Cell(5, 5).Value = "【維修結案率】";
                 ws.Cell(6, 1).Value = "增設";
@@ -214,9 +246,9 @@ namespace EDIS.Controllers
                 ws.Cell(18, 3).Value = "尚未輸入費用";
 
                 //Data5
-                ws.Cell(19, 1).Value = qtyRepairs.Where(r => r.repdtl.IsCharged == "Y").Count();
-                ws.Cell(19, 2).Value = qtyRepairs.Where(r => r.repdtl.IsCharged == "N").Count();
-                ws.Cell(19, 3).Value = qtyRepairs.Where(r => r.repdtl.IsCharged == null).Count();
+                ws.Cell(19, 1).Value = qtyRepairs2.Where(r => r.repdtl.IsCharged == "Y").Count();
+                ws.Cell(19, 2).Value = qtyRepairs2.Where(r => r.repdtl.IsCharged == "N").Count();
+                ws.Cell(19, 3).Value = qtyRepairs2.Where(r => r.repdtl.IsCharged == null).Count();
 
                 //Title6    【有費用件數(總費用/有費用件數)】
                 ws.Cell(21, 1).Value = "【有費用件數】";
@@ -224,11 +256,23 @@ namespace EDIS.Controllers
                 ws.Cell(22, 2).Value = "平均每件維修費用";
 
                 //Data6
-                int costRepairs = qtyRepairs.Where(r => r.repdtl.IsCharged == "Y").Count();
-                decimal totalCosts = qtyRepairs.Where(r => r.repdtl.IsCharged == "Y").Select(rd => rd.repdtl.Cost).DefaultIfEmpty(0).Sum();
+                int costRepairs = qtyRepairs2.Where(r => r.repdtl.IsCharged == "Y").Count();
+                decimal totalCosts = qtyRepairs2.Where(r => r.repdtl.IsCharged == "Y").Select(rd => rd.repdtl.Cost).DefaultIfEmpty(0).Sum();
                 decimal avgCosts = costRepairs != 0 ? totalCosts / costRepairs : 0;
                 ws.Cell(23, 1).Value = String.Format("{0:N0}", totalCosts); 
                 ws.Cell(23, 2).Value = String.Format("{0:N0}", avgCosts);
+
+                //計算公式
+                ws.Cell(26, 1).Value = "【維修完成率】";
+                ws.Cell(26, 2).Value = "【案件為當月申請且已完成的(增設/內修/外修/內外修)件數 / 當月申請(增設/內修/外修/內外修)總件數】";
+                ws.Cell(27, 1).Value = "【維修結案率】";
+                ws.Cell(27, 2).Value = "【案件為當月申請且已結案的(增設/內修/外修/內外修)件數 / 當月申請(增設/內修/外修/內外修)總件數】";
+                ws.Cell(28, 1).Value = "【維修且內修案件】";
+                ws.Cell(28, 2).Value = "【案件為當月申請且於N日內完成的內修件數 / 當月申請內修之總件數】";
+                ws.Cell(29, 1).Value = "【增設案件完成率】";
+                ws.Cell(29, 2).Value = "【案件為當月申請且於N日內完成的增設件數 / 當月申請增設之總件數】";
+                ws.Cell(30, 1).Value = "【平均每件維修費用】";
+                ws.Cell(30, 2).Value = "【總費用 / 有費用件數】";
 
                 //WorkSheet2
                 var ws2 = workbook.Worksheets.Add("個人月指標", 2);
@@ -267,6 +311,38 @@ namespace EDIS.Controllers
                 var engs = roleManager.GetUsersInRole("RepEngineer").Where(m => m != "344027").ToList();
                 List<RepairReportListVModel> rvData = new List<RepairReportListVModel>();
                 AppUserModel ur;
+
+                //移除非工務部工程師
+                var engsTemp = engs.ToList();
+                foreach (string l in engsTemp)
+                {
+                    ur = _context.AppUsers.Where(u => u.UserName == l).FirstOrDefault();
+                    if (ur != null)
+                    {
+                        if (!(ur.DptId == "8410" || ur.DptId == "8411" || ur.DptId == "8412" ||
+                              ur.DptId == "8413" || ur.DptId == "8414"))
+                        {
+                            engs.Remove(l);
+                        }
+                    }
+                }
+
+                // 根據搜尋部門篩選工程師
+                if (qtyDptId != null)
+                {
+                    var engsTemp2 = engs.ToList();
+                    foreach (string l in engsTemp2)
+                    {
+                        ur = _context.AppUsers.Where(u => u.UserName == l).FirstOrDefault();
+                        if (ur != null)
+                        {
+                            if(ur.DptId != qtyDptId)
+                            {
+                                engs.Remove(l);
+                            }
+                        }
+                    }
+                }
 
                 foreach (string l in engs)
                 {
@@ -406,13 +482,14 @@ namespace EDIS.Controllers
                 // 8410工務部  8411工務一課    8412工務二課    8413 8414 工務三課
                 var qtyRepairs8411 = qtyRepairs.Where(r => r.repair.EngName == "8411");
                 var qtyRepairs8412 = qtyRepairs.Where(r => r.repair.EngName == "8412");
-                var qtyRepairs8413 = qtyRepairs.Where(r => r.repair.EngName == "8413" || r.repair.EngName == "8414");
+                var qtyRepairs8413 = qtyRepairs.Where(r => r.repair.EngName == "8413");
+                var qtyRepairs8414 = qtyRepairs.Where(r => r.repair.EngName == "8414");
                 var qtyRepairsDpt = qtyRepairs.Where(r => r.repair.EngName == "8410" || r.repair.EngName == "8411" ||
                                                           r.repair.EngName == "8412" || r.repair.EngName == "8413" ||
                                                           r.repair.EngName == "8414");
 
                 // 各課Id list
-                List<string> dpts = new List<string> { "8411", "8412", "8413", "allDpts" };
+                List<string> dpts = new List<string> { "8411", "8412", "8413", "8414", "allDpts" };
                 List<RepairReportListVModel> dptData = new List<RepairReportListVModel>();
 
                 foreach (string id in dpts)
@@ -429,6 +506,10 @@ namespace EDIS.Controllers
                     if (id == "8413")
                     {
                         dptRepairs = qtyRepairs8413.ToList();
+                    }
+                    if (id == "8414")
+                    {
+                        dptRepairs = qtyRepairs8414.ToList();
                     }
                     if (id == "allDpts")
                     {
