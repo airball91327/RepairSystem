@@ -494,9 +494,7 @@ namespace EDIS.Controllers
                 case "驗收人":
                     if (_context.RepairEmps.Where(emp => emp.DocId == docid).Count() <= 0)
                     {
-                        //throw new Exception("沒有維修工程師紀錄!!");
-                        string msg = "沒有維修工程師紀錄!!";
-                        return BadRequest(msg);
+                        throw new Exception("沒有維修工程師紀錄!!");
                     }
                     if (r != null)
                     {
