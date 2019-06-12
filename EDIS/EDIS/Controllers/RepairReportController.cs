@@ -41,10 +41,12 @@ namespace EDIS.Controllers
         public ActionResult Index()
         {
             List<SelectListItem> listItem = new List<SelectListItem>();
-            listItem.Add(new SelectListItem { Text = "工務一課", Value = "8411" });
-            listItem.Add(new SelectListItem { Text = "工務二課", Value = "8412" });
-            listItem.Add(new SelectListItem { Text = "工務三課－中華工務組", Value = "8413" });
-            listItem.Add(new SelectListItem { Text = "工務三課－教研工務組", Value = "8414" });
+            listItem.Add(new SelectListItem { Text = "工務部(8410)", Value = "8410" });
+            listItem.Add(new SelectListItem { Text = "工務一課(8411)", Value = "8411" });
+            listItem.Add(new SelectListItem { Text = "工務二課(8412)", Value = "8412" });
+            listItem.Add(new SelectListItem { Text = "工務三課－中華工務組(8413)", Value = "8413" });
+            listItem.Add(new SelectListItem { Text = "工務三課－教研工務組(8414)", Value = "8414" });
+            listItem.Add(new SelectListItem { Text = "外包人員", Value = "0000" });
             ViewData["DPTID"] = new SelectList(listItem, "Value", "Text", "");
 
             return View();
@@ -82,31 +84,64 @@ namespace EDIS.Controllers
                 {
                     item.repair.EngId = tempEng.UserId;
                     // EngName暫存Engineer所屬部門代號
-                    item.repair.EngName = _context.AppUsers.Find(tempEng.UserId).DptId;
+                    var eng = _context.AppUsers.Find(tempEng.UserId);
+                    if (eng.FullName.Contains("外包") == true)
+                    {
+                        item.repair.EngName = "0000";
+                    }
+                    else if(eng.UserName == "344027")
+                    {
+                        item.repair.EngName = "7084";
+                    }
+                    else
+                    {
+                        item.repair.EngName = eng.DptId;
+                    }
                 }
                 else
                 {
-                    item.repair.EngName = _context.AppUsers.Find(item.repair.EngId).DptId;
+                    // EngName暫存Engineer所屬部門代號
+                    var eng = _context.AppUsers.Find(item.repair.EngId);
+                    if (eng.FullName.Contains("外包") == true)
+                    {
+                        item.repair.EngName = "0000";
+                    }
+                    else if (eng.UserName == "344027")
+                    {
+                        item.repair.EngName = "7084";
+                    }
+                    else
+                    {
+                        item.repair.EngName = eng.DptId;
+                    }
                 }
             }
 
             // 依照搜尋部門篩選資料
             var qtyRepairs2 = qtyRepairs.ToList();
-            if (qtyDptId == "8411")
+            if (qtyDptId == "8410")
+            {
+                qtyRepairs2 = qtyRepairs2.Where(r => r.repair.EngName == "8410").ToList();
+            }
+            else if (qtyDptId == "8411")
             {
                 qtyRepairs2 = qtyRepairs2.Where(r => r.repair.EngName == "8411").ToList();
             }
-            else if(qtyDptId == "8412")
+            else if (qtyDptId == "8412")
             {
                 qtyRepairs2 = qtyRepairs2.Where(r => r.repair.EngName == "8412").ToList();
             }
-            else if(qtyDptId == "8413")
+            else if (qtyDptId == "8413")
             {
                 qtyRepairs2 = qtyRepairs2.Where(r => r.repair.EngName == "8413").ToList();
             }
-            else if(qtyDptId == "8414")
+            else if (qtyDptId == "8414")
             {
                 qtyRepairs2 = qtyRepairs2.Where(r => r.repair.EngName == "8414").ToList();
+            }
+            else if (qtyDptId == "0000")    //外包人員
+            {
+                qtyRepairs2 = qtyRepairs2.Where(r => r.repair.EngName == "0000").ToList();
             }
             else
             {
@@ -152,6 +187,7 @@ namespace EDIS.Controllers
                 //Title2    【維修完成、結案率 (該月申請且已完成或已結案案件 / 該月申請各相對總件數)】
                 ws.Cell(5, 1).Value = "【維修完成率】";
                 ws.Cell(5, 5).Value = "【維修結案率】";
+                ws.Cell(5, 9).Value = "【未結案率】";
                 ws.Cell(6, 1).Value = "增設";
                 ws.Cell(6, 2).Value = "維修(內修)";
                 ws.Cell(6, 3).Value = "維修(外修)";
@@ -160,6 +196,10 @@ namespace EDIS.Controllers
                 ws.Cell(6, 6).Value = "維修(內修)";
                 ws.Cell(6, 7).Value = "維修(外修)";
                 ws.Cell(6, 8).Value = "維修(內外修)";
+                ws.Cell(6, 9).Value = "增設";
+                ws.Cell(6, 10).Value = "維修(內修)";
+                ws.Cell(6, 11).Value = "維修(外修)";
+                ws.Cell(6, 12).Value = "維修(內外修)";
 
                 //Data2         //.ToString("P")轉為百分比顯示的字串
                 ws.Cell(7, 1).Value = repAdds.Count() != 0 ? (Convert.ToDecimal(repAdds.Where(r => r.repdtl.EndDate != null).Count()) / Convert.ToDecimal(repAdds.Count())).ToString("P") : "0.00%";
@@ -170,6 +210,10 @@ namespace EDIS.Controllers
                 ws.Cell(7, 6).Value = repIns.Count() != 0 ? (Convert.ToDecimal(repIns.Where(r => r.repflow.Status == "2").Count()) / Convert.ToDecimal(repIns.Count())).ToString("P") : "0.00%";
                 ws.Cell(7, 7).Value = repOuts.Count() != 0 ? (Convert.ToDecimal(repOuts.Where(r => r.repflow.Status == "2").Count()) / Convert.ToDecimal(repOuts.Count())).ToString("P") : "0.00%";
                 ws.Cell(7, 8).Value = repInOuts.Count() != 0 ? (Convert.ToDecimal(repInOuts.Where(r => r.repflow.Status == "2").Count()) / Convert.ToDecimal(repInOuts.Count())).ToString("P") : "0.00%";
+                ws.Cell(7, 9).Value = repAdds.Count() != 0 ? (Convert.ToDecimal(repAdds.Where(r => r.repflow.Status != "2").Count()) / Convert.ToDecimal(repAdds.Count())).ToString("P") : "0.00%";
+                ws.Cell(7, 10).Value = repIns.Count() != 0 ? (Convert.ToDecimal(repIns.Where(r => r.repflow.Status != "2").Count()) / Convert.ToDecimal(repIns.Count())).ToString("P") : "0.00%";
+                ws.Cell(7, 11).Value = repOuts.Count() != 0 ? (Convert.ToDecimal(repOuts.Where(r => r.repflow.Status != "2").Count()) / Convert.ToDecimal(repOuts.Count())).ToString("P") : "0.00%";
+                ws.Cell(7, 12).Value = repInOuts.Count() != 0 ? (Convert.ToDecimal(repInOuts.Where(r => r.repflow.Status != "2").Count()) / Convert.ToDecimal(repInOuts.Count())).ToString("P") : "0.00%";
 
                 //Title3    【維修且內修完成率(該月申請的內修且已完成的案件)】
                 ws.Cell(9, 1).Value = "【維修且內修案件】";
@@ -267,12 +311,14 @@ namespace EDIS.Controllers
                 ws.Cell(26, 2).Value = "【案件為當月申請且已完成的(增設/內修/外修/內外修)件數 / 當月申請(增設/內修/外修/內外修)總件數】";
                 ws.Cell(27, 1).Value = "【維修結案率】";
                 ws.Cell(27, 2).Value = "【案件為當月申請且已結案的(增設/內修/外修/內外修)件數 / 當月申請(增設/內修/外修/內外修)總件數】";
-                ws.Cell(28, 1).Value = "【維修且內修案件】";
-                ws.Cell(28, 2).Value = "【案件為當月申請且於N日內完成的內修件數 / 當月申請內修之總件數】";
-                ws.Cell(29, 1).Value = "【增設案件完成率】";
-                ws.Cell(29, 2).Value = "【案件為當月申請且於N日內完成的增設件數 / 當月申請增設之總件數】";
-                ws.Cell(30, 1).Value = "【平均每件維修費用】";
-                ws.Cell(30, 2).Value = "【總費用 / 有費用件數】";
+                ws.Cell(28, 1).Value = "【未結案率】";
+                ws.Cell(28, 2).Value = "【案件為當月申請且尚未結案的(增設/內修/外修/內外修)件數 / 當月申請(增設/內修/外修/內外修)總件數】";
+                ws.Cell(29, 1).Value = "【維修且內修案件】";
+                ws.Cell(29, 2).Value = "【案件為當月申請且於N日內完成的內修件數 / 當月申請內修之總件數】";
+                ws.Cell(30, 1).Value = "【增設案件完成率】";
+                ws.Cell(30, 2).Value = "【案件為當月申請且於N日內完成的增設件數 / 當月申請增設之總件數】";
+                ws.Cell(31, 1).Value = "【平均每件維修費用】";
+                ws.Cell(31, 2).Value = "【總費用 / 有費用件數】";
 
                 //WorkSheet2
                 var ws2 = workbook.Worksheets.Add("個人月指標", 2);
@@ -294,16 +340,20 @@ namespace EDIS.Controllers
                 ws2.Cell(1, 14).Value = "內修結案率";
                 ws2.Cell(1, 15).Value = "外修結案率";
                 ws2.Cell(1, 16).Value = "內外修結案率";
-                ws2.Cell(1, 17).Value = "維修且內修3日完成率";
-                ws2.Cell(1, 18).Value = "4~7日完成率";
-                ws2.Cell(1, 19).Value = "8日以上完成率";
-                ws2.Cell(1, 20).Value = "增設15日內完成率";
-                ws2.Cell(1, 21).Value = "16~30日完成率";
-                ws2.Cell(1, 22).Value = "31日以上完成率";
-                ws2.Cell(1, 23).Value = "有費用件數";
-                ws2.Cell(1, 24).Value = "無費用件數";
-                ws2.Cell(1, 25).Value = "總費用";
-                ws2.Cell(1, 26).Value = "平均每件維修費用";
+                ws2.Cell(1, 17).Value = "增設未結案率";
+                ws2.Cell(1, 18).Value = "內修未結案率";
+                ws2.Cell(1, 19).Value = "外修未結案率";
+                ws2.Cell(1, 20).Value = "內外修未結案率";
+                ws2.Cell(1, 21).Value = "維修且內修3日完成率";
+                ws2.Cell(1, 22).Value = "4~7日完成率";
+                ws2.Cell(1, 23).Value = "8日以上完成率";
+                ws2.Cell(1, 24).Value = "增設15日內完成率";
+                ws2.Cell(1, 25).Value = "16~30日完成率";
+                ws2.Cell(1, 26).Value = "31日以上完成率";
+                ws2.Cell(1, 27).Value = "有費用件數";
+                ws2.Cell(1, 28).Value = "無費用件數";
+                ws2.Cell(1, 29).Value = "總費用";
+                ws2.Cell(1, 30).Value = "平均每件維修費用";
 
                 //Data 整理及統計
 
@@ -319,16 +369,30 @@ namespace EDIS.Controllers
                     ur = _context.AppUsers.Where(u => u.UserName == l).FirstOrDefault();
                     if (ur != null)
                     {
-                        if (!(ur.DptId == "8410" || ur.DptId == "8411" || ur.DptId == "8412" ||
-                              ur.DptId == "8413" || ur.DptId == "8414"))
+                        if (qtyDptId == "0000") 
                         {
-                            engs.Remove(l);
+                            if (ur.FullName.Contains("外包") != true)  //篩選外包人員
+                            {
+                                engs.Remove(l);
+                            }
+                        }
+                        else
+                        {
+                            if (ur.FullName.Contains("外包") == true)  
+                            {
+                                engs.Remove(l);
+                            }
+                            if (!(ur.DptId == "8410" || ur.DptId == "8411" || ur.DptId == "8412" ||
+                                  ur.DptId == "8413" || ur.DptId == "8414"))
+                            {
+                                engs.Remove(l);
+                            }
                         }
                     }
                 }
 
                 // 根據搜尋部門篩選工程師
-                if (qtyDptId != null)
+                if (qtyDptId != null && qtyDptId != "0000")
                 {
                     var engsTemp2 = engs.ToList();
                     foreach (string l in engsTemp2)
@@ -428,6 +492,10 @@ namespace EDIS.Controllers
                             RepInCloseRate = engRepIns.Count() != 0 ? (Convert.ToDecimal(engRepIns.Where(r => r.repflow.Status == "2").Count()) / Convert.ToDecimal(engRepIns.Count())).ToString("P") : "0.00%",
                             RepOutCloseRate = engRepOuts.Count() != 0 ? (Convert.ToDecimal(engRepOuts.Where(r => r.repflow.Status == "2").Count()) / Convert.ToDecimal(engRepOuts.Count())).ToString("P") : "0.00%",
                             RepInOutCloseRate = engRepInOuts.Count() != 0 ? (Convert.ToDecimal(engRepInOuts.Where(r => r.repflow.Status == "2").Count()) / Convert.ToDecimal(engRepInOuts.Count())).ToString("P") : "0.00%",
+                            RepAddNotCloseRate = engRepAdds.Count() != 0 ? (Convert.ToDecimal(engRepAdds.Where(r => r.repflow.Status != "2").Count()) / Convert.ToDecimal(engRepAdds.Count())).ToString("P") : "0.00%",
+                            RepInNotCloseRate = engRepIns.Count() != 0 ? (Convert.ToDecimal(engRepIns.Where(r => r.repflow.Status != "2").Count()) / Convert.ToDecimal(engRepIns.Count())).ToString("P") : "0.00%",
+                            RepOutNotCloseRate = engRepOuts.Count() != 0 ? (Convert.ToDecimal(engRepOuts.Where(r => r.repflow.Status != "2").Count()) / Convert.ToDecimal(engRepOuts.Count())).ToString("P") : "0.00%",
+                            RepInOutNotCloseRate = engRepInOuts.Count() != 0 ? (Convert.ToDecimal(engRepInOuts.Where(r => r.repflow.Status != "2").Count()) / Convert.ToDecimal(engRepInOuts.Count())).ToString("P") : "0.00%",
                             RepInEndRate1 = engRepIns.Count() != 0 ? (inCount1 / Convert.ToDecimal(engRepIns.Count())).ToString("P") : "0.00%",
                             RepInEndRate2 = engRepIns.Count() != 0 ? (inCount2 / Convert.ToDecimal(engRepIns.Count())).ToString("P") : "0.00%",
                             RepInEndRate3 = engRepIns.Count() != 0 ? (inCount3 / Convert.ToDecimal(engRepIns.Count())).ToString("P") : "0.00%",
@@ -467,19 +535,24 @@ namespace EDIS.Controllers
                 ws3.Cell(1, 14).Value = "內修結案率";
                 ws3.Cell(1, 15).Value = "外修結案率";
                 ws3.Cell(1, 16).Value = "內外修結案率";
-                ws3.Cell(1, 17).Value = "維修且內修3日完成率";
-                ws3.Cell(1, 18).Value = "4~7日完成率";
-                ws3.Cell(1, 19).Value = "8日以上完成率";
-                ws3.Cell(1, 20).Value = "增設15日內完成率";
-                ws3.Cell(1, 21).Value = "16~30日完成率";
-                ws3.Cell(1, 22).Value = "31日以上完成率";
-                ws3.Cell(1, 23).Value = "有費用件數";
-                ws3.Cell(1, 24).Value = "無費用件數";
-                ws3.Cell(1, 25).Value = "總費用";
-                ws3.Cell(1, 26).Value = "平均每件維修費用";
+                ws3.Cell(1, 17).Value = "增設未結案率";
+                ws3.Cell(1, 18).Value = "內修未結案率";
+                ws3.Cell(1, 19).Value = "外修未結案率";
+                ws3.Cell(1, 20).Value = "內外修未結案率";
+                ws3.Cell(1, 21).Value = "維修且內修3日完成率";
+                ws3.Cell(1, 22).Value = "4~7日完成率";
+                ws3.Cell(1, 23).Value = "8日以上完成率";
+                ws3.Cell(1, 24).Value = "增設15日內完成率";
+                ws3.Cell(1, 25).Value = "16~30日完成率";
+                ws3.Cell(1, 26).Value = "31日以上完成率";
+                ws3.Cell(1, 27).Value = "有費用件數";
+                ws3.Cell(1, 28).Value = "無費用件數";
+                ws3.Cell(1, 29).Value = "總費用";
+                ws3.Cell(1, 30).Value = "平均每件維修費用";
 
                 // Data 整理及統計
                 // 8410工務部  8411工務一課    8412工務二課    8413 8414 工務三課
+                var qtyRepairs8410 = qtyRepairs.Where(r => r.repair.EngName == "8410");
                 var qtyRepairs8411 = qtyRepairs.Where(r => r.repair.EngName == "8411");
                 var qtyRepairs8412 = qtyRepairs.Where(r => r.repair.EngName == "8412");
                 var qtyRepairs8413 = qtyRepairs.Where(r => r.repair.EngName == "8413");
@@ -489,12 +562,16 @@ namespace EDIS.Controllers
                                                           r.repair.EngName == "8414");
 
                 // 各課Id list
-                List<string> dpts = new List<string> { "8411", "8412", "8413", "8414", "allDpts" };
+                List<string> dpts = new List<string> { "8410", "8411", "8412", "8413", "8414", "allDpts" };
                 List<RepairReportListVModel> dptData = new List<RepairReportListVModel>();
 
                 foreach (string id in dpts)
                 {
                     var dptRepairs = qtyRepairs;    // Default value.
+                    if (id == "8410")
+                    {
+                        dptRepairs = qtyRepairs8410.ToList();
+                    }
                     if (id == "8411")
                     {
                         dptRepairs = qtyRepairs8411.ToList();
@@ -578,7 +655,7 @@ namespace EDIS.Controllers
                     string dptName;
                     if (id == "allDpts")
                     {
-                        dptName = "工務部";
+                        dptName = "工務部(8410~8414)";
                     }
                     else
                     {
@@ -603,6 +680,10 @@ namespace EDIS.Controllers
                         RepInCloseRate = dptRepIns.Count() != 0 ? (Convert.ToDecimal(dptRepIns.Where(r => r.repflow.Status == "2").Count()) / Convert.ToDecimal(dptRepIns.Count())).ToString("P") : "0.00%",
                         RepOutCloseRate = dptRepOuts.Count() != 0 ? (Convert.ToDecimal(dptRepOuts.Where(r => r.repflow.Status == "2").Count()) / Convert.ToDecimal(dptRepOuts.Count())).ToString("P") : "0.00%",
                         RepInOutCloseRate = dptRepInOuts.Count() != 0 ? (Convert.ToDecimal(dptRepInOuts.Where(r => r.repflow.Status == "2").Count()) / Convert.ToDecimal(dptRepInOuts.Count())).ToString("P") : "0.00%",
+                        RepAddNotCloseRate = dptRepAdds.Count() != 0 ? (Convert.ToDecimal(dptRepAdds.Where(r => r.repflow.Status != "2").Count()) / Convert.ToDecimal(dptRepAdds.Count())).ToString("P") : "0.00%",
+                        RepInNotCloseRate = dptRepIns.Count() != 0 ? (Convert.ToDecimal(dptRepIns.Where(r => r.repflow.Status != "2").Count()) / Convert.ToDecimal(dptRepIns.Count())).ToString("P") : "0.00%",
+                        RepOutNotCloseRate = dptRepOuts.Count() != 0 ? (Convert.ToDecimal(dptRepOuts.Where(r => r.repflow.Status != "2").Count()) / Convert.ToDecimal(dptRepOuts.Count())).ToString("P") : "0.00%",
+                        RepInOutNotCloseRate = dptRepInOuts.Count() != 0 ? (Convert.ToDecimal(dptRepInOuts.Where(r => r.repflow.Status != "2").Count()) / Convert.ToDecimal(dptRepInOuts.Count())).ToString("P") : "0.00%",
                         RepInEndRate1 = dptRepIns.Count() != 0 ? (inCount1 / Convert.ToDecimal(dptRepIns.Count())).ToString("P") : "0.00%",
                         RepInEndRate2 = dptRepIns.Count() != 0 ? (inCount2 / Convert.ToDecimal(dptRepIns.Count())).ToString("P") : "0.00%",
                         RepInEndRate3 = dptRepIns.Count() != 0 ? (inCount3 / Convert.ToDecimal(dptRepIns.Count())).ToString("P") : "0.00%",

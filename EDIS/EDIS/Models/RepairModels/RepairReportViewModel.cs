@@ -37,6 +37,14 @@ namespace EDIS.Models.RepairModels
         public string RepOutCloseRate { get; set; }
         [Display(Name = "內外修結案率")]
         public string RepInOutCloseRate { get; set; }
+        [Display(Name = "增設未結案率")]
+        public string RepAddNotCloseRate { get; set; }
+        [Display(Name = "內修未結案率")]
+        public string RepInNotCloseRate { get; set; }
+        [Display(Name = "外修未結案率")]
+        public string RepOutNotCloseRate { get; set; }
+        [Display(Name = "內外修未結案率")]
+        public string RepInOutNotCloseRate { get; set; }
         [Display(Name = "維修且內修3日完成率")]
         public string RepInEndRate1 { get; set; }
         [Display(Name = "4~7日完成率")]
