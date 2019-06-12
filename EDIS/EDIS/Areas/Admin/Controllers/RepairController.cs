@@ -45,9 +45,9 @@ namespace EDIS.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public IActionResult EditRepFlow(string docId)
+        public IActionResult EditRepFlow(string qtyDocId)
         {
-            docId = docId.Trim();
+            string docId = qtyDocId.Trim();
             var repairFlow = _context.RepairFlows.Where(rf => rf.DocId == docId).ToList();
             string repairStatus;
 

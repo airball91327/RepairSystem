@@ -5,6 +5,15 @@
 }
 
 <script>
+    function flowmsg(data) {
+        if (!data.success) {
+            alert(data.error);
+        }
+        else {
+            alert("送出成功!");
+            $("#searchForm").submit();
+        }
+    }
     var onFailed = function (data) {
         alert(data.responseText);
         $.Toast.hideToast();
@@ -55,8 +64,8 @@
 
             <div class="form-inline">
                 <div class="form-group col-md-4">
-                    <label for="docId" class="control-title">表單編號</label>
-                    <input type="text" class="form-control" id="docId" name="docId" required/>
+                    <label for="qtyDocId" class="control-title">表單編號</label>
+                    <input type="text" class="form-control" id="qtyDocId" name="qtyDocId" required/>
                 </div>
 
                 <div class="form-group col-md-2">
@@ -64,8 +73,6 @@
                         <input type="submit" class="btn btn-primary" id="btnQuery" value="查詢" style="width: 100%" />
                     </div>
                 </div>
-
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             </div>
 
         </form>
