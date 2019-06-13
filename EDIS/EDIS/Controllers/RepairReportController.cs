@@ -551,18 +551,19 @@ namespace EDIS.Controllers
                 ws3.Cell(1, 30).Value = "平均每件維修費用";
 
                 // Data 整理及統計
-                // 8410工務部  8411工務一課    8412工務二課    8413 8414 工務三課
-                var qtyRepairs8410 = qtyRepairs.Where(r => r.repair.EngName == "8410");
-                var qtyRepairs8411 = qtyRepairs.Where(r => r.repair.EngName == "8411");
-                var qtyRepairs8412 = qtyRepairs.Where(r => r.repair.EngName == "8412");
-                var qtyRepairs8413 = qtyRepairs.Where(r => r.repair.EngName == "8413");
-                var qtyRepairs8414 = qtyRepairs.Where(r => r.repair.EngName == "8414");
+                // 8410工務部  8411工務一課    8412工務二課    8413 8414 工務三課  0000外包人員
+                var qtyRepairs8410 = qtyRepairs.Where(r => r.repair.EngName == "8410").ToList();
+                var qtyRepairs8411 = qtyRepairs.Where(r => r.repair.EngName == "8411").ToList();
+                var qtyRepairs8412 = qtyRepairs.Where(r => r.repair.EngName == "8412").ToList();
+                var qtyRepairs8413 = qtyRepairs.Where(r => r.repair.EngName == "8413").ToList();
+                var qtyRepairs8414 = qtyRepairs.Where(r => r.repair.EngName == "8414").ToList();
                 var qtyRepairsDpt = qtyRepairs.Where(r => r.repair.EngName == "8410" || r.repair.EngName == "8411" ||
                                                           r.repair.EngName == "8412" || r.repair.EngName == "8413" ||
-                                                          r.repair.EngName == "8414");
+                                                          r.repair.EngName == "8414").ToList();
+                var qtyRepairs0000 = qtyRepairs.Where(r => r.repair.EngName == "0000").ToList();
 
-                // 各課Id list
-                List<string> dpts = new List<string> { "8410", "8411", "8412", "8413", "8414", "allDpts" };
+                // 各課Id list    0000為外包人員
+                List<string> dpts = new List<string> { "8410", "8411", "8412", "8413", "8414", "allDpts", "0000" };
                 List<RepairReportListVModel> dptData = new List<RepairReportListVModel>();
 
                 foreach (string id in dpts)
@@ -591,6 +592,10 @@ namespace EDIS.Controllers
                     if (id == "allDpts")
                     {
                         dptRepairs = qtyRepairsDpt.ToList();
+                    }
+                    if (id == "0000")
+                    {
+                        dptRepairs = qtyRepairs0000.ToList();
                     }
 
                     // 各案件總數
@@ -655,7 +660,11 @@ namespace EDIS.Controllers
                     string dptName;
                     if (id == "allDpts")
                     {
-                        dptName = "工務部(8410~8414)";
+                        dptName = "工務部(8410 - 8414)";
+                    }
+                    else if (id == "0000")
+                    {
+                        dptName = "外包人員";
                     }
                     else
                     {
@@ -699,7 +708,6 @@ namespace EDIS.Controllers
 
                 // Insert data
                 ws3.Cell(2, 1).InsertData(dptData);
-
 
                 //因為是用Query的方式,這個地方要用串流的方式來存檔
                 using (MemoryStream memoryStream = new MemoryStream())
