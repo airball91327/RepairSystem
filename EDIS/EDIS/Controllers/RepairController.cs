@@ -341,7 +341,7 @@ namespace EDIS.Controllers
                         FlowCls = j.flow.Cls,
                         FlowDptId = _context.AppUsers.Find(j.flow.UserId).DptId,
                         EndDate = j.repdtl.EndDate,
-                        CloseDate = j.repdtl.CloseDate,
+                        CloseDate = j.repdtl.CloseDate.Value.Date,
                         IsCharged = j.repdtl.IsCharged,
                         repdata = j.repair
                     }));
