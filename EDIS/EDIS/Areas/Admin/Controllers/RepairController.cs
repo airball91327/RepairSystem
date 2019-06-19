@@ -59,41 +59,34 @@ namespace EDIS.Areas.Admin.Controllers
             else
             {
                 repairStatus = repairFlow.OrderBy(rf => rf.StepId).LastOrDefault().Status;
-                if(repairStatus == "2")
-                {
-                    string msg = "此案件已結案!!";
-                    return BadRequest(msg);
-                }
-                else
-                {
 
-                    /* Insert values. */
-                    AssignModel assign = new AssignModel();
-                    assign.DocId = docId;
+                /* Insert values. */
+                AssignModel assign = new AssignModel();
+                assign.DocId = docId;
+                assign.AssignOpn = repairFlow.OrderBy(rf => rf.StepId).LastOrDefault().Opinions;
 
-                    List<SelectListItem> listItem = new List<SelectListItem>();
-                    listItem.Add(new SelectListItem { Text = "申請人", Value = "申請人" });
-                    listItem.Add(new SelectListItem { Text = "驗收人", Value = "驗收人" });
-                    listItem.Add(new SelectListItem { Text = "單位主管", Value = "單位主管" });
-                    listItem.Add(new SelectListItem { Text = "單位主任", Value = "單位主任" });
-                    listItem.Add(new SelectListItem { Text = "單位副院長", Value = "單位副院長" });
-                    listItem.Add(new SelectListItem { Text = "工務/營建工程師", Value = "工務/營建工程師" });
-                    listItem.Add(new SelectListItem { Text = "工務主管", Value = "工務主管" });
-                    listItem.Add(new SelectListItem { Text = "工務主任", Value = "工務主任" });
-                    listItem.Add(new SelectListItem { Text = "營建主管", Value = "營建主管" });
-                    listItem.Add(new SelectListItem { Text = "營建主任", Value = "營建主任" });
-                    listItem.Add(new SelectListItem { Text = "工務經辦", Value = "工務經辦" });
-                    listItem.Add(new SelectListItem { Text = "列管財產負責人", Value = "列管財產負責人" });
-                    listItem.Add(new SelectListItem { Text = "固資財產負責人", Value = "固資財產負責人" });
-                    listItem.Add(new SelectListItem { Text = "其他", Value = "其他" });
-                    ViewData["FlowCls"] = new SelectList(listItem, "Value", "Text", "");
+                List<SelectListItem> listItem = new List<SelectListItem>();
+                listItem.Add(new SelectListItem { Text = "申請人", Value = "申請人" });
+                listItem.Add(new SelectListItem { Text = "驗收人", Value = "驗收人" });
+                listItem.Add(new SelectListItem { Text = "單位主管", Value = "單位主管" });
+                listItem.Add(new SelectListItem { Text = "單位主任", Value = "單位主任" });
+                listItem.Add(new SelectListItem { Text = "單位副院長", Value = "單位副院長" });
+                listItem.Add(new SelectListItem { Text = "工務/營建工程師", Value = "工務/營建工程師" });
+                listItem.Add(new SelectListItem { Text = "工務主管", Value = "工務主管" });
+                listItem.Add(new SelectListItem { Text = "工務主任", Value = "工務主任" });
+                listItem.Add(new SelectListItem { Text = "營建主管", Value = "營建主管" });
+                listItem.Add(new SelectListItem { Text = "營建主任", Value = "營建主任" });
+                listItem.Add(new SelectListItem { Text = "工務經辦", Value = "工務經辦" });
+                listItem.Add(new SelectListItem { Text = "列管財產負責人", Value = "列管財產負責人" });
+                listItem.Add(new SelectListItem { Text = "固資財產負責人", Value = "固資財產負責人" });
+                listItem.Add(new SelectListItem { Text = "其他", Value = "其他" });
+                ViewData["FlowCls"] = new SelectList(listItem, "Value", "Text", "");
 
-                    List<SelectListItem> listItem3 = new List<SelectListItem>();
-                    listItem3.Add(new SelectListItem { Text = "", Value = "" });
-                    ViewData["FlowUid"] = new SelectList(listItem3, "Value", "Text", "");
+                List<SelectListItem> listItem3 = new List<SelectListItem>();
+                listItem3.Add(new SelectListItem { Text = "", Value = "" });
+                ViewData["FlowUid"] = new SelectList(listItem3, "Value", "Text", "");
 
-                    return View("EditFlowList", assign);
-                }
+                return View("EditFlowList", assign);
             }
         }
 
@@ -107,9 +100,8 @@ namespace EDIS.Areas.Admin.Controllers
                 RepairFlowModel rf = _context.RepairFlows.Where(f => f.DocId == assign.DocId && f.Status == "?").FirstOrDefault();
 
                 //轉單
-                rf.Cls = "轉單人員";
-                rf.UserId = ur.Id;
-                rf.Opinions = "[" + assign.AssignCls + "]" + Environment.NewLine + assign.AssignOpn;
+                assign.AssignOpn += "【已經由轉單人員[" + ur.FullName + "]轉單】";
+                rf.Opinions = assign.AssignOpn;
                 rf.Status = "1";
                 rf.Rtt = DateTime.Now;
                 rf.Rtp = ur.Id;
