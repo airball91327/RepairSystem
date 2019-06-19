@@ -17,7 +17,7 @@
             @Html.LabelFor(model => model.StockType, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.RadioButtonFor(model => model.StockType, "0")庫存
-                @Html.RadioButtonFor(model => model.StockType, "2")發票
+                @Html.RadioButtonFor(model => model.StockType, "2")發票(含收據)
                 @Html.ValidationMessageFor(model => model.StockType)
                 @Html.ValidationMessageFor(model => model.StockType, "", new { @class = "text-danger" })
             </div>
