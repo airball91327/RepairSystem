@@ -59,7 +59,7 @@ namespace EDIS.Controllers
             {
                 try
                 {
-                    if(repairCost.StockType == "2")
+                    if(repairCost.StockType == "2" || repairCost.StockType == "4")
                     {
                         var dupData = _context.RepairCosts.Include(c => c.TicketDtl)
                                                           .Where(c => c.DocId == repairCost.DocId &&
@@ -89,7 +89,7 @@ namespace EDIS.Controllers
                     int seqno = _context.RepairCosts.Where(c => c.DocId == repairCost.DocId)
                                                     .Select(c => c.SeqNo).DefaultIfEmpty().Max();
                     repairCost.SeqNo = seqno + 1;
-                    if (repairCost.StockType == "2")
+                    if (repairCost.StockType == "2" || repairCost.StockType == "4")
                     {
                         if (string.IsNullOrEmpty(repairCost.TicketDtl.TicketDtlNo))
                         {

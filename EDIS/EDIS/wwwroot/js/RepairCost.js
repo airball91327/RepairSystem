@@ -82,7 +82,7 @@ $(function () {
         $('#PartName').attr("readonly", false);
         $('#Price').attr("readonly", false);
         var item = $(this).val();
-        if (item === "2") {             // 點選"發票"
+        if (item === "2" || item === "4") {             // 點選"發票" 或 "零用金"
             $('#btnQtyStok').hide();
             $("#SignNo").val('');
             $("#pnlSIGN").hide();
