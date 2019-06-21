@@ -67,6 +67,49 @@ namespace EDIS.Controllers
             return View(vendorModel);
         }
 
+        // GET: Vendor/Create2
+        public IActionResult Create2()
+        {
+            return PartialView();
+        }
+
+        // POST: Vendor/Create2
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create2([Bind("VendorId,VendorName,UniteNo")] VendorModel vendorModel)
+        {
+            if (ModelState.IsValid)
+            {
+                var nameExist = _context.Vendors.Where(v => v.VendorName == vendorModel.VendorName).FirstOrDefault();
+                var uniteNoExist = _context.Vendors.Where(v => v.UniteNo == vendorModel.UniteNo).FirstOrDefault();
+                var idExist = _context.Vendors.Where(v => v.VendorId == Convert.ToInt32(vendorModel.UniteNo)).FirstOrDefault();
+
+                if (nameExist != null)
+                {
+                    ModelState.AddModelError("VendorName", "已有相同廠商名稱!");
+                    return PartialView(vendorModel);
+                }
+                else if (uniteNoExist != null)
+                {
+                    ModelState.AddModelError("UniteNo", "已有相同統一編號!");
+                    return PartialView(vendorModel);
+                }
+                else if (idExist != null)
+                {
+                    ModelState.AddModelError("UniteNo", "已有相同統一編號!");
+                    return PartialView(vendorModel);
+                }
+                else
+                {
+                    vendorModel.VendorId = Convert.ToInt32(vendorModel.UniteNo);
+                    _context.Add(vendorModel);
+                    await _context.SaveChangesAsync();
+                    return ViewComponent("QryVendor");
+                }
+            }
+            return PartialView(vendorModel);
+        }
+
         // GET: Vendor/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {

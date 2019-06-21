@@ -88,6 +88,9 @@
     <Content Update="Views\Shared\Components\RepDtlEdit\Default.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
+    <Content Update="Views\Vendor\Create2.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Areas\Admin\Data\" />
