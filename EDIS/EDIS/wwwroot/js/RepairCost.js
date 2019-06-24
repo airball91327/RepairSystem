@@ -143,7 +143,9 @@ $(function () {
 
     $("#modalVENDOR").on("hidden.bs.modal", function () {
         var vendorName = $("#Vno option:selected").text();
+        var vendorId = $("#Vno option:selected").val();
         $("#VendorName").val(vendorName);
+        $("#VendorId").val(vendorId);
     });
 
     /* Default settings for qryVendor modal.*/
