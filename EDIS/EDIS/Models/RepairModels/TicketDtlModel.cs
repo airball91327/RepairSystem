@@ -14,7 +14,7 @@ namespace EDIS.Models.RepairModels
         [Key, Column(Order = 2)]
         [Display(Name = "序號")]
         public int SeqNo { get; set; }
-        [Display(Name = "物品名稱")]
+        [Display(Name = "廠商名稱")]
         public string ObjName { get; set; }
         [Display(Name = "數量")]
         public int Qty { get; set; }

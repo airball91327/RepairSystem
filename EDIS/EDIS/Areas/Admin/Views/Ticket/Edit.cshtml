@@ -115,7 +115,7 @@
 </form>
 
 <div id="pnlTICKEDTL">
-    
+    @await Component.InvokeAsync("TicketDtlList", new { id = Model.TicketNo })
 </div>
 
 <div>

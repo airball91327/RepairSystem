@@ -52,3 +52,7 @@
         display: none;
     }
 }
+
+td a {
+    color: deepskyblue;
+}
