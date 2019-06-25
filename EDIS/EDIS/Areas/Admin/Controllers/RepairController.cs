@@ -59,17 +59,18 @@ namespace EDIS.Areas.Admin.Controllers
             else
             {
                 repairStatus = repairFlow.OrderBy(rf => rf.StepId).LastOrDefault().Status;
-                if(repairStatus == "2")
+
+                if (repairStatus == "3")
                 {
-                    string msg = "此案件已結案!!";
+                    string msg = "此案件已廢除!!";
                     return BadRequest(msg);
                 }
                 else
                 {
-
                     /* Insert values. */
                     AssignModel assign = new AssignModel();
                     assign.DocId = docId;
+                    assign.AssignOpn = repairFlow.OrderBy(rf => rf.StepId).LastOrDefault().Opinions;
 
                     List<SelectListItem> listItem = new List<SelectListItem>();
                     listItem.Add(new SelectListItem { Text = "申請人", Value = "申請人" });
@@ -101,15 +102,24 @@ namespace EDIS.Areas.Admin.Controllers
         public ActionResult EditNextFlow(AssignModel assign)
         {
             var ur = _userRepo.Find(u => u.UserName == this.User.Identity.Name).FirstOrDefault();
+            var repairFlow = _context.RepairFlows.Where(f => f.DocId == assign.DocId).ToList();
+            string lastStatus = repairFlow.OrderBy(f => f.StepId).LastOrDefault().Status;
+            RepairFlowModel rf;
 
             if (ModelState.IsValid)
             {
-                RepairFlowModel rf = _context.RepairFlows.Where(f => f.DocId == assign.DocId && f.Status == "?").FirstOrDefault();
+                if (lastStatus == "2")
+                {
+                    rf = _context.RepairFlows.Where(f => f.DocId == assign.DocId && f.Status == "2").FirstOrDefault();
+                }
+                else
+                {
+                    rf = _context.RepairFlows.Where(f => f.DocId == assign.DocId && f.Status == "?").FirstOrDefault();
+                }
 
                 //轉單
-                rf.Cls = "轉單人員";
-                rf.UserId = ur.Id;
-                rf.Opinions = "[" + assign.AssignCls + "]" + Environment.NewLine + assign.AssignOpn;
+                assign.AssignOpn += "【已經由轉單人員[" + ur.FullName + "]轉單】";
+                rf.Opinions = assign.AssignOpn;
                 rf.Status = "1";
                 rf.Rtt = DateTime.Now;
                 rf.Rtp = ur.Id;

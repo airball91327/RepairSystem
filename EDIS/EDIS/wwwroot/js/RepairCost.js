@@ -82,7 +82,7 @@ $(function () {
         $('#PartName').attr("readonly", false);
         $('#Price').attr("readonly", false);
         var item = $(this).val();
-        if (item === "2") {             // 點選"發票"
+        if (item === "2" || item === "4") {             // 點選"發票" 或 "零用金"
             $('#btnQtyStok').hide();
             $("#SignNo").val('');
             $("#pnlSIGN").hide();
@@ -143,20 +143,22 @@ $(function () {
 
     $("#modalVENDOR").on("hidden.bs.modal", function () {
         var vendorName = $("#Vno option:selected").text();
+        var vendorId = $("#Vno option:selected").val();
         $("#VendorName").val(vendorName);
+        $("#VendorId").val(vendorId);
     });
 
-    /* Default settings.*/
+    /* Default settings for qryVendor modal.*/
     $("#UniteNo").attr("disabled", "disabled");
-    $("input[type=radio][name=QryType]").change(function () {
-        /* While select query type. */
-        if (this.value == '關鍵字') {
-            $("#KeyWord").removeAttr("disabled");
-            $("#UniteNo").attr("disabled", "disabled");
-        }
-        else if (this.value == '統一編號') {
-            $("#UniteNo").removeAttr("disabled");
-            $("#KeyWord").attr("disabled", "disabled");
-        }
-    });
+    //$("input[type=radio][name=QryType]").change(function () {
+    //    /* While select query type. */
+    //    if (this.value == '關鍵字') {
+    //        $("#KeyWord").removeAttr("disabled");
+    //        $("#UniteNo").attr("disabled", "disabled");
+    //    }
+    //    else if (this.value == '統一編號') {
+    //        $("#UniteNo").removeAttr("disabled");
+    //        $("#KeyWord").attr("disabled", "disabled");
+    //    }
+    //});
 });

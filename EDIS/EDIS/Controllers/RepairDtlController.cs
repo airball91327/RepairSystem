@@ -92,14 +92,14 @@ namespace EDIS.Controllers
                         repairDtl.Cost = _context.RepairCosts.Where(k => k.DocId == repairDtl.DocId)
                                                              .Select(k => k.TotalCost)
                                                              .DefaultIfEmpty(0).Sum();
-                        int hr = _context.RepairEmps.Where(p => p.DocId == repairDtl.DocId)
+                    }
+                    int hr = _context.RepairEmps.Where(p => p.DocId == repairDtl.DocId)
                                                     .Select(p => p.Hour)
                                                     .DefaultIfEmpty(0).Sum();
-                        decimal min = _context.RepairEmps.Where(p => p.DocId == repairDtl.DocId)
-                                                         .Select(p => p.Minute)
-                                                         .DefaultIfEmpty(0).Sum();
-                        repairDtl.Hour = hr + Decimal.Round(min / 60m, 2);
-                    }
+                    decimal min = _context.RepairEmps.Where(p => p.DocId == repairDtl.DocId)
+                                                     .Select(p => p.Minute)
+                                                     .DefaultIfEmpty(0).Sum();
+                    repairDtl.Hour = hr + Decimal.Round(min / 60m, 2);
                     _context.Entry(repairDtl).State = EntityState.Modified;
 
                     var repairModel = _context.Repairs.Find(repairDtl.DocId);

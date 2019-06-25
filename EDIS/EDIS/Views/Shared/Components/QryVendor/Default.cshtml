@@ -1,5 +1,7 @@
 ﻿@model EDIS.Models.RepairModels.QryVendor
 
+<script src="~/js/QryVendor.js"></script>
+
 <form asp-action="QryVendor" asp-controller="Vendor" asp-area="" data-ajax="true"
       data-ajax-update="#pnlSELECTVENDOR" data-ajax-method="POST" LoadingElementId="imgLOADINGVendor">
 
@@ -45,6 +47,10 @@
     </div>
 
 </form>
+
+<div>
+    <button class="btn btn-primary" id="createVendorBtn">新增廠商</button>
+</div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

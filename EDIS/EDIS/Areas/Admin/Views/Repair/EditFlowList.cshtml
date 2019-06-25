@@ -87,8 +87,8 @@
     @Html.ValidationSummary(true)
     @Html.HiddenFor(model => model.DocId)
     @Html.HiddenFor(model => model.Cls)
-    <input asp-for="AssignCls" type="hidden" value="其他"/>
-    <input asp-for="AssignOpn" type="hidden" value="轉單"/>
+    @Html.HiddenFor(model => model.AssignOpn)
+    <input asp-for="AssignCls" type="hidden" value="轉單"/>
 
     <div class="form-horizontal">
 

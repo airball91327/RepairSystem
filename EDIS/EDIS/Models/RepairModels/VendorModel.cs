@@ -14,7 +14,7 @@ namespace EDIS.Models.RepairModels
         [DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
         [Display(Name = "廠商編號")]
         public int VendorId { get; set; }
-        [Required]
+        [Required(ErrorMessage = "必填項目")]
         [Display(Name = "廠商名稱")]
         public string VendorName { get; set; }
         [Display(Name = "地址")]
@@ -26,7 +26,7 @@ namespace EDIS.Models.RepairModels
         [Display(Name = "電子郵件")]
         [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
-        [Required]
+        [Required(ErrorMessage = "必填項目")]
         [Display(Name = "統一編號")]
         public string UniteNo { get; set; }
         [Display(Name = "稅籍地址")]

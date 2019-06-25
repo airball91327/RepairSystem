@@ -29,7 +29,9 @@ namespace EDIS.Components.RepairCost
                 if (r.StockType == "0")
                     r.StockType = "庫存";
                 else if (r.StockType == "2")
-                    r.StockType = "發票";
+                    r.StockType = "發票(含收據)";
+                else if (r.StockType == "4")
+                    r.StockType = "零用金";
                 else
                     r.StockType = "簽單";
             });

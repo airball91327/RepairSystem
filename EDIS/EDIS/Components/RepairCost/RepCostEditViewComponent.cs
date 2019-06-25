@@ -50,7 +50,18 @@ namespace EDIS.Components.RepairCost
                 {
                     return View(cost);
                 }
-                List<RepairCostModel> t = _context.RepairCosts.Include(r => r.TicketDtl).Where(c => c.DocId == id).ToList();
+                List<RepairCostModel> t = _context.RepairCosts.Include(r => r.TicketDtl)
+                                                              .Where(c => c.DocId == id).ToList();
+                t.ForEach(r => {
+                   if (r.StockType == "0")
+                       r.StockType = "庫存";
+                   else if (r.StockType == "2")
+                       r.StockType = "發票(含收據)";
+                   else if (r.StockType == "4")
+                       r.StockType = "零用金";
+                   else
+                       r.StockType = "簽單";
+                });
                 return View("Print", t);
             }
             /* 流程 => 工程師，Login User => 負責之工程師 */

@@ -49,7 +49,7 @@ namespace EDIS.Models.RepairModels
         [DataType(DataType.Date)]
         [Display(Name = "完工日期")]
         public DateTime? EndDate { get; set; }
-        [Display(Name = "完帳日期")]
+        [Display(Name = "結案日期")]
         public DateTime? CloseDate { get; set; }
         [Display(Name = "關帳日期")]
         public DateTime? ShutDate { get; set; }
