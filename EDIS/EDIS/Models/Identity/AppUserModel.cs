@@ -28,7 +28,7 @@ namespace EDIS.Models.Identity
         [Required(ErrorMessage = "必填寫欄位")]
         [DataType(DataType.EmailAddress)]
         [Display(Name = "電子信箱")]
-        public new string Email { get; set; }
+        public string Email { get; set; }
         [Display(Name = "分機")]
         public string Ext { get; set; }
         [Display(Name = "行動電話")]
