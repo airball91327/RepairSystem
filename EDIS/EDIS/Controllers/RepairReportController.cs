@@ -57,8 +57,11 @@ namespace EDIS.Controllers
             DateTime reportMonth = qtyMonth;
 
             var repairFlows = _context.RepairFlows.OrderBy(rf => rf.StepId).GroupBy(rf => rf.DocId)
-                                                  .Select(g => g.LastOrDefault()).ToList(); //剔除廢除的單
+                                                  .Select(g => g.LastOrDefault()).ToList();
+            //剔除廢除的單
             repairFlows = repairFlows.Where(rf => rf.Status != "3").ToList();
+
+            //申請日為當月的所有案件
             var qtyRepairs = _context.Repairs.Where(r => r.ApplyDate.Month == reportMonth.Month)
                                              .Join(_context.RepairDtls, r => r.DocId, d => d.DocId,
                                              (r, d) => new
@@ -90,6 +93,65 @@ namespace EDIS.Controllers
                         item.repair.EngName = "0000";
                     }
                     else if(eng.UserName == "344027")
+                    {
+                        item.repair.EngName = "7084";
+                    }
+                    else
+                    {
+                        item.repair.EngName = eng.DptId;
+                    }
+                }
+                else
+                {
+                    // EngName暫存Engineer所屬部門代號
+                    var eng = _context.AppUsers.Find(item.repair.EngId);
+                    if (eng.FullName.Contains("外包") == true)
+                    {
+                        item.repair.EngName = "0000";
+                    }
+                    else if (eng.UserName == "344027")
+                    {
+                        item.repair.EngName = "7084";
+                    }
+                    else
+                    {
+                        item.repair.EngName = eng.DptId;
+                    }
+                }
+            }
+
+            //申請日為當年度的所有案件
+            var qtyYearRepairs = _context.Repairs.Where(r => r.ApplyDate.Year == reportMonth.Year)
+                                                 .Join(_context.RepairDtls, r => r.DocId, d => d.DocId,
+                                                 (r, d) => new
+                                                 {
+                                                     repair = r,
+                                                     repdtl = d
+                                                 })
+                                                 .Join(repairFlows, r => r.repair.DocId, rf => rf.DocId,
+                                                 (r, rf) => new
+                                                 {
+                                                     repair = r.repair,
+                                                     repdtl = r.repdtl,
+                                                     repflow = rf
+                                                 }).ToList();
+
+            //找出各案件的負責工程師(年度)(流程最後一位工程師)
+            foreach (var item in qtyYearRepairs)
+            {
+                var tempEng = _context.RepairFlows.Where(rf => rf.DocId == item.repair.DocId)
+                                                  .Where(rf => rf.Cls.Contains("工程師"))
+                                                  .OrderByDescending(rf => rf.StepId).FirstOrDefault();
+                if (tempEng != null)
+                {
+                    item.repair.EngId = tempEng.UserId;
+                    // EngName暫存Engineer所屬部門代號
+                    var eng = _context.AppUsers.Find(tempEng.UserId);
+                    if (eng.FullName.Contains("外包") == true)
+                    {
+                        item.repair.EngName = "0000";
+                    }
+                    else if (eng.UserName == "344027")
                     {
                         item.repair.EngName = "7084";
                     }
@@ -150,8 +212,11 @@ namespace EDIS.Controllers
                                                      r.repair.EngName == "8414").ToList();
             }
 
-            // 增設、內修、外修、內外修、報廢件數(月為單位)
+            // 增設(內修、外修、內外修)、維修(內修、外修、內外修)、報廢件數(月為單位)
             var repAdds = qtyRepairs2.Where(r => r.repair.RepType == "增設");
+            var repAddIns = qtyRepairs2.Where(r => r.repair.RepType == "增設" && r.repdtl.InOut == "內修");
+            var repAddOuts = qtyRepairs2.Where(r => r.repair.RepType == "增設" && r.repdtl.InOut == "外修");
+            var repAddInOuts = qtyRepairs2.Where(r => r.repair.RepType == "增設" && r.repdtl.InOut == "內外修");
             var repIns = qtyRepairs2.Where(r => r.repair.RepType != "增設" && r.repdtl.InOut == "內修" && r.repdtl.DealState != 4);
             var repOuts = qtyRepairs2.Where(r => r.repair.RepType != "增設" && r.repdtl.InOut == "外修" && r.repdtl.DealState != 4);
             var repInOuts = qtyRepairs2.Where(r => r.repair.RepType != "增設" && r.repdtl.InOut == "內外修" && r.repdtl.DealState != 4);
@@ -164,62 +229,132 @@ namespace EDIS.Controllers
                 //一個workbook內至少會有一個worksheet,並將資料Insert至這個位於A1這個位置上
                 //WorkSheet1
                 var ws = workbook.Worksheets.Add("綜合月指標", 1);
+                ws.ColumnWidth = 15;
 
-                //Title1  【每月維修件數(申請日為該月的案件)】
-                ws.Cell(1, 1).Value = "【" + qtyMonth.Year + "年" + qtyMonth.Month + "月維修件數】";
-                ws.Cell(2, 1).Value = "增設";
-                ws.Cell(2, 2).Value = "維修(內修)";
-                ws.Cell(2, 3).Value = "維修(外修)";
-                ws.Cell(2, 4).Value = "維修(內外修)";
-                ws.Cell(2, 5).Value = "報廢";
-                ws.Cell(2, 6).Value = "維修尚未處理";
-                ws.Cell(2, 7).Value = "總件數";
+                //Title1  【2019年各月統計】
+                ws.Cell(1, 1).Value = "【" + qtyMonth.Year + "年" + "各月統計】";
+                ws.Cell(3, 1).Value = "增設";
+                ws.Cell(3, 2).Value = "已完工件數";
+                ws.Cell(4, 2).Value = "未完工件數";
+                ws.Cell(5, 2).Value = "已結案件數";
+                ws.Cell(6, 2).Value = "未結案件數";
+                ws.Cell(7, 2).Value = "完工率";
+                ws.Cell(8, 2).Value = "結案率";
+                ws.Cell(9, 1).Value = "維修";
+                ws.Cell(9, 2).Value = "已完工件數";
+                ws.Cell(10, 2).Value = "未完工件數";
+                ws.Cell(11, 2).Value = "已結案件數";
+                ws.Cell(12, 2).Value = "未結案件數";
+                ws.Cell(13, 2).Value = "完工率";
+                ws.Cell(14, 2).Value = "結案率";
 
                 //Data1
-                ws.Cell(3, 1).Value = repAdds.Count();
-                ws.Cell(3, 2).Value = repIns.Count();
-                ws.Cell(3, 3).Value = repOuts.Count();
-                ws.Cell(3, 4).Value = repInOuts.Count();
-                ws.Cell(3, 5).Value = repScraps.Count();
-                ws.Cell(3, 6).Value = qtyRepairs2.Where(r => r.repair.RepType != "增設" && r.repdtl.InOut == null).Count();
-                ws.Cell(3, 7).Value = qtyRepairs2.Count();
+
+                for (int month = 1; month <= 12; month++)
+                {
+                    var monthRepAdds = qtyYearRepairs.Where(r => r.repair.ApplyDate.Month == month)
+                                                     .Where(r => r.repair.RepType == "增設").ToList();
+                    var monthReps = qtyYearRepairs.Where(r => r.repair.ApplyDate.Month == month)
+                                                  .Where(r => r.repair.RepType != "增設" && r.repdtl.DealState != 4).ToList();
+
+                    ws.Cell(2, (month + 2)).Value = month + "月";
+                    //增設
+                    ws.Cell(3, (month + 2)).Value = monthRepAdds.Where(r => r.repdtl.EndDate != null).Count();
+                    ws.Cell(4, (month + 2)).Value = monthRepAdds.Where(r => r.repdtl.EndDate == null).Count();
+                    ws.Cell(5, (month + 2)).Value = monthRepAdds.Where(r => r.repdtl.CloseDate != null).Count();
+                    ws.Cell(6, (month + 2)).Value = monthRepAdds.Where(r => r.repdtl.CloseDate == null).Count();
+                    ws.Cell(7, (month + 2)).Value = monthRepAdds.Count() != 0 ? (Convert.ToDecimal(monthRepAdds.Where(r => r.repdtl.EndDate != null).Count()) / Convert.ToDecimal(monthRepAdds.Count())).ToString("P") : "0.00%";
+                    ws.Cell(8, (month + 2)).Value = monthRepAdds.Count() != 0 ? (Convert.ToDecimal(monthRepAdds.Where(r => r.repdtl.CloseDate != null).Count()) / Convert.ToDecimal(monthRepAdds.Count())).ToString("P") : "0.00%";
+                    //維修
+                    ws.Cell(9, (month + 2)).Value = monthReps.Where(r => r.repdtl.EndDate != null).Count();
+                    ws.Cell(10, (month + 2)).Value = monthReps.Where(r => r.repdtl.EndDate == null).Count();
+                    ws.Cell(11, (month + 2)).Value = monthReps.Where(r => r.repdtl.CloseDate != null).Count();
+                    ws.Cell(12, (month + 2)).Value = monthReps.Where(r => r.repdtl.CloseDate == null).Count();
+                    ws.Cell(13, (month + 2)).Value = monthReps.Count() != 0 ? (Convert.ToDecimal(monthReps.Where(r => r.repdtl.EndDate != null).Count()) / Convert.ToDecimal(monthReps.Count())).ToString("P") : "0.00%";
+                    ws.Cell(14, (month + 2)).Value = monthReps.Count() != 0 ? (Convert.ToDecimal(monthReps.Where(r => r.repdtl.CloseDate != null).Count()) / Convert.ToDecimal(monthReps.Count())).ToString("P") : "0.00%";
+                }
+
+                //Title2  【每月維修件數(申請日為該月的案件)】
+                ws.Cell(17, 1).Value = "【" + qtyMonth.Year + "年" + qtyMonth.Month + "月維修件數】";
+                ws.Cell(18, 1).Value = "維修(內修)";
+                ws.Cell(18, 2).Value = "維修(外修)";
+                ws.Cell(18, 3).Value = "維修(內外修)";
+                ws.Cell(18, 4).Value = "報廢";
+                ws.Cell(18, 5).Value = "維修尚未處理";
+                ws.Cell(18, 6).Value = "維修總件數";
+
+                //Data2
+                ws.Cell(19, 1).Value = repIns.Count();
+                ws.Cell(19, 2).Value = repOuts.Count();
+                ws.Cell(19, 3).Value = repInOuts.Count();
+                ws.Cell(19, 4).Value = repScraps.Count();
+                ws.Cell(19, 5).Value = qtyRepairs2.Where(r => r.repair.RepType != "增設" && r.repdtl.InOut == null).Count();
+                ws.Cell(19, 6).Value = qtyRepairs2.Count(r => r.repair.RepType != "增設");
+
+                //Title3  【每月增設件數(申請日為該月的案件)】
+                ws.Cell(21, 1).Value = "【" + qtyMonth.Year + "年" + qtyMonth.Month + "月增設件數】";
+                ws.Cell(22, 1).Value = "增設(內修)";
+                ws.Cell(22, 2).Value = "增設(外修)";
+                ws.Cell(22, 3).Value = "增設(內外修)";
+                ws.Cell(22, 4).Value = "增設尚未處理";
+                ws.Cell(22, 5).Value = "增設總件數";
+
+                //Data3
+                ws.Cell(23, 1).Value = repAddIns.Count();
+                ws.Cell(23, 2).Value = repAddOuts.Count();
+                ws.Cell(23, 3).Value = repAddInOuts.Count();
+                ws.Cell(23, 4).Value = qtyRepairs2.Where(r => r.repair.RepType == "增設" && r.repdtl.InOut == null).Count();
+                ws.Cell(23, 5).Value = qtyRepairs2.Count(r => r.repair.RepType == "增設");
+
+                //Title4  【每月件數(申請日為該月的案件)】
+                ws.Cell(25, 1).Value = "【" + qtyMonth.Year + "年" + qtyMonth.Month + "月總件數】";
+                ws.Cell(26, 1).Value = "增設";
+                ws.Cell(26, 2).Value = "維修";
+                ws.Cell(26, 3).Value = "報廢";
+                ws.Cell(26, 4).Value = "總件數";
+
+                //Data4
+                ws.Cell(27, 1).Value = qtyRepairs2.Count(r => r.repair.RepType == "增設");
+                ws.Cell(27, 2).Value = qtyRepairs2.Count(r => r.repair.RepType != "增設" && r.repdtl.DealState != 4);
+                ws.Cell(27, 3).Value = repScraps.Count();
+                ws.Cell(27, 4).Value = qtyRepairs2.Count();
 
                 //Title2    【維修完成、結案率 (該月申請且已完成或已結案案件 / 該月申請各相對總件數)】
-                ws.Cell(5, 1).Value = "【維修完成率】";
-                ws.Cell(5, 5).Value = "【維修結案率】";
-                ws.Cell(5, 9).Value = "【未結案率】";
-                ws.Cell(6, 1).Value = "增設";
-                ws.Cell(6, 2).Value = "維修(內修)";
-                ws.Cell(6, 3).Value = "維修(外修)";
-                ws.Cell(6, 4).Value = "維修(內外修)";
-                ws.Cell(6, 5).Value = "增設";
-                ws.Cell(6, 6).Value = "維修(內修)";
-                ws.Cell(6, 7).Value = "維修(外修)";
-                ws.Cell(6, 8).Value = "維修(內外修)";
-                ws.Cell(6, 9).Value = "增設";
-                ws.Cell(6, 10).Value = "維修(內修)";
-                ws.Cell(6, 11).Value = "維修(外修)";
-                ws.Cell(6, 12).Value = "維修(內外修)";
+                //ws.Cell(5, 1).Value = "【維修完成率】";
+                //ws.Cell(5, 5).Value = "【維修結案率】";
+                //ws.Cell(5, 9).Value = "【未結案率】";
+                //ws.Cell(6, 1).Value = "增設";
+                //ws.Cell(6, 2).Value = "維修(內修)";
+                //ws.Cell(6, 3).Value = "維修(外修)";
+                //ws.Cell(6, 4).Value = "維修(內外修)";
+                //ws.Cell(6, 5).Value = "增設";
+                //ws.Cell(6, 6).Value = "維修(內修)";
+                //ws.Cell(6, 7).Value = "維修(外修)";
+                //ws.Cell(6, 8).Value = "維修(內外修)";
+                //ws.Cell(6, 9).Value = "增設";
+                //ws.Cell(6, 10).Value = "維修(內修)";
+                //ws.Cell(6, 11).Value = "維修(外修)";
+                //ws.Cell(6, 12).Value = "維修(內外修)";
 
-                //Data2         //.ToString("P")轉為百分比顯示的字串
-                ws.Cell(7, 1).Value = repAdds.Count() != 0 ? (Convert.ToDecimal(repAdds.Where(r => r.repdtl.EndDate != null).Count()) / Convert.ToDecimal(repAdds.Count())).ToString("P") : "0.00%";
-                ws.Cell(7, 2).Value = repIns.Count() != 0 ? (Convert.ToDecimal(repIns.Where(r => r.repdtl.EndDate != null).Count()) / Convert.ToDecimal(repIns.Count())).ToString("P") : "0.00%";
-                ws.Cell(7, 3).Value = repOuts.Count() != 0 ? (Convert.ToDecimal(repOuts.Where(r => r.repdtl.EndDate != null).Count()) / Convert.ToDecimal(repOuts.Count())).ToString("P") : "0.00%";
-                ws.Cell(7, 4).Value = repInOuts.Count() != 0 ? (Convert.ToDecimal(repInOuts.Where(r => r.repdtl.EndDate != null).Count()) / Convert.ToDecimal(repInOuts.Count())).ToString("P") : "0.00%";
-                ws.Cell(7, 5).Value = repAdds.Count() != 0 ? (Convert.ToDecimal(repAdds.Where(r => r.repflow.Status == "2").Count()) / Convert.ToDecimal(repAdds.Count())).ToString("P") : "0.00%";
-                ws.Cell(7, 6).Value = repIns.Count() != 0 ? (Convert.ToDecimal(repIns.Where(r => r.repflow.Status == "2").Count()) / Convert.ToDecimal(repIns.Count())).ToString("P") : "0.00%";
-                ws.Cell(7, 7).Value = repOuts.Count() != 0 ? (Convert.ToDecimal(repOuts.Where(r => r.repflow.Status == "2").Count()) / Convert.ToDecimal(repOuts.Count())).ToString("P") : "0.00%";
-                ws.Cell(7, 8).Value = repInOuts.Count() != 0 ? (Convert.ToDecimal(repInOuts.Where(r => r.repflow.Status == "2").Count()) / Convert.ToDecimal(repInOuts.Count())).ToString("P") : "0.00%";
-                ws.Cell(7, 9).Value = repAdds.Count() != 0 ? (Convert.ToDecimal(repAdds.Where(r => r.repflow.Status != "2").Count()) / Convert.ToDecimal(repAdds.Count())).ToString("P") : "0.00%";
-                ws.Cell(7, 10).Value = repIns.Count() != 0 ? (Convert.ToDecimal(repIns.Where(r => r.repflow.Status != "2").Count()) / Convert.ToDecimal(repIns.Count())).ToString("P") : "0.00%";
-                ws.Cell(7, 11).Value = repOuts.Count() != 0 ? (Convert.ToDecimal(repOuts.Where(r => r.repflow.Status != "2").Count()) / Convert.ToDecimal(repOuts.Count())).ToString("P") : "0.00%";
-                ws.Cell(7, 12).Value = repInOuts.Count() != 0 ? (Convert.ToDecimal(repInOuts.Where(r => r.repflow.Status != "2").Count()) / Convert.ToDecimal(repInOuts.Count())).ToString("P") : "0.00%";
+                ////Data2         //.ToString("P")轉為百分比顯示的字串
+                //ws.Cell(7, 1).Value = repAdds.Count() != 0 ? (Convert.ToDecimal(repAdds.Where(r => r.repdtl.EndDate != null).Count()) / Convert.ToDecimal(repAdds.Count())).ToString("P") : "0.00%";
+                //ws.Cell(7, 2).Value = repIns.Count() != 0 ? (Convert.ToDecimal(repIns.Where(r => r.repdtl.EndDate != null).Count()) / Convert.ToDecimal(repIns.Count())).ToString("P") : "0.00%";
+                //ws.Cell(7, 3).Value = repOuts.Count() != 0 ? (Convert.ToDecimal(repOuts.Where(r => r.repdtl.EndDate != null).Count()) / Convert.ToDecimal(repOuts.Count())).ToString("P") : "0.00%";
+                //ws.Cell(7, 4).Value = repInOuts.Count() != 0 ? (Convert.ToDecimal(repInOuts.Where(r => r.repdtl.EndDate != null).Count()) / Convert.ToDecimal(repInOuts.Count())).ToString("P") : "0.00%";
+                //ws.Cell(7, 5).Value = repAdds.Count() != 0 ? (Convert.ToDecimal(repAdds.Where(r => r.repflow.Status == "2").Count()) / Convert.ToDecimal(repAdds.Count())).ToString("P") : "0.00%";
+                //ws.Cell(7, 6).Value = repIns.Count() != 0 ? (Convert.ToDecimal(repIns.Where(r => r.repflow.Status == "2").Count()) / Convert.ToDecimal(repIns.Count())).ToString("P") : "0.00%";
+                //ws.Cell(7, 7).Value = repOuts.Count() != 0 ? (Convert.ToDecimal(repOuts.Where(r => r.repflow.Status == "2").Count()) / Convert.ToDecimal(repOuts.Count())).ToString("P") : "0.00%";
+                //ws.Cell(7, 8).Value = repInOuts.Count() != 0 ? (Convert.ToDecimal(repInOuts.Where(r => r.repflow.Status == "2").Count()) / Convert.ToDecimal(repInOuts.Count())).ToString("P") : "0.00%";
+                //ws.Cell(7, 9).Value = repAdds.Count() != 0 ? (Convert.ToDecimal(repAdds.Where(r => r.repflow.Status != "2").Count()) / Convert.ToDecimal(repAdds.Count())).ToString("P") : "0.00%";
+                //ws.Cell(7, 10).Value = repIns.Count() != 0 ? (Convert.ToDecimal(repIns.Where(r => r.repflow.Status != "2").Count()) / Convert.ToDecimal(repIns.Count())).ToString("P") : "0.00%";
+                //ws.Cell(7, 11).Value = repOuts.Count() != 0 ? (Convert.ToDecimal(repOuts.Where(r => r.repflow.Status != "2").Count()) / Convert.ToDecimal(repOuts.Count())).ToString("P") : "0.00%";
+                //ws.Cell(7, 12).Value = repInOuts.Count() != 0 ? (Convert.ToDecimal(repInOuts.Where(r => r.repflow.Status != "2").Count()) / Convert.ToDecimal(repInOuts.Count())).ToString("P") : "0.00%";
 
-                //Title3    【維修且內修完成率(該月申請的內修且已完成的案件)】
-                ws.Cell(9, 1).Value = "【維修且內修案件】";
-                ws.Cell(10, 1).Value = "3日完成率";
-                ws.Cell(10, 2).Value = "4~7日完成率";
-                ws.Cell(10, 3).Value = "8日以上";
+                //Title5    【維修且內修完成率(該月申請的內修且已完成的案件)】
+                ws.Cell(28, 1).Value = "【維修且內修案件完成率】";
+                ws.Cell(29, 1).Value = "3日";
+                ws.Cell(29, 2).Value = "4~7日";
+                ws.Cell(29, 3).Value = "8日以上";
 
                 var hasEndDateRepIns = repIns.Where(r => r.repdtl.EndDate != null);
                 decimal count1 = 0, count2 = 0, count3 = 0;
@@ -244,16 +379,53 @@ namespace EDIS.Controllers
                     }
                 }
 
-                //Data3
-                ws.Cell(11, 1).Value = repIns.Count() != 0 ? (count1 / Convert.ToDecimal(repIns.Count())).ToString("P") : "0.00%";
-                ws.Cell(11, 2).Value = repIns.Count() != 0 ? (count2 / Convert.ToDecimal(repIns.Count())).ToString("P") : "0.00%";
-                ws.Cell(11, 3).Value = repIns.Count() != 0 ? (count3 / Convert.ToDecimal(repIns.Count())).ToString("P") : "0.00%";
+                //Data5
+                ws.Cell(30, 1).Value = repIns.Count() != 0 ? (count1 / Convert.ToDecimal(repIns.Count())).ToString("P") : "0.00%";
+                ws.Cell(30, 2).Value = repIns.Count() != 0 ? (count2 / Convert.ToDecimal(repIns.Count())).ToString("P") : "0.00%";
+                ws.Cell(30, 3).Value = repIns.Count() != 0 ? (count3 / Convert.ToDecimal(repIns.Count())).ToString("P") : "0.00%";
 
-                //Title4    【增設案件】
-                ws.Cell(13, 1).Value = "【增設案件完成率】";
-                ws.Cell(14, 1).Value = "15日內";
-                ws.Cell(14, 2).Value = "16~30日";
-                ws.Cell(14, 3).Value = "31日以上";
+                //Title6    【維修且外修+內外修完成率(該月申請的外修、內外修且已完成的案件)】
+                ws.Cell(32, 1).Value = "【維修且外修、內外修案件完成率】";
+                ws.Cell(33, 1).Value = "15日內";
+                ws.Cell(33, 2).Value = "16~30日";
+                ws.Cell(33, 3).Value = "31日以上";
+
+                //聯集外修及內外修案件
+                var unionReps = repOuts.Union(repInOuts).ToList();
+                var hasEndDateReps = unionReps.Where(r => r.repdtl.EndDate != null).ToList();
+                count1 = 0; count2 = 0; count3 = 0;
+                if (hasEndDateReps.Count() != 0)
+                {
+                    foreach (var item in hasEndDateReps)
+                    {
+                        //計算時間差(天為單位)
+                        var result = new TimeSpan(item.repdtl.EndDate.Value.Ticks - item.repair.ApplyDate.Ticks).Days;
+                        if (result <= 15)
+                        {
+                            count1++;
+                        }
+                        else if (result > 15 && result < 31)
+                        {
+                            count2++;
+                        }
+                        else
+                        {
+                            count3++;
+                        }
+                    }
+                }
+
+                //Data6
+                ws.Cell(34, 1).Value = unionReps.Count() != 0 ? (count1 / Convert.ToDecimal(unionReps.Count())).ToString("P") : "0.00%";
+                ws.Cell(34, 2).Value = unionReps.Count() != 0 ? (count2 / Convert.ToDecimal(unionReps.Count())).ToString("P") : "0.00%";
+                ws.Cell(34, 3).Value = unionReps.Count() != 0 ? (count3 / Convert.ToDecimal(unionReps.Count())).ToString("P") : "0.00%";
+
+
+                //Title7    【增設案件】
+                ws.Cell(36, 1).Value = "【增設案件完成率】";
+                ws.Cell(37, 1).Value = "15日內";
+                ws.Cell(37, 2).Value = "16~30日";
+                ws.Cell(37, 3).Value = "31日以上";
 
                 var hasEndDateRepAdds = repAdds.Where(r => r.repdtl.EndDate != null);
                 count1 = 0; count2 = 0; count3 = 0;
@@ -278,47 +450,94 @@ namespace EDIS.Controllers
                     }
                 }              
 
-                //Data4
-                ws.Cell(15, 1).Value = repAdds.Count() != 0 ? (count1 / Convert.ToDecimal(repAdds.Count())).ToString("P") : "0.00%";
-                ws.Cell(15, 2).Value = repAdds.Count() != 0 ? (count2 / Convert.ToDecimal(repAdds.Count())).ToString("P") : "0.00%";
-                ws.Cell(15, 3).Value = repAdds.Count() != 0 ? (count3 / Convert.ToDecimal(repAdds.Count())).ToString("P") : "0.00%";
+                //Data7
+                ws.Cell(38, 1).Value = repAdds.Count() != 0 ? (count1 / Convert.ToDecimal(repAdds.Count())).ToString("P") : "0.00%";
+                ws.Cell(38, 2).Value = repAdds.Count() != 0 ? (count2 / Convert.ToDecimal(repAdds.Count())).ToString("P") : "0.00%";
+                ws.Cell(38, 3).Value = repAdds.Count() != 0 ? (count3 / Convert.ToDecimal(repAdds.Count())).ToString("P") : "0.00%";
 
-                //Title5    【有費用及無費用案件數】
-                ws.Cell(17, 1).Value = "【有費用及無費用案件數】";
-                ws.Cell(18, 1).Value = "有費用";
-                ws.Cell(18, 2).Value = "無費用";
-                ws.Cell(18, 3).Value = "尚未輸入費用";
+                //Title8    【增設案件累進完成率(累積至當月的所有完工案件 / 累積至當月的所有案件)】
+                ws.Cell(40, 1).Value = "【增設案件累進完成率】";
+                ws.Cell(42, 1).Value = "15日內";
+                ws.Cell(43, 1).Value = "16~30日";
+                ws.Cell(44, 1).Value = "31日以上";
 
-                //Data5
-                ws.Cell(19, 1).Value = qtyRepairs2.Where(r => r.repdtl.IsCharged == "Y").Count();
-                ws.Cell(19, 2).Value = qtyRepairs2.Where(r => r.repdtl.IsCharged == "N").Count();
-                ws.Cell(19, 3).Value = qtyRepairs2.Where(r => r.repdtl.IsCharged == null).Count();
+                //年度增設且完工的案件
+                var yearEndDateRepAdds = qtyYearRepairs.Where(r => r.repair.RepType == "增設")
+                                                       .Where(r => r.repdtl.EndDate != null).ToList();
+                for(int month = 1; month <= 12; month++)
+                {
+                    //從1月~N月的增設案件
+                    var progressiveRepAdds = yearEndDateRepAdds.Where(r => r.repair.ApplyDate.Month >= 1)
+                                                               .Where(r => r.repair.ApplyDate.Month <= month).ToList();
 
-                //Title6    【有費用件數(總費用/有費用件數)】
-                ws.Cell(21, 1).Value = "【有費用件數】";
-                ws.Cell(22, 1).Value = "總費用";
-                ws.Cell(22, 2).Value = "平均每件維修費用";
+                    count1 = 0; count2 = 0; count3 = 0;
+                    if (progressiveRepAdds.Count() != 0)
+                    {
+                        foreach (var item in progressiveRepAdds)
+                        {
+                            //計算時間差(天為單位)
+                            var result = new TimeSpan(item.repdtl.EndDate.Value.Ticks - item.repair.ApplyDate.Ticks).Days;
+                            if (result <= 15)
+                            {
+                                count1++;
+                            }
+                            else if (result > 15 && result < 31)
+                            {
+                                count2++;
+                            }
+                            else
+                            {
+                                count3++;
+                            }
+                        }
+                    }
+
+                    ws.Cell(41, month + 1).Value = month + "月";
+                    //Data8
+                    ws.Cell(42, month + 1).Value = progressiveRepAdds.Count() != 0 ? (count1 / Convert.ToDecimal(progressiveRepAdds.Count())).ToString("P") : "0.00%";
+                    ws.Cell(43, month + 1).Value = progressiveRepAdds.Count() != 0 ? (count2 / Convert.ToDecimal(progressiveRepAdds.Count())).ToString("P") : "0.00%";
+                    ws.Cell(44, month + 1).Value = progressiveRepAdds.Count() != 0 ? (count3 / Convert.ToDecimal(progressiveRepAdds.Count())).ToString("P") : "0.00%";
+
+                }
+
+                //Title9    【有費用及無費用案件數(已完工案件)】
+                ws.Cell(46, 1).Value = "【有費用及無費用案件數(已完工案件)】";
+                ws.Cell(47, 1).Value = "有費用";
+                ws.Cell(47, 2).Value = "無費用";
+
+                //已有完工日之有、無費用的案件
+                var hasCostReps = qtyRepairs2.Where(r => r.repdtl.IsCharged == "Y" && r.repdtl.EndDate != null);
+                var noCostReps = qtyRepairs2.Where(r => r.repdtl.IsCharged == "N" && r.repdtl.EndDate != null);
+
+                //Data9
+                ws.Cell(48, 1).Value = hasCostReps.Count();
+                ws.Cell(48, 2).Value = noCostReps.Count();
+
+                //Title6    【有費用件數(已完工案件)(總費用/有費用件數)】
+                ws.Cell(50, 1).Value = "【有費用件數(已完工案件)】";
+                ws.Cell(51, 1).Value = "總費用";
+                ws.Cell(51, 2).Value = "平均每件維修費用";
 
                 //Data6
-                int costRepairs = qtyRepairs2.Where(r => r.repdtl.IsCharged == "Y").Count();
-                decimal totalCosts = qtyRepairs2.Where(r => r.repdtl.IsCharged == "Y").Select(rd => rd.repdtl.Cost).DefaultIfEmpty(0).Sum();
-                decimal avgCosts = costRepairs != 0 ? totalCosts / costRepairs : 0;
-                ws.Cell(23, 1).Value = String.Format("{0:N0}", totalCosts); 
-                ws.Cell(23, 2).Value = String.Format("{0:N0}", avgCosts);
+                int costReps = hasCostReps.Count();
+                decimal totalCosts = hasCostReps.Select(rd => rd.repdtl.Cost).DefaultIfEmpty(0).Sum();
+                decimal avgCosts = costReps != 0 ? totalCosts / costReps : 0;
+                ws.Cell(52, 1).Value = String.Format("{0:N0}", totalCosts); 
+                ws.Cell(52, 2).Value = String.Format("{0:N0}", avgCosts);
 
                 //計算公式
-                ws.Cell(26, 1).Value = "【維修完成率】";
-                ws.Cell(26, 2).Value = "【案件為當月申請且已完成的(增設/內修/外修/內外修)件數 / 當月申請(增設/內修/外修/內外修)總件數】";
-                ws.Cell(27, 1).Value = "【維修結案率】";
-                ws.Cell(27, 2).Value = "【案件為當月申請且已結案的(增設/內修/外修/內外修)件數 / 當月申請(增設/內修/外修/內外修)總件數】";
-                ws.Cell(28, 1).Value = "【未結案率】";
-                ws.Cell(28, 2).Value = "【案件為當月申請且尚未結案的(增設/內修/外修/內外修)件數 / 當月申請(增設/內修/外修/內外修)總件數】";
-                ws.Cell(29, 1).Value = "【維修且內修案件】";
-                ws.Cell(29, 2).Value = "【案件為當月申請且於N日內完成的內修件數 / 當月申請內修之總件數】";
-                ws.Cell(30, 1).Value = "【增設案件完成率】";
-                ws.Cell(30, 2).Value = "【案件為當月申請且於N日內完成的增設件數 / 當月申請增設之總件數】";
-                ws.Cell(31, 1).Value = "【平均每件維修費用】";
-                ws.Cell(31, 2).Value = "【總費用 / 有費用件數】";
+                ws.Cell(55, 1).Value = "【維修完成率】";
+                ws.Cell(55, 2).Value = "【案件為當月申請且已完成的(增設/內修/外修/內外修)件數 / 當月申請(增設/內修/外修/內外修)總件數】";
+                ws.Cell(56, 1).Value = "【維修結案率】";
+                ws.Cell(56, 2).Value = "【案件為當月申請且已結案的(增設/內修/外修/內外修)件數 / 當月申請(增設/內修/外修/內外修)總件數】";
+                ws.Cell(57, 1).Value = "【未結案率】";
+                ws.Cell(57, 2).Value = "【案件為當月申請且尚未結案的(增設/內修/外修/內外修)件數 / 當月申請(增設/內修/外修/內外修)總件數】";
+                ws.Cell(58, 1).Value = "【維修且內修案件】";
+                ws.Cell(58, 2).Value = "【案件為當月申請且於N日內完成的內修件數 / 當月申請內修之總件數】";
+                ws.Cell(59, 1).Value = "【增設案件完成率】";
+                ws.Cell(59, 2).Value = "【案件為當月申請且於N日內完成的增設件數 / 當月申請增設之總件數】";
+                ws.Cell(60, 1).Value = "【平均每件維修費用(已完工案件)】";
+                ws.Cell(60, 2).Value = "【總費用 / 有費用件數】";
 
                 //WorkSheet2
                 var ws2 = workbook.Worksheets.Add("個人月指標", 2);
