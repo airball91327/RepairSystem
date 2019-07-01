@@ -370,7 +370,7 @@ namespace EDIS.Controllers
                 //Title5    【維修且內修完成率(該月申請的內修且已完成的案件)】
                 ws.Cell(29, 1).Value = "【維修且內修案件完成率】";
                 ws.Cell(30, 1).Value = "3日內";
-                ws.Cell(30, 2).Value = "4~7日";
+                ws.Cell(30, 2).Value = "4 - 7日";
                 ws.Cell(30, 3).Value = "8日以上";
 
                 var hasEndDateRepIns = repIns.Where(r => r.repdtl.EndDate != null);
@@ -406,7 +406,7 @@ namespace EDIS.Controllers
                 //Title6    【維修且外修+內外修完成率(該月申請的外修、內外修且已完成的案件)】
                 ws.Cell(33, 1).Value = "【維修且外修、內外修案件完成率】";
                 ws.Cell(34, 1).Value = "15日內";
-                ws.Cell(34, 2).Value = "16~30日";
+                ws.Cell(34, 2).Value = "16 - 30日";
                 ws.Cell(34, 3).Value = "31日以上";
 
                 //聯集外修及內外修案件
@@ -444,7 +444,7 @@ namespace EDIS.Controllers
                 //Title7    【增設案件】
                 ws.Cell(37, 1).Value = "【增設案件完成率】";
                 ws.Cell(38, 1).Value = "15日內";
-                ws.Cell(38, 2).Value = "16~30日";
+                ws.Cell(38, 2).Value = "16 - 30日";
                 ws.Cell(38, 3).Value = "31日以上";
 
                 var hasEndDateRepAdds = repAdds.Where(r => r.repdtl.EndDate != null);
@@ -529,7 +529,7 @@ namespace EDIS.Controllers
                 }
 
                 //Title9    【有費用及無費用案件數(已完工案件)】
-                ws.Cell(47, 1).Value = "【有費用及無費用案件數(已完工案件)】";
+                ws.Cell(47, 1).Value = "【有費用及無費用案件數(已完工案件，報廢案件除外)】";
                 ws.Cell(48, 1).Value = "有費用";
                 ws.Cell(48, 2).Value = "無費用";
 
@@ -564,32 +564,40 @@ namespace EDIS.Controllers
                 //Style
                 ws2.ColumnWidth = 15;
                 ws2.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                ws2.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+                ws2.Column(1).Width = 18;
+                ws2.Column(1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
+                ws2.Cell(1, 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                ws2.Columns(2, 11).Width = 11;
+                ws2.Columns(15, 17).Width = 20;
+                ws2.Columns(18, 20).Width = 20;
+                ws2.Row(1).Style.Alignment.WrapText = true;
 
                 //Title
                 ws2.Cell(1, 1).Value = "姓名";
-                ws2.Cell(1, 2).Value = "增設(內修)件數";
-                ws2.Cell(1, 3).Value = "增設(外修)件數";
-                ws2.Cell(1, 4).Value = "增設(內外修)件數";
-                ws2.Cell(1, 5).Value = "增設(未處理)件數";
-                ws2.Cell(1, 6).Value = "維修(內修)件數";
-                ws2.Cell(1, 7).Value = "維修(外修)件數";
-                ws2.Cell(1, 8).Value = "維修(內外修)件數";
-                ws2.Cell(1, 9).Value = "維修(未處理)件數";
+                ws2.Cell(1, 2).Value = "增設件數\n(內修)";
+                ws2.Cell(1, 3).Value = "增設件數\n(外修)";
+                ws2.Cell(1, 4).Value = "增設件數\n(內外修)";
+                ws2.Cell(1, 5).Value = "增設件數\n(未處理)";
+                ws2.Cell(1, 6).Value = "維修件數\n(內修)";
+                ws2.Cell(1, 7).Value = "維修件數\n(外修)";
+                ws2.Cell(1, 8).Value = "維修件數\n(內外修)";
+                ws2.Cell(1, 9).Value = "維修件數\n(未處理)";
                 ws2.Cell(1, 10).Value = "報廢件數";
                 ws2.Cell(1, 11).Value = "總件數";
-                ws2.Cell(1, 12).Value = "維修(內修)3日內完成率";
-                ws2.Cell(1, 13).Value = "4~7日完成率";
-                ws2.Cell(1, 14).Value = "8日以上完成率";
-                ws2.Cell(1, 15).Value = "維修(外修、內外修)15日內完成率";
-                ws2.Cell(1, 16).Value = "16~30日完成率";
-                ws2.Cell(1, 17).Value = "31日以上完成率";
-                ws2.Cell(1, 18).Value = "增設15日內完成率";
-                ws2.Cell(1, 19).Value = "16~30日完成率";
-                ws2.Cell(1, 20).Value = "31日以上完成率";
+                ws2.Cell(1, 12).Value = "維修(內修)\n3日內完成率";
+                ws2.Cell(1, 13).Value = "維修(內修)\n4 - 7日完成率";
+                ws2.Cell(1, 14).Value = "維修(內修)\n8日以上完成率";
+                ws2.Cell(1, 15).Value = "維修(外修、內外修)\n15日內完成率";
+                ws2.Cell(1, 16).Value = "維修(外修、內外修)\n16 - 30日完成率";
+                ws2.Cell(1, 17).Value = "維修(外修、內外修)\n31日以上完成率";
+                ws2.Cell(1, 18).Value = "增設\n15日內完成率";
+                ws2.Cell(1, 19).Value = "增設\n16 - 30日完成率";
+                ws2.Cell(1, 20).Value = "增設\n31日以上完成率";
                 ws2.Cell(1, 21).Value = "有費用件數";
                 ws2.Cell(1, 22).Value = "無費用件數";
                 ws2.Cell(1, 23).Value = "總費用";
-                ws2.Cell(1, 24).Value = "平均每件維修費用";
+                ws2.Cell(1, 24).Value = "平均每件\n維修費用";
 
                 //Data 整理及統計
 
@@ -759,9 +767,9 @@ namespace EDIS.Controllers
                             RepInEndRate1 = engRepIns.Count() != 0 ? (inCount1 / Convert.ToDecimal(engRepIns.Count())).ToString("P") : "0.00%",
                             RepInEndRate2 = engRepIns.Count() != 0 ? (inCount2 / Convert.ToDecimal(engRepIns.Count())).ToString("P") : "0.00%",
                             RepInEndRate3 = engRepIns.Count() != 0 ? (inCount3 / Convert.ToDecimal(engRepIns.Count())).ToString("P") : "0.00%",
-                            RepOutEndRate1 = engRepOutUnion.Count() != 0 ? (inCount1 / Convert.ToDecimal(engRepOutUnion.Count())).ToString("P") : "0.00%",
-                            RepOutEndRate2 = engRepOutUnion.Count() != 0 ? (inCount2 / Convert.ToDecimal(engRepOutUnion.Count())).ToString("P") : "0.00%",
-                            RepOutEndRate3 = engRepOutUnion.Count() != 0 ? (inCount3 / Convert.ToDecimal(engRepOutUnion.Count())).ToString("P") : "0.00%",
+                            RepOutEndRate1 = engRepOutUnion.Count() != 0 ? (outCount1 / Convert.ToDecimal(engRepOutUnion.Count())).ToString("P") : "0.00%",
+                            RepOutEndRate2 = engRepOutUnion.Count() != 0 ? (outCount2 / Convert.ToDecimal(engRepOutUnion.Count())).ToString("P") : "0.00%",
+                            RepOutEndRate3 = engRepOutUnion.Count() != 0 ? (outCount3 / Convert.ToDecimal(engRepOutUnion.Count())).ToString("P") : "0.00%",
                             RepAddEndRate1 = engRepAdds.Count() != 0 ? (addCount1 / Convert.ToDecimal(engRepAdds.Count())).ToString("P") : "0.00%",
                             RepAddEndRate2 = engRepAdds.Count() != 0 ? (addCount2 / Convert.ToDecimal(engRepAdds.Count())).ToString("P") : "0.00%",
                             RepAddEndRate3 = engRepAdds.Count() != 0 ? (addCount3 / Convert.ToDecimal(engRepAdds.Count())).ToString("P") : "0.00%",
@@ -779,43 +787,118 @@ namespace EDIS.Controllers
 
                 //WorkSheet3
                 var ws3 = workbook.Worksheets.Add("個人各月份統計", 3);
+                //Style
+                ws3.Column(1).Width = 18;
+                ws3.Column(3).Width = 14;
 
+                //Title1  【2019年各月統計】
+                ws3.Cell(1, 1).Value = "【" + qtyMonth.Year + "年" + "個人各月份統計】";
+
+                //Data1
+                int pStart = 3; // Set Default value.
+                foreach (string l in engs)
+                {
+                    ur = _context.AppUsers.Where(u => u.UserName == l).FirstOrDefault();
+                    if (ur != null)
+                    {
+                        // 個人年度總案件數
+                        var engYearRepairs = qtyYearRepairs.Where(r => r.repair.EngId == ur.Id);
+
+                        //Style
+                        ws3.Row(pStart).Style.Fill.BackgroundColor = XLColor.FromArgb(255, 255, 204);
+                        ws3.Row(pStart).Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                        ws3.Row(pStart).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+                        ws3.Row(pStart).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+                        ws3.Row(pStart).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+
+                        //Title
+                        ws3.Cell(pStart, 1).Value = ur.FullName + "(" + ur.UserName + ")";
+                        ws3.Cell(pStart + 1, 2).Value = "增設";
+                        ws3.Cell(pStart + 1, 3).Value = "已完工件數";
+                        ws3.Cell(pStart + 2, 3).Value = "未完工件數";
+                        ws3.Cell(pStart + 3, 3).Value = "已結案件數";
+                        ws3.Cell(pStart + 4, 3).Value = "未結案件數";
+                        ws3.Cell(pStart + 5, 3).Value = "完工率";
+                        ws3.Cell(pStart + 6, 3).Value = "結案率";
+                        ws3.Cell(pStart + 7, 2).Value = "維修";
+                        ws3.Cell(pStart + 7, 3).Value = "已完工件數";
+                        ws3.Cell(pStart + 8, 3).Value = "未完工件數";
+                        ws3.Cell(pStart + 9, 3).Value = "已結案件數";
+                        ws3.Cell(pStart + 10, 3).Value = "未結案件數";
+                        ws3.Cell(pStart + 11, 3).Value = "完工率";
+                        ws3.Cell(pStart + 12, 3).Value = "結案率";
+
+                        for (int month = 1; month <= 12; month++)
+                        {
+                            var monthRepAdds = engYearRepairs.Where(r => r.repair.ApplyDate.Month == month)
+                                                             .Where(r => r.repair.RepType == "增設").ToList();
+                            var monthReps = engYearRepairs.Where(r => r.repair.ApplyDate.Month == month)
+                                                          .Where(r => r.repair.RepType != "增設" && r.repdtl.DealState != 4).ToList();
+
+                            ws3.Cell(pStart, (month + 3)).SetValue(month + "月");
+                            //增設
+                            ws3.Cell(pStart + 1, (month + 3)).Value = monthRepAdds.Where(r => r.repdtl.EndDate != null).Count();
+                            ws3.Cell(pStart + 2, (month + 3)).Value = monthRepAdds.Where(r => r.repdtl.EndDate == null).Count();
+                            ws3.Cell(pStart + 3, (month + 3)).Value = monthRepAdds.Where(r => r.repdtl.CloseDate != null).Count();
+                            ws3.Cell(pStart + 4, (month + 3)).Value = monthRepAdds.Where(r => r.repdtl.CloseDate == null).Count();
+                            ws3.Cell(pStart + 5, (month + 3)).Value = monthRepAdds.Count() != 0 ? (Convert.ToDecimal(monthRepAdds.Where(r => r.repdtl.EndDate != null).Count()) / Convert.ToDecimal(monthRepAdds.Count())).ToString("P") : "0.00%";
+                            ws3.Cell(pStart + 6, (month + 3)).Value = monthRepAdds.Count() != 0 ? (Convert.ToDecimal(monthRepAdds.Where(r => r.repdtl.CloseDate != null).Count()) / Convert.ToDecimal(monthRepAdds.Count())).ToString("P") : "0.00%";
+                            //Style
+                            ws3.Cell(pStart + 5, (month + 3)).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
+                            ws3.Cell(pStart + 6, (month + 3)).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
+                            //維修
+                            ws3.Cell(pStart + 7, (month + 3)).Value = monthReps.Where(r => r.repdtl.EndDate != null).Count();
+                            ws3.Cell(pStart + 8, (month + 3)).Value = monthReps.Where(r => r.repdtl.EndDate == null).Count();
+                            ws3.Cell(pStart + 9, (month + 3)).Value = monthReps.Where(r => r.repdtl.CloseDate != null).Count();
+                            ws3.Cell(pStart + 10, (month + 3)).Value = monthReps.Where(r => r.repdtl.CloseDate == null).Count();
+                            ws3.Cell(pStart + 11, (month + 3)).Value = monthReps.Count() != 0 ? (Convert.ToDecimal(monthReps.Where(r => r.repdtl.EndDate != null).Count()) / Convert.ToDecimal(monthReps.Count())).ToString("P") : "0.00%";
+                            ws3.Cell(pStart + 12, (month + 3)).Value = monthReps.Count() != 0 ? (Convert.ToDecimal(monthReps.Where(r => r.repdtl.CloseDate != null).Count()) / Convert.ToDecimal(monthReps.Count())).ToString("P") : "0.00%";
+                            //Style
+                            ws3.Cell(pStart + 11, (month + 3)).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
+                            ws3.Cell(pStart + 12, (month + 3)).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
+                        }
+                    }
+                    pStart += 13;
+                }
 
                 //WorkSheet4
                 var ws4 = workbook.Worksheets.Add("各課及部門月指標", 4);
                 //Style
                 ws4.ColumnWidth = 15;
                 ws4.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                ws4.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
                 ws4.Column(1).Width = 24;
                 ws4.Column(1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
+                ws4.Columns(2, 11).Width = 11;
+                ws4.Columns(15, 17).Width = 20;
+                ws4.Columns(18, 20).Width = 20;
                 ws4.Row(1).Style.Alignment.WrapText = true;
-                ws4.Row(1).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
 
                 //Title
                 ws4.Cell(1, 1).Value = "";
-                ws4.Cell(1, 2).Value = "增設(內修)\n件數";
-                ws4.Cell(1, 3).Value = "增設(外修)\n件數";
-                ws4.Cell(1, 4).Value = "增設(內外修)\n件數";
-                ws4.Cell(1, 5).Value = "增設(未處理)\n件數";
-                ws4.Cell(1, 6).Value = "維修(內修)\n件數";
-                ws4.Cell(1, 7).Value = "維修(外修)\n件數";
-                ws4.Cell(1, 8).Value = "維修(內外修)\n件數";
-                ws4.Cell(1, 9).Value = "維修(未處理)\n件數";
+                ws4.Cell(1, 2).Value = "增設件數\n(內修)";
+                ws4.Cell(1, 3).Value = "增設件數\n(外修)";
+                ws4.Cell(1, 4).Value = "增設件數\n(內外修)";
+                ws4.Cell(1, 5).Value = "增設件數\n(未處理)";
+                ws4.Cell(1, 6).Value = "維修件數\n(內修)";
+                ws4.Cell(1, 7).Value = "維修件數\n(外修)";
+                ws4.Cell(1, 8).Value = "維修件數\n(內外修)";
+                ws4.Cell(1, 9).Value = "維修件數\n(未處理)";
                 ws4.Cell(1, 10).Value = "報廢件數";
                 ws4.Cell(1, 11).Value = "總件數";
                 ws4.Cell(1, 12).Value = "維修(內修)\n3日內完成率";
-                ws4.Cell(1, 13).Value = "4~7日完成率";
-                ws4.Cell(1, 14).Value = "8日以上完成率";
+                ws4.Cell(1, 13).Value = "維修(內修)\n4 - 7日完成率";
+                ws4.Cell(1, 14).Value = "維修(內修)\n8日以上完成率";
                 ws4.Cell(1, 15).Value = "維修(外修、內外修)\n15日內完成率";
-                ws4.Cell(1, 16).Value = "16~30日完成率";
-                ws4.Cell(1, 17).Value = "31日以上完成率";
+                ws4.Cell(1, 16).Value = "維修(外修、內外修)\n16 - 30日完成率";
+                ws4.Cell(1, 17).Value = "維修(外修、內外修)\n31日以上完成率";
                 ws4.Cell(1, 18).Value = "增設\n15日內完成率";
-                ws4.Cell(1, 19).Value = "16~30日完成率";
-                ws4.Cell(1, 20).Value = "31日以上完成率";
+                ws4.Cell(1, 19).Value = "增設\n16 - 30日完成率";
+                ws4.Cell(1, 20).Value = "增設\n31日以上完成率";
                 ws4.Cell(1, 21).Value = "有費用件數";
                 ws4.Cell(1, 22).Value = "無費用件數";
                 ws4.Cell(1, 23).Value = "總費用";
-                ws4.Cell(1, 24).Value = "平均每件維修費用";
+                ws4.Cell(1, 24).Value = "平均每件\n維修費用";
 
                 // Data 整理及統計
                 // 8410工務部  8411工務一課    8412工務二課    8413 8414 工務三課  0000外包人員
@@ -986,9 +1069,9 @@ namespace EDIS.Controllers
                         RepInEndRate1 = dptRepIns.Count() != 0 ? (inCount1 / Convert.ToDecimal(dptRepIns.Count())).ToString("P") : "0.00%",
                         RepInEndRate2 = dptRepIns.Count() != 0 ? (inCount2 / Convert.ToDecimal(dptRepIns.Count())).ToString("P") : "0.00%",
                         RepInEndRate3 = dptRepIns.Count() != 0 ? (inCount3 / Convert.ToDecimal(dptRepIns.Count())).ToString("P") : "0.00%",
-                        RepOutEndRate1 = dptRepOutUnion.Count() != 0 ? (inCount1 / Convert.ToDecimal(dptRepOutUnion.Count())).ToString("P") : "0.00%",
-                        RepOutEndRate2 = dptRepOutUnion.Count() != 0 ? (inCount2 / Convert.ToDecimal(dptRepOutUnion.Count())).ToString("P") : "0.00%",
-                        RepOutEndRate3 = dptRepOutUnion.Count() != 0 ? (inCount3 / Convert.ToDecimal(dptRepOutUnion.Count())).ToString("P") : "0.00%",
+                        RepOutEndRate1 = dptRepOutUnion.Count() != 0 ? (outCount1 / Convert.ToDecimal(dptRepOutUnion.Count())).ToString("P") : "0.00%",
+                        RepOutEndRate2 = dptRepOutUnion.Count() != 0 ? (outCount2 / Convert.ToDecimal(dptRepOutUnion.Count())).ToString("P") : "0.00%",
+                        RepOutEndRate3 = dptRepOutUnion.Count() != 0 ? (outCount3 / Convert.ToDecimal(dptRepOutUnion.Count())).ToString("P") : "0.00%",
                         RepAddEndRate1 = dptRepAdds.Count() != 0 ? (addCount1 / Convert.ToDecimal(dptRepAdds.Count())).ToString("P") : "0.00%",
                         RepAddEndRate2 = dptRepAdds.Count() != 0 ? (addCount2 / Convert.ToDecimal(dptRepAdds.Count())).ToString("P") : "0.00%",
                         RepAddEndRate3 = dptRepAdds.Count() != 0 ? (addCount3 / Convert.ToDecimal(dptRepAdds.Count())).ToString("P") : "0.00%",
@@ -1004,27 +1087,139 @@ namespace EDIS.Controllers
 
                 //WorkSheet5
                 var ws5 = workbook.Worksheets.Add("各課及部門各月份統計", 5);
+                //Style
+                ws5.Column(1).Width = 24;
+                ws5.Column(3).Width = 14;
+
+                //Title1  【2019年各課及部門各月統計】
+                ws5.Cell(1, 1).Value = "【" + qtyMonth.Year + "年" + "各課及部門各月統計】";
+
+                //Data1
+                int printStart = 3;
+                foreach (string id in dpts)
+                {
+                    var dptRepairs = qtyYearRepairs;
+                    if (id == "8410")
+                    {
+                        dptRepairs = qtyYearRepairs.Where(r => r.repair.EngName == "8410").ToList();
+                        printStart = 3;
+                        ws5.Cell(printStart, 1).Value = _context.Departments.Where(d => d.DptId == id).FirstOrDefault().Name_C;
+                    }
+                    if (id == "8411")
+                    {
+                        dptRepairs = qtyYearRepairs.Where(r => r.repair.EngName == "8411").ToList();
+                        printStart += 13;
+                        ws5.Cell(printStart, 1).Value = _context.Departments.Where(d => d.DptId == id).FirstOrDefault().Name_C;
+                    }
+                    if (id == "8412")
+                    {
+                        dptRepairs = qtyYearRepairs.Where(r => r.repair.EngName == "8412").ToList();
+                        printStart += 13;
+                        ws5.Cell(printStart, 1).Value = _context.Departments.Where(d => d.DptId == id).FirstOrDefault().Name_C;
+                    }
+                    if (id == "8413")
+                    {
+                        dptRepairs = qtyYearRepairs.Where(r => r.repair.EngName == "8413").ToList();
+                        printStart += 13;
+                        ws5.Cell(printStart, 1).Value = _context.Departments.Where(d => d.DptId == id).FirstOrDefault().Name_C;
+                    }
+                    if (id == "8414")
+                    {
+                        dptRepairs = qtyYearRepairs.Where(r => r.repair.EngName == "8414").ToList();
+                        printStart += 13;
+                        ws5.Cell(printStart, 1).Value = _context.Departments.Where(d => d.DptId == id).FirstOrDefault().Name_C;
+                    }
+                    if (id == "allDpts")
+                    {
+                        dptRepairs = qtyYearRepairs.Where(r => r.repair.EngName == "8410" || r.repair.EngName == "8411" ||
+                                                               r.repair.EngName == "8412" || r.repair.EngName == "8413" ||
+                                                               r.repair.EngName == "8414").ToList();
+                        printStart += 13;
+                        ws5.Cell(printStart, 1).Value = "工務部(8410 - 8414)";
+                    }
+                    if (id == "0000")
+                    {
+                        dptRepairs = qtyYearRepairs.Where(r => r.repair.EngName == "0000").ToList();
+                        printStart += 13;
+                        ws5.Cell(printStart, 1).Value = "外包人員";
+                    }
+
+                    //Style
+                    ws5.Row(printStart).Style.Fill.BackgroundColor = XLColor.FromArgb(255, 255, 204);
+                    ws5.Row(printStart).Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                    ws5.Row(printStart).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+                    ws5.Row(printStart).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+                    ws5.Row(printStart).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+
+                    //Title
+                    ws5.Cell(printStart + 1, 2).Value = "增設";
+                    ws5.Cell(printStart + 1, 3).Value = "已完工件數";
+                    ws5.Cell(printStart + 2, 3).Value = "未完工件數";
+                    ws5.Cell(printStart + 3, 3).Value = "已結案件數";
+                    ws5.Cell(printStart + 4, 3).Value = "未結案件數";
+                    ws5.Cell(printStart + 5, 3).Value = "完工率";
+                    ws5.Cell(printStart + 6, 3).Value = "結案率";
+                    ws5.Cell(printStart + 7, 2).Value = "維修";
+                    ws5.Cell(printStart + 7, 3).Value = "已完工件數";
+                    ws5.Cell(printStart + 8, 3).Value = "未完工件數";
+                    ws5.Cell(printStart + 9, 3).Value = "已結案件數";
+                    ws5.Cell(printStart + 10, 3).Value = "未結案件數";
+                    ws5.Cell(printStart + 11, 3).Value = "完工率";
+                    ws5.Cell(printStart + 12, 3).Value = "結案率";
+
+                    for (int month = 1; month <= 12; month++)
+                    {
+                        var monthRepAdds = dptRepairs.Where(r => r.repair.ApplyDate.Month == month)
+                                                     .Where(r => r.repair.RepType == "增設").ToList();
+                        var monthReps = dptRepairs.Where(r => r.repair.ApplyDate.Month == month)
+                                                  .Where(r => r.repair.RepType != "增設" && r.repdtl.DealState != 4).ToList();
+
+                        ws5.Cell(printStart, (month + 3)).SetValue(month + "月");
+                        //增設
+                        ws5.Cell(printStart + 1, (month + 3)).Value = monthRepAdds.Where(r => r.repdtl.EndDate != null).Count();
+                        ws5.Cell(printStart + 2, (month + 3)).Value = monthRepAdds.Where(r => r.repdtl.EndDate == null).Count();
+                        ws5.Cell(printStart + 3, (month + 3)).Value = monthRepAdds.Where(r => r.repdtl.CloseDate != null).Count();
+                        ws5.Cell(printStart + 4, (month + 3)).Value = monthRepAdds.Where(r => r.repdtl.CloseDate == null).Count();
+                        ws5.Cell(printStart + 5, (month + 3)).Value = monthRepAdds.Count() != 0 ? (Convert.ToDecimal(monthRepAdds.Where(r => r.repdtl.EndDate != null).Count()) / Convert.ToDecimal(monthRepAdds.Count())).ToString("P") : "0.00%";
+                        ws5.Cell(printStart + 6, (month + 3)).Value = monthRepAdds.Count() != 0 ? (Convert.ToDecimal(monthRepAdds.Where(r => r.repdtl.CloseDate != null).Count()) / Convert.ToDecimal(monthRepAdds.Count())).ToString("P") : "0.00%";
+                        //Style
+                        ws5.Cell(printStart + 5, (month + 3)).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
+                        ws5.Cell(printStart + 6, (month + 3)).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
+                        //維修
+                        ws5.Cell(printStart + 7, (month + 3)).Value = monthReps.Where(r => r.repdtl.EndDate != null).Count();
+                        ws5.Cell(printStart + 8, (month + 3)).Value = monthReps.Where(r => r.repdtl.EndDate == null).Count();
+                        ws5.Cell(printStart + 9, (month + 3)).Value = monthReps.Where(r => r.repdtl.CloseDate != null).Count();
+                        ws5.Cell(printStart + 10, (month + 3)).Value = monthReps.Where(r => r.repdtl.CloseDate == null).Count();
+                        ws5.Cell(printStart + 11, (month + 3)).Value = monthReps.Count() != 0 ? (Convert.ToDecimal(monthReps.Where(r => r.repdtl.EndDate != null).Count()) / Convert.ToDecimal(monthReps.Count())).ToString("P") : "0.00%";
+                        ws5.Cell(printStart + 12, (month + 3)).Value = monthReps.Count() != 0 ? (Convert.ToDecimal(monthReps.Where(r => r.repdtl.CloseDate != null).Count()) / Convert.ToDecimal(monthReps.Count())).ToString("P") : "0.00%";
+                        //Style
+                        ws5.Cell(printStart + 11, (month + 3)).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
+                        ws5.Cell(printStart + 12, (month + 3)).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
+                    }
+                }
 
                 //WorkSheet6
                 var ws6 = workbook.Worksheets.Add("各指標計算公式", 6);
                 //Style
-                ws6.Column(1).Width = 40;
+                ws6.Column(1).Width = 52;
                 ws6.Column(2).Width = 120;
 
                 //Data6
                 //計算公式
                 ws6.Cell(1, 1).Value = "【各指標計算公式】";
-                ws6.Cell(3, 1).Value = "【維修完成率】";
-                ws6.Cell(3, 2).Value = "【案件為當月申請且已完成的(增設/內修/外修/內外修)件數 / 當月申請(增設/內修/外修/內外修)總件數】";
-                ws6.Cell(4, 1).Value = "【維修結案率】";
-                ws6.Cell(4, 2).Value = "【案件為當月申請且已結案的(增設/內修/外修/內外修)件數 / 當月申請(增設/內修/外修/內外修)總件數】";
-                ws6.Cell(5, 1).Value = "【未結案率】";
-                ws6.Cell(5, 2).Value = "【案件為當月申請且尚未結案的(增設/內修/外修/內外修)件數 / 當月申請(增設/內修/外修/內外修)總件數】";
-                ws6.Cell(6, 1).Value = "【維修且內修案件】";
-                ws6.Cell(6, 2).Value = "【案件為當月申請且於N日內完成的內修件數 / 當月申請內修之總件數】";
+                ws6.Cell(3, 1).Value = "【完工率】";
+                ws6.Cell(3, 2).Value = "【案件為當月申請且已完工之(增設/維修)件數 / 當月申請(增設/維修)總件數】";
+                ws6.Cell(4, 1).Value = "【結案率】";
+                ws6.Cell(4, 2).Value = "【案件為當月申請且已結案之(增設/維修)件數 / 當月申請(增設/維修)總件數】";
+                ws6.Cell(5, 1).Value = "【維修且內修案件完成率】";
+                ws6.Cell(5, 2).Value = "【案件為當月申請且於N日內完成的內修件數 / 當月申請內修之總件數】";
+                ws6.Cell(6, 1).Value = "【維修且外修、內外修案件完成率】";
+                ws6.Cell(6, 2).Value = "【案件為當月申請且於N日內完成的(外修 + 內外修)總件數 / 當月申請(外修 + 內外修)之總件數】";
                 ws6.Cell(7, 1).Value = "【增設案件完成率】";
                 ws6.Cell(7, 2).Value = "【案件為當月申請且於N日內完成的增設件數 / 當月申請增設之總件數】";
-                ws6.Cell(8, 1).Value = "【平均每件維修費用(已完工案件)】";
+                ws6.Cell(7, 1).Value = "【增設案件累進完成率】";
+                ws6.Cell(7, 2).Value = "【案件為當年度1月 ~ N月前且於N日內完成之增設案件總數 / 當年度1月 ~ N月前申請增設之總件數】";
+                ws6.Cell(8, 1).Value = "【平均每件維修費用(已完工案件，報廢案件除外)】";
                 ws6.Cell(8, 2).Value = "【總費用 / 有費用件數】";
 
                 //因為是用Query的方式,這個地方要用串流的方式來存檔

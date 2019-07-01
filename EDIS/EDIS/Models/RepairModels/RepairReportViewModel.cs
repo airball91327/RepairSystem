@@ -27,28 +27,24 @@ namespace EDIS.Models.RepairModels
         public int RepScraps { get; set; }
         [Display(Name = "總件數")]
         public int RepTotals { get; set; }
-
         [Display(Name = "維修(內修)3日內完成率")]
         public string RepInEndRate1 { get; set; }
         [Display(Name = "4~7日完成率")]
         public string RepInEndRate2 { get; set; }
         [Display(Name = "8日以上完成率")]
         public string RepInEndRate3 { get; set; }
-
         [Display(Name = "維修(外修、內外修)15日內完成率")]
         public string RepOutEndRate1 { get; set; }
         [Display(Name = "16~30日完成率")]
         public string RepOutEndRate2 { get; set; }
         [Display(Name = "31日以上完成率")]
         public string RepOutEndRate3 { get; set; }
-
         [Display(Name = "增設15日內完成率")]
         public string RepAddEndRate1 { get; set; }
         [Display(Name = "16~30日完成率")]
         public string RepAddEndRate2 { get; set; }
         [Display(Name = "31日以上完成率")]
         public string RepAddEndRate3 { get; set; }
-
         [Display(Name = "有費用件數")]
         public int IsChargedReps { get; set; }
         [Display(Name = "無費用件數")]
