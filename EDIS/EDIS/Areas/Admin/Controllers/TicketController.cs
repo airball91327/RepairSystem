@@ -74,31 +74,22 @@ namespace EDIS.Areas.Admin.Controllers
                 applyDateTo = DateTime.Parse(qtyDate1);
             }
 
-            List <TicketModel> ts = new List<TicketModel>();
-            _context.Tickets.ToList()
-                .ForEach(t => {
-                    if (!string.IsNullOrEmpty(ticketno))
-                    {
-                        if (t.TicketNo == ticketno)
-                            ts.Add(t);
-                    }
-                    if (!string.IsNullOrEmpty(vendorname))
-                    {
-                        if (!string.IsNullOrEmpty(t.VendorName))
-                        {
-                            if (t.VendorName.Contains(vendorname))
-                                ts.Add(t);
-                        }
-                    }
-                    if (!string.IsNullOrEmpty(vendorno))
-                    {
-                        if (t.VendorId != null)
-                        {
-                            if (t.VendorId == Convert.ToInt32(vendorno))
-                                ts.Add(t);
-                        }
-                    }
-                });
+            List<TicketModel> ts = _context.Tickets.ToList();
+
+            if (!string.IsNullOrEmpty(ticketno))
+            {
+                ts = ts.Where(t => t.TicketNo == ticketno).ToList();
+            }
+            if (!string.IsNullOrEmpty(vendorname))
+            {
+                ts = ts.Where(t => t.VendorName != null && t.VendorName != "")
+                       .Where(t => t.VendorName.Contains(vendorname)).ToList();
+            }
+            if (!string.IsNullOrEmpty(vendorno))
+            {
+                ts = ts.Where(t => t.VendorId != null)
+                       .Where(t => t.VendorId == Convert.ToInt32(vendorno)).ToList();
+            }
 
             /* Search date by Date. */
             //if (string.IsNullOrEmpty(qtyDate1) == false || string.IsNullOrEmpty(qtyDate2) == false)
