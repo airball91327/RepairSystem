@@ -39,6 +39,12 @@ namespace EDIS.Areas.Admin.Controllers
             {
                 return StatusCode(404);
             }
+            var rc = _context.RepairCosts.Where(r => r.TicketDtl.TicketDtlNo == ticketDtl.TicketDtlNo &&
+                                                     r.TicketDtl.SeqNo == ticketDtl.SeqNo).FirstOrDefault();
+            if (rc != null)
+            {
+                ticketDtl.DocId = rc.DocId;
+            }
             return View(ticketDtl);
         }
 

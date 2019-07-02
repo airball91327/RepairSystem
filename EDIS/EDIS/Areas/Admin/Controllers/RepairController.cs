@@ -33,7 +33,14 @@ namespace EDIS.Areas.Admin.Controllers
             roleManager = customRoleManager;
         }
 
+        // Get: Admin/Repair/
         public IActionResult Index()
+        {
+            return View();
+        }
+
+        // Get: Admin/Repair/Edit/5
+        public IActionResult Edit(string id)
         {
             return View();
         }

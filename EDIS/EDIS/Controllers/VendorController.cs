@@ -194,6 +194,7 @@ namespace EDIS.Controllers
         public ActionResult QryVendor(QryVendor qryVendor)
         {
             List<SelectListItem> items = new List<SelectListItem>();
+            items.Add(new SelectListItem() { Text = "請選擇", Value = "" });
             if (qryVendor.QryType == "關鍵字")
             {
                 _context.Vendors.Where(v => v.VendorName.Contains(qryVendor.KeyWord))

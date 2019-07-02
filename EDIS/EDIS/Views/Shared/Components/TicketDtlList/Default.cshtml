@@ -52,13 +52,19 @@
                 @Html.DisplayFor(modelItem => item.DocId)
             </td>
             <td>
-                @Html.ActionLink("編輯", "Edit", "TicketDtl", new { Area = "Admin", id = item.TicketDtlNo, seq = item.SeqNo }) |
                 @Html.ActionLink("預覽", "Details", "TicketDtl", new { Area = "Admin", id = item.TicketDtlNo, seq = item.SeqNo })
                 @{
                     if (item.DocId == null)
                     {
                         @Html.Raw(" | ")
+                        @Html.ActionLink("編輯", "Edit", "TicketDtl", new { Area = "Admin", id = item.TicketDtlNo, seq = item.SeqNo })
+                        @Html.Raw(" | ")
                         @Html.ActionLink("刪除", "Delete", "TicketDtl", new { Area = "Admin", id = item.TicketDtlNo, seq = item.SeqNo })
+                    }
+                    else
+                    {
+                        @Html.Raw(" | ")
+                        @Html.ActionLink("至請修單編輯", "Edit", "Repair", new { Area = "", id = item.DocId })
                     }
                 }
             </td>

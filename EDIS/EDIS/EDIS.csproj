@@ -28,6 +28,12 @@
     <Content Update="Areas\Admin\Views\EngsInDepts\Index.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
+    <Content Update="Areas\Admin\Views\Repair\Edit.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Areas\Admin\Views\Repair\Index.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
     <Content Update="Areas\Admin\Views\TicketDtl\Create.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
