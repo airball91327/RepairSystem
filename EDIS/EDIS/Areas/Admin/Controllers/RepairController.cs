@@ -42,7 +42,88 @@ namespace EDIS.Areas.Admin.Controllers
         // Get: Admin/Repair/Edit/5
         public IActionResult Edit(string id)
         {
-            return View();
+            if (id == null)
+            {
+                return BadRequest();
+            }
+            RepairModel repair = _context.Repairs.Find(id);
+            if (repair == null)
+            {
+                return StatusCode(404);
+            }
+            /* Get and set value for NotMapped fields. */
+            if (!string.IsNullOrEmpty(repair.Building))
+            {
+                int buildingId = Convert.ToInt32(repair.Building);
+                repair.BuildingName = _context.Buildings.Find(buildingId).BuildingName;
+                if (!string.IsNullOrEmpty(repair.Floor))
+                {
+                    repair.FloorName = _context.Floors.Find(buildingId, repair.Floor).FloorName;
+                    if (!string.IsNullOrEmpty(repair.Area))
+                    {
+                        repair.AreaName = _context.Places.Find(buildingId, repair.Floor, repair.Area).PlaceName;
+                    }
+                }
+            }
+            repair.CheckerName = _context.AppUsers.Find(repair.CheckerId).FullName;
+            return View(repair);
+        }
+
+        // POST: Admin/Repair/Edit/5
+        [HttpPost]
+        public IActionResult Edit(RepairModel repairModel)
+        {
+            RepairModel repair = _context.Repairs.Find(repairModel.DocId);
+            var dpt = _context.Departments.Find(repairModel.AccDpt);
+            if(dpt == null)
+            {
+                ModelState.AddModelError("AccDpt", "查無部門代號!");
+                return View(repair);
+            }
+            if (repair != null)
+            {
+                repair.AccDpt = repairModel.AccDpt;
+                repair.Ext = repairModel.Ext;
+                repair.Mvpn = repairModel.Mvpn;
+                repair.TroubleDes = repairModel.TroubleDes;
+
+                _context.Entry(repair).State = EntityState.Modified;
+                _context.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            return View(repair);
+        }
+
+        // POST: Admin/Repair/Details/5
+        [HttpPost]
+        public IActionResult Details(string qtyDocId)
+        {
+            string docId = qtyDocId.Trim();
+            if (qtyDocId == null)
+            {
+                return BadRequest();
+            }
+            RepairModel repair = _context.Repairs.Find(docId);
+            if (repair == null)
+            {
+                return StatusCode(404);
+            }
+            /* Get and set value for NotMapped fields. */
+            if (!string.IsNullOrEmpty(repair.Building))
+            {
+                int buildingId = Convert.ToInt32(repair.Building);
+                repair.BuildingName = _context.Buildings.Find(buildingId).BuildingName;
+                if (!string.IsNullOrEmpty(repair.Floor))
+                {
+                    repair.FloorName = _context.Floors.Find(buildingId, repair.Floor).FloorName;
+                    if (!string.IsNullOrEmpty(repair.Area))
+                    {
+                        repair.AreaName = _context.Places.Find(buildingId, repair.Floor, repair.Area).PlaceName;
+                    }
+                }
+            }
+            repair.CheckerName = _context.AppUsers.Find(repair.CheckerId).FullName;
+            return View(repair);
         }
 
         // Get: Admin/Repair/EditRepFlow

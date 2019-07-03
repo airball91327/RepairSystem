@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace EDIS.Components.RepairCost
 {
@@ -47,6 +48,10 @@ namespace EDIS.Components.RepairCost
             {
 
                 if (rf.Cls.Contains("工程師") && isEngineer != null)   /* 流程 => 工程師，Login User => 非負責之工程師 */
+                {
+                    return View(cost);
+                }
+                if(userManager.IsInRole(this.UserClaimsPrincipal, "RepToDo") == true)
                 {
                     return View(cost);
                 }
