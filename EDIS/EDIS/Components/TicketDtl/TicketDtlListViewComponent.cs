@@ -23,6 +23,10 @@ namespace EDIS.Components.TicketDtl
         public async Task<IViewComponentResult> InvokeAsync(string id)
         {
             List<TicketDtlModel> dtls = _context.TicketDtls.Where(t => t.TicketDtlNo == id).ToList();
+            if(dtls.Count() <= 0)
+            {
+                return View(dtls);
+            }
             foreach(var item in dtls)
             {
                 var rc = _context.RepairCosts.Where(r => r.TicketDtl.TicketDtlNo == item.TicketDtlNo &&
