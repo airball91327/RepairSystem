@@ -51,7 +51,8 @@ namespace EDIS.Components.RepairCost
                 {
                     return View(cost);
                 }
-                if(userManager.IsInRole(this.UserClaimsPrincipal, "RepToDo") == true)
+                if (userManager.IsInRole(this.UserClaimsPrincipal, "RepToDo") == true ||
+                    userManager.IsInRole(this.UserClaimsPrincipal, "Admin") == true) /* 腳色 => 工務經辦 or Admin */
                 {
                     return View(cost);
                 }
