@@ -88,6 +88,16 @@ namespace EDIS.Components.RepairDtl
                                                      .Where(f => f.Status == "?").FirstOrDefault();
             var isEngineer = _context.UsersInRoles.Where(u => u.AppRoles.RoleName == "RepEngineer" &&
                                                               u.UserId == ur.Id).FirstOrDefault();
+            /* 查無處理中流程 => 已結案 或 已廢除 */
+            if (rf == null)
+            {
+                /* Role => 工務經辦 or Admin */
+                if (userManager.IsInRole(this.UserClaimsPrincipal, "RepToDo") == true ||
+                    userManager.IsInRole(this.UserClaimsPrincipal, "Admin") == true)
+                {
+                    return View("Details", repairDtl);
+                }
+            }
             /* 流程 => 工程師，Login User => 負責之工程師 */
             if (rf.Cls.Contains("工程師") && rf.UserId == ur.Id)
             {
