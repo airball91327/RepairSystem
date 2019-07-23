@@ -48,16 +48,14 @@
                         </div>
                     </div>
                 </div>
-                @*<div class="row">
+                <div class="row">
                     <div class="form-inline">
                         <div class="form-group">
-                            <label for="qtyApplyDateFrom" class="control-title">關帳日查詢</label>
-                            <input type="date" name="qtyApplyDateFrom" class="form-control" />
-                            <span> ~ </span>
-                            <input type="date" name="qtyApplyDateTo" class="form-control" />
+                            @Html.Label("qtyDOCID", "請修單號", htmlAttributes: new { @class = "control-title" })
+                            @Html.TextBox("qtyDOCID", "", new { @class = "form-control" })
                         </div>
                     </div>
-                </div>*@
+                </div>
                 <div class="row">
                     <div class="col-md-offset-1 col-md-11">
                         <input id="btnQTY" type="submit" value="查詢" class="btn btn-default" />

@@ -7,6 +7,7 @@ using EDIS.Models.RepairModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace EDIS.Areas.Admin.Controllers
@@ -35,6 +36,8 @@ namespace EDIS.Areas.Admin.Controllers
             string ticketno = fm["qtyTICKET"];
             string vendorname = fm["qtyVENDORNAME"];
             string vendorno = fm["qtyVENDORNO"];
+            string docid = fm["qtyDOCID"];
+            docid = docid.Trim();
 
             //string qtyDate1 = fm["qtyApplyDateFrom"];
             //string qtyDate2 = fm["qtyApplyDateTo"];
@@ -75,6 +78,7 @@ namespace EDIS.Areas.Admin.Controllers
             //}
 
             List<TicketModel> ts = _context.Tickets.ToList();
+            List<RepairCostModel> repairCost = _context.RepairCosts.Include(r => r.TicketDtl).ToList();
 
             if (!string.IsNullOrEmpty(ticketno))
             {
@@ -89,6 +93,16 @@ namespace EDIS.Areas.Admin.Controllers
             {
                 ts = ts.Where(t => t.VendorId != null)
                        .Where(t => t.VendorId == Convert.ToInt32(vendorno)).ToList();
+            }
+            if (!string.IsNullOrEmpty(docid))   //Search Tickets related to DocId
+            {
+                /* 2 => 發票，4 => 零用金 */
+                repairCost = repairCost.Where(rc => rc.DocId == docid)
+                                       .Where(rc => rc.StockType == "2" || rc.StockType == "4")
+                                       .GroupBy(rc => rc.TicketDtl.TicketDtlNo).Select(group => group.First()).ToList();
+
+                ts = ts.Join(repairCost, t => t.TicketNo, r => r.TicketDtl.TicketDtlNo,
+                       (t, r) => t).ToList();
             }
 
             /* Search date by Date. */
@@ -140,6 +154,25 @@ namespace EDIS.Areas.Admin.Controllers
                                                .Sum(t => t.Cost);
 
             ticket.ScrapValue = ticket.TotalAmt - Convert.ToInt32(total);
+
+            /* 交易代號列表 */
+            List<SelectListItem> TradeCodeList = new List<SelectListItem>();
+            TradeCodeList.Add(new SelectListItem { Text = "維476", Value = "476" });
+            TradeCodeList.Add(new SelectListItem { Text = "維41", Value = "41" });
+            TradeCodeList.Add(new SelectListItem { Text = "維44", Value = "44" });
+            TradeCodeList.Add(new SelectListItem { Text = "維608", Value = "608" });
+            TradeCodeList.Add(new SelectListItem { Text = "維609", Value = "609" });
+            TradeCodeList.Add(new SelectListItem { Text = "維610", Value = "610" });
+            TradeCodeList.Add(new SelectListItem { Text = "其它151", Value = "151" });
+            TradeCodeList.Add(new SelectListItem { Text = "購468", Value = "468" });
+            TradeCodeList.Add(new SelectListItem { Text = "購386", Value = "386" });
+            TradeCodeList.Add(new SelectListItem { Text = "購106", Value = "106" });
+            TradeCodeList.Add(new SelectListItem { Text = "購105", Value = "105" });
+            TradeCodeList.Add(new SelectListItem { Text = "慈24", Value = "24" });
+            TradeCodeList.Add(new SelectListItem { Text = "教188", Value = "188" });
+            TradeCodeList.Add(new SelectListItem { Text = "其它527", Value = "527" });
+            TradeCodeList.Add(new SelectListItem { Text = "其它458", Value = "458" });
+            ViewData["TradeCode"] = new SelectList(TradeCodeList, "Value", "Text", "44");
 
             return View(ticket);
         }
