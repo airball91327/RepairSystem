@@ -28,7 +28,7 @@ namespace EDIS.Models.RepairModels
         [Display(Name = "表單")]
         public string Doctyp { get; set; }
         [NotMapped]
-        [Display(Name = "單號")]
+        [Display(Name = "請修單號")]
         public string DocId { get; set; }
 
         public virtual TicketModel Ticket { get; set; }
