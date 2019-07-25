@@ -98,6 +98,7 @@ namespace EDIS.Controllers
             string qtyIsCharged = qdata.qtyIsCharged;
             string qtyDateType = qdata.qtyDateType;
             bool searchAllDoc = qdata.qtySearchAllDoc;
+            string qtyRepType = qdata.qtyRepType;
 
             DateTime applyDateFrom = DateTime.Now;
             DateTime applyDateTo = DateTime.Now;
@@ -171,6 +172,10 @@ namespace EDIS.Controllers
                 rps = rps.Where(v => v.AssetName != null)
                         .Where(v => v.AssetName.Contains(aname))
                         .ToList();
+            }
+            if (!string.IsNullOrEmpty(qtyRepType))
+            {
+                rps = rps.Where(v => v.RepType == qtyRepType).ToList();
             }
             /* Search date by DateType.(ApplyDate) */
             if (string.IsNullOrEmpty(qtyDate1) == false || string.IsNullOrEmpty(qtyDate2) == false)

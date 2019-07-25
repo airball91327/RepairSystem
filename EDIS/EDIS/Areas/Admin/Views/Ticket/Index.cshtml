@@ -4,6 +4,12 @@
     ViewBag.Title = "列表/發票";
 }
 
+<script>
+    function ReSubmit() {
+        $("#ticketQtyForm").submit();
+    }
+</script>
+
 <style>
     .panel {
         background-color: inherit;
@@ -22,7 +28,7 @@
 
 <div class="panel panel-primary">
     <div class="panel-body">
-        <form asp-action="Index" asp-controller="Ticket" asp-area="Admin" data-ajax="true" data-ajax-method="POST"
+        <form asp-action="Index" asp-controller="Ticket" asp-area="Admin" data-ajax="true" data-ajax-method="POST" id="ticketQtyForm"
               data-ajax-update="#pnlTICKETLIST"
               data-ajax-begin="$.Toast.showToast({
               'title':'查詢中，請稍待...',

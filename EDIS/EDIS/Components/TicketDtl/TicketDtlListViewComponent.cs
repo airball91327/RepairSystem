@@ -20,11 +20,16 @@ namespace EDIS.Components.TicketDtl
             _context = context;
         }
 
-        public async Task<IViewComponentResult> InvokeAsync(string id)
+        public async Task<IViewComponentResult> InvokeAsync(string id, string viewType = null)
         {
             List<TicketDtlModel> dtls = _context.TicketDtls.Where(t => t.TicketDtlNo == id).ToList();
-            if(dtls.Count() <= 0)
+            ViewData["TicketDtlNo"] = id;
+            if (dtls.Count() <= 0)
             {
+                if (viewType == "List2")
+                {
+                    return View("List2", dtls);
+                }
                 return View(dtls);
             }
             foreach(var item in dtls)
@@ -37,6 +42,11 @@ namespace EDIS.Components.TicketDtl
                 }
             }
             ViewData["Total"] = dtls.Sum(t => t.Cost);
+
+            if (viewType == "List2")
+            {
+                return View("List2", dtls);
+            }
 
             return View(dtls);
         }

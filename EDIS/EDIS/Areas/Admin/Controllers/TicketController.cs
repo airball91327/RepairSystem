@@ -111,6 +111,29 @@ namespace EDIS.Areas.Admin.Controllers
             //    ts = ts.Where(t => t.ShutDate >= applyDateFrom && t.ShutDate <= applyDateTo).ToList();
             //}
 
+            /* Get StockType for all Tickets */
+            foreach(var item in ts)
+            {
+                var repCost = _context.RepairCosts.Where(r => r.TicketDtl.TicketDtlNo == item.TicketNo).ToList()
+                                                  .OrderBy(r => r.SeqNo).FirstOrDefault();
+                                        
+                if (repCost != null)
+                {
+                    if (repCost.StockType == "2")
+                    {
+                        item.StockType = "發票";
+                    }
+                    if (repCost.StockType == "4")
+                    {
+                        item.StockType = "零用金";
+                    }
+                }
+                else
+                {
+                    item.StockType = "";
+                }
+            }
+
             return PartialView("List", ts);
         }
 

@@ -53,8 +53,35 @@ namespace EDIS.Areas.Admin.Controllers
         {
             var lastDtl = _context.TicketDtls.Where(t => t.TicketDtlNo == id).OrderBy(t => t.SeqNo).LastOrDefault();
             TicketDtlModel ticketDtl = new TicketDtlModel();
-            ticketDtl.TicketDtlNo = lastDtl.TicketDtlNo;
-            ticketDtl.SeqNo = lastDtl.SeqNo + 1;
+            if (lastDtl != null)
+            {               
+                ticketDtl.TicketDtlNo = lastDtl.TicketDtlNo;
+                ticketDtl.SeqNo = lastDtl.SeqNo + 1;
+            }
+            else
+            {
+                ticketDtl.TicketDtlNo = id;
+                ticketDtl.SeqNo = 1;
+            }
+
+            return View(ticketDtl);
+        }
+
+        // GET: Admin/TicketDtl/Create2
+        public IActionResult Create2(string id)
+        {
+            var lastDtl = _context.TicketDtls.Where(t => t.TicketDtlNo == id).OrderBy(t => t.SeqNo).LastOrDefault();
+            TicketDtlModel ticketDtl = new TicketDtlModel();
+            if (lastDtl != null)
+            {
+                ticketDtl.TicketDtlNo = lastDtl.TicketDtlNo;
+                ticketDtl.SeqNo = lastDtl.SeqNo + 1;
+            }
+            else
+            {
+                ticketDtl.TicketDtlNo = id;
+                ticketDtl.SeqNo = 1;
+            }
 
             return View(ticketDtl);
         }
@@ -74,8 +101,37 @@ namespace EDIS.Areas.Admin.Controllers
             return View(ticketDtl);
         }
 
+        // POST: Admin/TicketDtl/Create2
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Create2([Bind("TicketDtlNo,SeqNo,ObjName,Qty,Unite,Price,Cost")] TicketDtlModel ticketDtl)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.TicketDtls.Add(ticketDtl);
+                _context.SaveChanges();
+                return Ok(ticketDtl);
+            }
+            return BadRequest();
+        }
+
         // GET: Admin/TicketDtl/Edit/5
         public IActionResult Edit(string id, int seq)
+        {
+            if (id == null)
+            {
+                return BadRequest();
+            }
+            TicketDtlModel ticketDtl = _context.TicketDtls.Find(id, seq);
+            if (ticketDtl == null)
+            {
+                return StatusCode(404);
+            }
+            return View(ticketDtl);
+        }
+
+        // GET: Admin/TicketDtl/Edit2/5
+        public IActionResult Edit2(string id, int seq)
         {
             if (id == null)
             {
@@ -103,8 +159,37 @@ namespace EDIS.Areas.Admin.Controllers
             return View(ticketDtl);
         }
 
+        // POST: Admin/TicketDtl/Edit2/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit2([Bind("TicketDtlNo,SeqNo,ObjName,Qty,Unite,Price,Cost")] TicketDtlModel ticketDtl)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Entry(ticketDtl).State = EntityState.Modified;
+                _context.SaveChanges();
+                return Ok(ticketDtl);
+            }
+            return BadRequest();
+        }
+
         // GET: Admin/TicketDtl/Delete/5
         public IActionResult Delete(string id, int seq)
+        {
+            if (id == null)
+            {
+                return BadRequest();
+            }
+            TicketDtlModel ticketDtl = _context.TicketDtls.Find(id, seq);
+            if (ticketDtl == null)
+            {
+                return StatusCode(404);
+            }
+            return View(ticketDtl);
+        }
+
+        // GET: Admin/TicketDtl/Delete2/5
+        public IActionResult Delete2(string id, int seq)
         {
             if (id == null)
             {
@@ -127,6 +212,16 @@ namespace EDIS.Areas.Admin.Controllers
             _context.TicketDtls.Remove(ticketDtl);
             _context.SaveChanges();
             return RedirectToAction("Edit", "Ticket", new { id = ticketDtl.TicketDtlNo });
+        }
+
+        // POST: Admin/TicketDtl/Delete2/5
+        [HttpPost, ActionName("Delete2")]
+        public IActionResult DeleteConfirmed2(string id, int seq)
+        {
+            TicketDtlModel ticketDtl = _context.TicketDtls.Find(id, seq);
+            _context.TicketDtls.Remove(ticketDtl);
+            _context.SaveChanges();
+            return Ok();
         }
 
         protected override void Dispose(bool disposing)

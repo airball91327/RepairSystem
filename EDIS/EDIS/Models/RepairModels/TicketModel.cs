@@ -38,11 +38,14 @@ namespace EDIS.Models.RepairModels
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd}")]
         public DateTime? CancelDate { get; set; }
-        [Display(Name = "交易代號")]
         [NotMapped]
+        [Display(Name = "交易代號")]
         public string TradeCode { get; set; }
         //[Display(Name = "關帳日期")]
         //public DateTime? ShutDate { get; set; }
+        [NotMapped]
+        [Display(Name = "費用別")]
+        public string StockType { get; set; }
 
         public ICollection<TicketDtlModel> TicketDtls { get; set; }
     }

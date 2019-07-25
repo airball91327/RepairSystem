@@ -67,3 +67,25 @@
 <div>
     <a class="btn btn-primary" href="@Url.Action("Edit", "Ticket", new { Area = "Admin", id = Model.TicketDtlNo })">回到上一頁</a>
 </div>
+
+
+
+<script>
+    $(function () {
+        /* Auto calculate total price when input price or qty. */
+        $('#Price').change(function () {
+            var v1 = $(this).val();
+            var v2 = $('#Qty').val();
+            if (v1 !== null && v2 !== null) {
+                $('#Cost').val(v1 * v2);
+            }
+        });
+        $('#Qty').change(function () {
+            var v1 = $(this).val();
+            var v2 = $('#Price').val();
+            if (v1 !== null && v2 !== null) {
+                $('#Cost').val(v1 * v2);
+            }
+        });
+    });
+</script>
