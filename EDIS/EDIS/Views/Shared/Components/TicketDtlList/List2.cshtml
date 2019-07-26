@@ -17,6 +17,9 @@ else
     <table class="table">
         <tr>
             <th>
+                發票號碼
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.ObjName)
             </th>
             <th>
@@ -39,6 +42,9 @@ else
         @foreach (var item in Model)
         {
             <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TicketDtlNo)
+                </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.ObjName)
                 </td>
