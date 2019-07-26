@@ -202,7 +202,7 @@ namespace EDIS.Areas.Admin.Controllers
 
         // POST: Admin/Tickets/Edit/5
         [HttpPost]
-        public IActionResult Edit([Bind("TicketNo,TicDate,VendorId,VendorName,TotalAmt,TaxAmt,Note,ScrapValue,ApplyDate,CancelDate")] TicketModel ticketModel)
+        public IActionResult Edit([Bind("TicketNo,TicDate,VendorId,VendorName,TotalAmt,TaxAmt,Note,ScrapValue,ApplyDate,CancelDate,TradeCode")] TicketModel ticketModel)
         {
             if (ModelState.IsValid)
             {

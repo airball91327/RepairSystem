@@ -38,7 +38,6 @@ namespace EDIS.Models.RepairModels
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd}")]
         public DateTime? CancelDate { get; set; }
-        [NotMapped]
         [Display(Name = "交易代號")]
         public string TradeCode { get; set; }
         //[Display(Name = "關帳日期")]
