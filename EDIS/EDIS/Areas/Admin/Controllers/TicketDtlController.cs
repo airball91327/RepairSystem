@@ -54,7 +54,7 @@ namespace EDIS.Areas.Admin.Controllers
             var lastDtl = _context.TicketDtls.Where(t => t.TicketDtlNo == id).OrderBy(t => t.SeqNo).LastOrDefault();
             TicketDtlModel ticketDtl = new TicketDtlModel();
             if (lastDtl != null)
-            {               
+            {
                 ticketDtl.TicketDtlNo = lastDtl.TicketDtlNo;
                 ticketDtl.SeqNo = lastDtl.SeqNo + 1;
             }
