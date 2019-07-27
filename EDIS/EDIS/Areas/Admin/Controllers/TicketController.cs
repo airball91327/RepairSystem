@@ -38,6 +38,7 @@ namespace EDIS.Areas.Admin.Controllers
             string vendorno = fm["qtyVENDORNO"];
             string docid = fm["qtyDOCID"];
             docid = docid.Trim();
+            ticketno = ticketno.ToUpper();
 
             //string qtyDate1 = fm["qtyApplyDateFrom"];
             //string qtyDate2 = fm["qtyApplyDateTo"];
@@ -82,7 +83,7 @@ namespace EDIS.Areas.Admin.Controllers
 
             if (!string.IsNullOrEmpty(ticketno))
             {
-                ts = ts.Where(t => t.TicketNo == ticketno).ToList();
+                ts = ts.Where(t => t.TicketNo.ToUpper() == ticketno).ToList();
             }
             if (!string.IsNullOrEmpty(vendorname))
             {
@@ -114,7 +115,7 @@ namespace EDIS.Areas.Admin.Controllers
             /* Get StockType for all Tickets */
             foreach(var item in ts)
             {
-                var repCost = _context.RepairCosts.Where(r => r.TicketDtl.TicketDtlNo == item.TicketNo).ToList()
+                var repCost = _context.RepairCosts.Where(r => r.TicketDtl.TicketDtlNo.ToUpper() == item.TicketNo.ToUpper()).ToList()
                                                   .OrderBy(r => r.SeqNo).FirstOrDefault();
                                         
                 if (repCost != null)
