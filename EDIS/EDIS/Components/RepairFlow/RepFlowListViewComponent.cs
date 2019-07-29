@@ -40,7 +40,7 @@ namespace EDIS.Components.RepairFlow
                 {
                     DocId = f.DocId,
                     StepId = f.StepId,
-                    UserName = a.FullName,
+                    UserName = a.FullName + " (" + a.UserName + ")",
                     Opinions = f.Opinions,
                     Role = f.Role,
                     Status = f.Status,
