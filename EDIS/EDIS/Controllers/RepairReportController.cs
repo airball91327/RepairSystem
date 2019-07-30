@@ -870,8 +870,8 @@ namespace EDIS.Controllers
                 ws4.Column(1).Width = 24;
                 ws4.Column(1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
                 ws4.Columns(2, 11).Width = 11;
-                ws4.Columns(15, 17).Width = 20;
-                ws4.Columns(18, 20).Width = 20;
+                ws4.Columns(17, 19).Width = 20;
+                ws4.Columns(20, 22).Width = 20;
                 ws4.Row(1).Style.Alignment.WrapText = true;
 
                 //Title
@@ -886,19 +886,21 @@ namespace EDIS.Controllers
                 ws4.Cell(1, 9).Value = "維修件數\n(未處理)";
                 ws4.Cell(1, 10).Value = "報廢件數";
                 ws4.Cell(1, 11).Value = "總件數";
-                ws4.Cell(1, 12).Value = "維修(內修)\n3日內完成率";
-                ws4.Cell(1, 13).Value = "維修(內修)\n4 - 7日完成率";
-                ws4.Cell(1, 14).Value = "維修(內修)\n8日以上完成率";
-                ws4.Cell(1, 15).Value = "維修(外修、內外修)\n15日內完成率";
-                ws4.Cell(1, 16).Value = "維修(外修、內外修)\n16 - 30日完成率";
-                ws4.Cell(1, 17).Value = "維修(外修、內外修)\n31日以上完成率";
-                ws4.Cell(1, 18).Value = "增設\n15日內完成率";
-                ws4.Cell(1, 19).Value = "增設\n16 - 30日完成率";
-                ws4.Cell(1, 20).Value = "增設\n31日以上完成率";
-                ws4.Cell(1, 21).Value = "有費用件數";
-                ws4.Cell(1, 22).Value = "無費用件數";
-                ws4.Cell(1, 23).Value = "總費用";
-                ws4.Cell(1, 24).Value = "平均每件\n維修費用";
+                ws4.Cell(1, 12).Value = "平均每人件數";
+                ws4.Cell(1, 13).Value = "維修完工率";
+                ws4.Cell(1, 14).Value = "維修(內修)\n3日內完成率";
+                ws4.Cell(1, 15).Value = "維修(內修)\n4 - 7日完成率";
+                ws4.Cell(1, 16).Value = "維修(內修)\n8日以上完成率";
+                ws4.Cell(1, 17).Value = "維修(外修、內外修)\n15日內完成率";
+                ws4.Cell(1, 18).Value = "維修(外修、內外修)\n16 - 30日完成率";
+                ws4.Cell(1, 19).Value = "維修(外修、內外修)\n31日以上完成率";
+                ws4.Cell(1, 20).Value = "增設\n15日內完成率";
+                ws4.Cell(1, 21).Value = "增設\n16 - 30日完成率";
+                ws4.Cell(1, 22).Value = "增設\n31日以上完成率";
+                ws4.Cell(1, 23).Value = "有費用件數";
+                ws4.Cell(1, 24).Value = "無費用件數";
+                ws4.Cell(1, 25).Value = "總費用";
+                ws4.Cell(1, 26).Value = "平均每件\n維修費用";
 
                 // Data 整理及統計
                 // 8410工務部  8411工務一課    8412工務二課    8413 8414 工務三課  0000外包人員
@@ -960,6 +962,54 @@ namespace EDIS.Controllers
                     var dptRepNoDeals = dptRepairs.Where(r => r.repair.RepType != "增設" && r.repdtl.InOut == null && r.repdtl.DealState != 4);
                     var dptRepScraps = dptRepairs.Where(r => r.repair.RepType != "增設" && r.repdtl.DealState == 4);
                     var dptRepOutUnion = dptRepOuts.Union(dptRepInOuts);
+                    var dptReps = dptRepairs.Where(r => r.repair.RepType != "增設" && r.repdtl.DealState != 4);
+
+                    var dptEngs = roleManager.GetUsersInRole("RepEngineer").Where(m => m != "344027").ToList();
+                    int countEngs = 0;
+                    if (id == "0000")
+                    {
+                        foreach (string l in dptEngs)
+                        {
+                            AppUserModel usr = _context.AppUsers.Where(u => u.UserName == l).FirstOrDefault();
+                            if (usr != null)
+                            {
+                                if (usr.FullName.Contains("外包") == true)
+                                {
+                                    countEngs++;
+                                }
+                            }
+                        }
+                    }
+                    else if (id == "allDpts")
+                    {
+                        foreach (string l in dptEngs)
+                        {
+                            AppUserModel usr = _context.AppUsers.Where(u => u.UserName == l).FirstOrDefault();
+                            if (usr != null)
+                            {
+                                if (usr.FullName.Contains("外包") == false && 
+                                    usr.FullName.Contains("值班") == false && usr.DptId != "8430")
+                                {
+                                    countEngs++;
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        foreach (string l in dptEngs)
+                        {
+                            AppUserModel usr = _context.AppUsers.Where(u => u.UserName == l).FirstOrDefault();
+                            if (usr != null)
+                            {
+                                if (usr.DptId == id && usr.FullName.Contains("值班") == false &&
+                                    usr.FullName.Contains("外包") == false)
+                                {
+                                    countEngs++;
+                                }
+                            }
+                        }
+                    }
 
                     // 總花費 & 平均 (已完工)(非報廢案件)
                     int dptCostRepairs = dptRepairs.Where(r => r.repdtl.EndDate != null && r.repdtl.DealState != 4)
@@ -1066,6 +1116,8 @@ namespace EDIS.Controllers
                         RepNoDeals = dptRepNoDeals.Count(),
                         RepScraps = dptRepScraps.Count(),
                         RepTotals = dptRepairs.Count(),
+                        RepAvgPerPerson = Math.Round(Convert.ToDecimal(dptRepairs.Count()) / countEngs, 2),
+                        RepEndRate = dptReps.Count() != 0 ? (dptReps.Where(r => r.repdtl.EndDate != null).Count() / Convert.ToDecimal(dptReps.Count())).ToString("P") : "0.00%",
                         RepInEndRate1 = dptRepIns.Count() != 0 ? (inCount1 / Convert.ToDecimal(dptRepIns.Count())).ToString("P") : "0.00%",
                         RepInEndRate2 = dptRepIns.Count() != 0 ? (inCount2 / Convert.ToDecimal(dptRepIns.Count())).ToString("P") : "0.00%",
                         RepInEndRate3 = dptRepIns.Count() != 0 ? (inCount3 / Convert.ToDecimal(dptRepIns.Count())).ToString("P") : "0.00%",

@@ -145,7 +145,8 @@ $(function () {
         var vendorName = $("#Vno option:selected").text();
         var vendorId = $("#Vno option:selected").val();
 
-        if ($("#Vno option:selected").text() == "請選擇") {
+        if ($("#Vno option:selected").text() == "請選擇" || $("#Vno option:selected").text() == "查無廠商" ||
+            $("#Vno option:selected").text().includes("請選擇廠商") == true) {
             $("#VendorName").val("");
             $("#VendorId").val("");
         }
@@ -156,7 +157,7 @@ $(function () {
     });
 
     /* Default settings for qryVendor modal.*/
-    $("#UniteNo").attr("disabled", "disabled");
+    //$("#UniteNo").attr("disabled", "disabled");
     //$("input[type=radio][name=QryType]").change(function () {
     //    /* While select query type. */
     //    if (this.value == '關鍵字') {

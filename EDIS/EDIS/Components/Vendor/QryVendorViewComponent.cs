@@ -24,7 +24,8 @@ namespace EDIS.Components.Vendor
         {
             QryVendor qryVendor = new QryVendor();
             List<SelectListItem> items = new List<SelectListItem>();
-            items.Add(new SelectListItem { Text = "請選擇",Value = "0" });
+            //items.Add(new SelectListItem { Text = "請選擇",Value = "0" });
+            items.Add(new SelectListItem { Text = "", Value = "0" });
             /* 預設廠商資料 */
             items.Add(new SelectListItem { Text = "群益開發生技有限公司", Value = "53266746" });
             items.Add(new SelectListItem { Text = "上揚廣告社", Value = "78622428" });

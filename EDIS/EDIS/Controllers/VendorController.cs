@@ -194,7 +194,7 @@ namespace EDIS.Controllers
         public ActionResult QryVendor(QryVendor qryVendor)
         {
             List<SelectListItem> items = new List<SelectListItem>();
-            items.Add(new SelectListItem() { Text = "請選擇", Value = "" });
+            items.Add(new SelectListItem() { Text = "", Value = "" });
             if (qryVendor.QryType == "關鍵字")
             {
                 _context.Vendors.Where(v => v.VendorName.Contains(qryVendor.KeyWord))
@@ -218,6 +218,20 @@ namespace EDIS.Controllers
                                 Value = v.VendorId.ToString()
                             });
                         });
+            }
+
+            if (items.Count() == 1) //No search result.
+            {
+                items[0].Text = "查無廠商";
+            }
+            else if (items.Count() == 2) //Only 1 search result.
+            {
+                items.Remove(items[0]);
+            }
+            else
+            {
+                var countVendors = items.Count() - 1;
+                items[0].Text = "符合項目共 " + countVendors + " 家，請選擇廠商";
             }
 
             qryVendor.VendorList = items;

@@ -264,7 +264,7 @@ namespace EDIS.Controllers
                     _context.SaveChanges();
 
                     //Send Mail
-                    //To user and the next flow user.
+                    //To the next flow user.
                     try
                     {
                         Tmail mail = new Tmail();

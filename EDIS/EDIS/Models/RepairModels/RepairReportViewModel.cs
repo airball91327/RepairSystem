@@ -27,6 +27,11 @@ namespace EDIS.Models.RepairModels
         public int RepScraps { get; set; }
         [Display(Name = "總件數")]
         public int RepTotals { get; set; }
+        [Display(Name = "平均每人件數")]
+        [DisplayFormat(DataFormatString = "{0:N0}")]
+        public decimal RepAvgPerPerson { get; set; }
+        [Display(Name = "維修完工率")]
+        public string RepEndRate { get; set; }
         [Display(Name = "維修(內修)3日內完成率")]
         public string RepInEndRate1 { get; set; }
         [Display(Name = "4~7日完成率")]
