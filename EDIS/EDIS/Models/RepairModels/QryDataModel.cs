@@ -26,5 +26,6 @@ namespace EDIS.Models.RepairModels
         public string qtyIsCharged { get; set; }
         public bool qtySearchAllDoc { get; set; }
         public string qtyRepType { get; set; }
+        public string qtyOrderType { get; set; }
     }
 }

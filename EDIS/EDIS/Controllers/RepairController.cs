@@ -99,6 +99,7 @@ namespace EDIS.Controllers
             string qtyDateType = qdata.qtyDateType;
             bool searchAllDoc = qdata.qtySearchAllDoc;
             string qtyRepType = qdata.qtyRepType;
+            string qtyOrderType = qdata.qtyOrderType;
 
             DateTime applyDateFrom = DateTime.Now;
             DateTime applyDateTo = DateTime.Now;
@@ -511,11 +512,11 @@ namespace EDIS.Controllers
             /* Sorting search result. */
             if ( rv.Count() != 0)
             {
-                if (qtyDateType == "結案日")
+                if (qtyOrderType == "結案日")
                 {
                     rv = rv.OrderByDescending(r => r.CloseDate).ThenByDescending(r => r.DocId).ToList();
                 }
-                else if (qtyDateType == "完工日")
+                else if (qtyOrderType == "完工日")
                 {
                     rv = rv.OrderByDescending(r => r.EndDate).ThenByDescending(r => r.DocId).ToList();
                 }
