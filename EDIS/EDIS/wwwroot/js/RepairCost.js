@@ -145,8 +145,9 @@ $(function () {
         var vendorName = $("#Vno option:selected").text();
         var vendorId = $("#Vno option:selected").val();
 
+        /* includes is not support in IE, so need to user indexOf. */
         if ($("#Vno option:selected").text() == "請選擇" || $("#Vno option:selected").text() == "查無廠商" ||
-            $("#Vno option:selected").text().includes("請選擇廠商") == true) {
+            $("#Vno option:selected").text().indexOf("請選擇廠商") != -1) {
             $("#VendorName").val("");
             $("#VendorId").val("");
         }
