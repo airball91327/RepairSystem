@@ -57,8 +57,25 @@
         </div>
         <div class="row">
             <div class="form-inline">
-                <label asp-for="LocType" class="control-title"></label>
-                @Html.DisplayFor(model => model.LocType)
+                <label asp-for="RepType" class="control-title"></label>
+                <div class="radio">
+                    <label>
+                        <input type="radio" asp-for="RepType" id="RepType1" value="送修">
+                        送修(物品送工務部)
+                    </label>
+                </div>
+                <div class="radio">
+                    <label>
+                        <input type="radio" asp-for="RepType" id="RepType2" value="請修">
+                        請修
+                    </label>
+                </div>
+                <div class="radio">
+                    <label>
+                        <input type="radio" asp-for="RepType" id="RepType3" value="增設">
+                        增設
+                    </label>
+                </div>
             </div>
         </div>
         <div class="row">
@@ -112,5 +129,5 @@
 </form>
 
 <div>
-    <a class="btn btn-primary" href="@Url.Action("Index")">回上一頁</a>
+    <a class="btn btn-primary" href="@Url.Action("Index" ,new { docId = Model.DocId})">回上一頁</a>
 </div>

@@ -34,8 +34,9 @@ namespace EDIS.Areas.Admin.Controllers
         }
 
         // Get: Admin/Repair/
-        public IActionResult Index()
+        public IActionResult Index(string docId = null)
         {
+            ViewData["DOCID"] = docId;
             return View();
         }
 
@@ -86,10 +87,11 @@ namespace EDIS.Areas.Admin.Controllers
                 repair.Ext = repairModel.Ext;
                 repair.Mvpn = repairModel.Mvpn;
                 repair.TroubleDes = repairModel.TroubleDes;
+                repair.RepType = repairModel.RepType;
 
                 _context.Entry(repair).State = EntityState.Modified;
                 _context.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", new { docId = repair.DocId });
             }
             return View(repair);
         }
