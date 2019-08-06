@@ -197,7 +197,7 @@ namespace EDIS.Controllers
             items.Add(new SelectListItem() { Text = "", Value = "" });
             if (qryVendor.QryType == "關鍵字")
             {
-                _context.Vendors.Where(v => v.VendorName.Contains(qryVendor.KeyWord))
+                _context.Vendors.Where(v => v.VendorName.Contains(qryVendor.KeyWord.Trim()))
                         .ToList()
                         .ForEach(v => {
                             items.Add(new SelectListItem()
