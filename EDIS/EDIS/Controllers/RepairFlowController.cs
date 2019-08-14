@@ -197,13 +197,29 @@ namespace EDIS.Controllers
                             repair.AreaName = "";
                         }
                         mail.from = new System.Net.Mail.MailAddress(ur.Email); //u.Email
-                        _context.RepairFlows.Where(f => f.DocId == assign.DocId)
+                        /* If is charged, send mail to all flow users. */
+                        if (rd.IsCharged == "Y")
+                        {
+                            _context.RepairFlows.Where(f => f.DocId == assign.DocId)
                                 .ToList()
                                 .ForEach(f =>
                                 {
                                     u = _context.AppUsers.Find(f.UserId);
                                     sto += u.Email + ",";
                                 });
+                        }
+                        else
+                        {
+                            _context.RepairFlows.Where(f => f.DocId == assign.DocId).Where(f => f.Cls.Contains("工程師") == false)
+                                .ToList()
+                                .ForEach(f =>
+                                {
+                                    u = _context.AppUsers.Find(f.UserId);
+                                    sto += u.Email + ",";
+                                });
+                        }
+                        var temp = _context.RepairFlows.Where(f => f.DocId == assign.DocId).Where(f => f.Cls.Contains("工程師") == false)
+                                .ToList();
                         mail.sto = sto.TrimEnd(new char[] { ',' });
 
                         mail.message.Subject = "工務智能請修系統[請修案-結案通知]：設備名稱： " + repair.AssetName;
