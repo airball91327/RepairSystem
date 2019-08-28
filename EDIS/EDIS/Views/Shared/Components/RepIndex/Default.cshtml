@@ -149,6 +149,29 @@
                 <select asp-for="qtyIsCharged" asp-items="@ViewData["IsCharged"] as SelectList" class="form-control-s">
                     <option value="">請選擇</option>
                 </select>
+                <div class="form-group">
+                    <label for="qtyTroubleDes" class="control-title">故障描述<br />(關鍵字)</label>
+                    <input asp-for="qtyTroubleDes" class="form-control" />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class=form-inline>
+                <div class="form-group">
+                    <label for="qtyOrderType" class="control-title">排序方式</label>
+                    <select asp-for="qtyOrderType" class="form-control">
+                        <option value="">請選擇</option>
+                        <option value="申請日">申請日</option>
+                        <option value="完工日">完工日</option>
+                        <option value="結案日">結案日</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="qtyRepType" class="control-title">請修類別</label>
+                    <select asp-for="qtyRepType" asp-items="@ViewData["qtyRepType"] as SelectList" class="form-control-s">
+                        <option value="">請選擇</option>
+                    </select>
+                </div>
                 @if (UserManager.IsInRole(User, "RepEngineer") == true) /* Only RepEngineer can search all engineer docs. */
                 {
                     <div class="form-group">
@@ -157,56 +180,35 @@
                     </div>
                 }
             </div>
-            </div>
-            <div class="row">
-                <div class=form-inline>
-                    <div class="form-group">
-                        <label for="qtyApplyDateFrom" class="control-title">日期查詢</label>
-                        <span>
-                            <select asp-for="qtyDateType" asp-items="@ViewData["DateType"] as SelectList" class="form-control-s">
-                            </select>
-                        </span>
-                        <input asp-for="qtyApplyDateFrom" class="form-control" />
-                        <span> ~ </span>
-                        <input asp-for="qtyApplyDateTo" class="form-control" />
-                    </div>
+        </div>
+        <div class="row">
+            <div class=form-inline>
+                <div class="form-group">
+                    <label for="qtyApplyDateFrom" class="control-title">日期查詢</label>
+                    <span>
+                        <select asp-for="qtyDateType" asp-items="@ViewData["DateType"] as SelectList" class="form-control-s"></select>
+                    </span>
+                    <input asp-for="qtyApplyDateFrom" class="form-control" />
+                    <span> ~ </span>
+                    <input asp-for="qtyApplyDateTo" class="form-control" />
                 </div>
             </div>
-            <div class="row">
-                <div class=form-inline>
-                    <div class="form-group">
-                        <label for="qtyOrderType" class="control-title">排序方式</label>
-                        <select asp-for="qtyOrderType" class="form-control">
-                            <option value="">請選擇</option>
-                            <option value="申請日">申請日</option>
-                            <option value="完工日">完工日</option>
-                            <option value="結案日">結案日</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="qtyRepType" class="control-title">請修類別</label>
-                        <select asp-for="qtyRepType" asp-items="@ViewData["qtyRepType"] as SelectList" class="form-control-s">
-                            <option value="">請選擇</option>
-                        </select>
+        </div>
+        <div class="row">
+            <div class=form-inline>
+                <div class="form-group col-md-offset-1 col-md-1">
+                    <div>
+                        <input id="btnQTY" type="submit" value="查詢" class="btn btn-default btn-group-justified" />
                     </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class=form-inline>
-                    <div class="form-group col-md-offset-1 col-md-1">
-                        <div>
-                            <input id="btnQTY" type="submit" value="查詢" class="btn btn-default btn-group-justified" />
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div>
-                            <input type="button" class="btn btn-primary" id="exportExcelBtn" value="匯出Excel" />
-                        </div>
+                <div class="form-group">
+                    <div>
+                        <input type="button" class="btn btn-primary" id="exportExcelBtn" value="匯出Excel" />
                     </div>
                 </div>
             </div>
         </div>
-    </form>
+    </div>
+</form>
 
-    <div id="pnlREPLIST"></div>
+<div id="pnlREPLIST"></div>

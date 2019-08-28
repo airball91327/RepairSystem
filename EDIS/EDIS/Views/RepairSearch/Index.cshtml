@@ -77,11 +77,32 @@
                         <option value="">請選擇</option>
                     </select>
                 </div>
+                <label for="qtyIsCharged" class="control-title">[有][無]費用</label>
+                <select asp-for="qtyIsCharged" asp-items="@ViewData["IsCharged"] as SelectList" class="form-control-s">
+                    <option value="">請選擇</option>
+                </select>
+                <div class="form-group">
+                    <label for="qtyTroubleDes" class="control-title">故障描述<br />(關鍵字)</label>
+                    <input asp-for="qtyTroubleDes" class="form-control" />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class=form-inline>
+                <div class="form-group">
+                    <label for="qtyRepType" class="control-title">請修類別</label>
+                    <select asp-for="qtyRepType" asp-items="@ViewData["qtyRepType"] as SelectList" class="form-control">
+                        <option value="">請選擇</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class=form-inline>
                 <div class="form-group">
                     <label for="qtyApplyDateFrom" class="control-title">日期查詢</label>
                     <span>
-                        <select asp-for="qtyDateType" asp-items="@ViewData["DateType"] as SelectList" class="form-control-s">
-                        </select>
+                        <select asp-for="qtyDateType" asp-items="@ViewData["DateType"] as SelectList" class="form-control-s"></select>
                     </span>
                     <input asp-for="qtyApplyDateFrom" class="form-control" />
                     <span> ~ </span>

@@ -100,6 +100,7 @@ namespace EDIS.Controllers
             bool searchAllDoc = qdata.qtySearchAllDoc;
             string qtyRepType = qdata.qtyRepType;
             string qtyOrderType = qdata.qtyOrderType;
+            string qtyTroubleDes = qdata.qtyTroubleDes;
 
             DateTime applyDateFrom = DateTime.Now;
             DateTime applyDateTo = DateTime.Now;
@@ -151,7 +152,7 @@ namespace EDIS.Controllers
             //}
 
             var rps = _context.Repairs.ToList();
-            if (!string.IsNullOrEmpty(docid))
+            if (!string.IsNullOrEmpty(docid))   //表單編號
             {
                 docid = docid.Trim();
                 rps = rps.Where(v => v.DocId == docid).ToList();
@@ -166,27 +167,31 @@ namespace EDIS.Controllers
                     }
                 }
             }
-            if (!string.IsNullOrEmpty(ano))
+            if (!string.IsNullOrEmpty(ano))     //財產編號
             {
                 rps = rps.Where(v => v.AssetNo == ano).ToList();
             }
-            if (!string.IsNullOrEmpty(dptid))
+            if (!string.IsNullOrEmpty(dptid))   //所屬部門編號
             {
                 rps = rps.Where(v => v.DptId == dptid).ToList();
             }
-            if (!string.IsNullOrEmpty(acc))
+            if (!string.IsNullOrEmpty(acc))     //成本中心
             {
                 rps = rps.Where(v => v.AccDpt == acc).ToList();
             }
-            if (!string.IsNullOrEmpty(aname))
+            if (!string.IsNullOrEmpty(aname))   //物品名稱(關鍵字)
             {
                 rps = rps.Where(v => v.AssetName != null)
                         .Where(v => v.AssetName.Contains(aname))
                         .ToList();
             }
-            if (!string.IsNullOrEmpty(qtyRepType))
+            if (!string.IsNullOrEmpty(qtyRepType))  //請修類別
             {
                 rps = rps.Where(v => v.RepType == qtyRepType).ToList();
+            }
+            if (!string.IsNullOrEmpty(qtyTroubleDes))   //錯誤描述(關鍵字)
+            {
+                rps = rps.Where(v => v.TroubleDes.Contains(qtyTroubleDes)).ToList();
             }
             /* Search date by DateType.(ApplyDate) */
             if (string.IsNullOrEmpty(qtyDate1) == false || string.IsNullOrEmpty(qtyDate2) == false)
@@ -549,12 +554,12 @@ namespace EDIS.Controllers
             }
 
             /* Search dealStatus. */
-            if (!string.IsNullOrEmpty(qtyDealStatus))
+            if (!string.IsNullOrEmpty(qtyDealStatus))   //處理狀態
             {
                 rv = rv.Where(r => r.DealState == qtyDealStatus).ToList();
             }
             /* Search IsCharged. */
-            if (!string.IsNullOrEmpty(qtyIsCharged))
+            if (!string.IsNullOrEmpty(qtyIsCharged))    //有無費用
             {
                 rv = rv.Where(r => r.IsCharged == qtyIsCharged).ToList();
             }

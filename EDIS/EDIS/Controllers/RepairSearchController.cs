@@ -57,12 +57,25 @@ namespace EDIS.Controllers
             }
             ViewData["DealStatus"] = new SelectList(listItem2, "Value", "Text");
 
+            /* 有無費用 的下拉選單 */
+            List<SelectListItem> listItem3 = new List<SelectListItem>();
+            listItem3.Add(new SelectListItem { Text = "有", Value = "Y" });
+            listItem3.Add(new SelectListItem { Text = "無", Value = "N" });
+            ViewData["IsCharged"] = new SelectList(listItem3, "Value", "Text");
+
             /* 處理日期查詢的下拉選單 */
             List<SelectListItem> listItem4 = new List<SelectListItem>();
             listItem4.Add(new SelectListItem { Text = "申請日", Value = "申請日" });
             listItem4.Add(new SelectListItem { Text = "完工日", Value = "完工日" });
             listItem4.Add(new SelectListItem { Text = "結案日", Value = "結案日" });
             ViewData["DateType"] = new SelectList(listItem4, "Value", "Text", "申請日");
+
+            /* 請修類別 的下拉選單 */
+            List<SelectListItem> listItem5 = new List<SelectListItem>();
+            listItem5.Add(new SelectListItem { Text = "請修", Value = "請修" });
+            listItem5.Add(new SelectListItem { Text = "送修", Value = "送修" });
+            listItem5.Add(new SelectListItem { Text = "增設", Value = "增設" });
+            ViewData["qtyRepType"] = new SelectList(listItem5, "Value", "Text");
 
             QryRepListData data = new QryRepListData();
 
@@ -77,12 +90,15 @@ namespace EDIS.Controllers
             string ano = qdata.qtyASSETNO;
             string acc = qdata.qtyACCDPT;
             string aname = qdata.qtyASSETNAME;
+            string ftype = qdata.qtyFLOWTYPE;
             string dptid = qdata.qtyDPTID;
             string qtyDate1 = qdata.qtyApplyDateFrom;
             string qtyDate2 = qdata.qtyApplyDateTo;
-            string ftype = qdata.qtyFLOWTYPE;
             string qtyDealStatus = qdata.qtyDealStatus;
+            string qtyIsCharged = qdata.qtyIsCharged;
             string qtyDateType = qdata.qtyDateType;
+            string qtyRepType = qdata.qtyRepType;
+            string qtyTroubleDes = qdata.qtyTroubleDes;
 
             DateTime applyDateFrom = DateTime.Now;
             DateTime applyDateTo = DateTime.Now;
@@ -143,10 +159,18 @@ namespace EDIS.Controllers
             {
                 rps = rps.Where(v => v.AccDpt == acc).ToList();
             }
-            if (!string.IsNullOrEmpty(aname))   //財產名稱
+            if (!string.IsNullOrEmpty(aname))   //物品名稱(關鍵字)
             {
                 rps = rps.Where(v => v.AssetName != null)
                          .Where(v => v.AssetName.Contains(aname)).ToList();
+            }
+            if (!string.IsNullOrEmpty(qtyRepType))  //請修類別
+            {
+                rps = rps.Where(v => v.RepType == qtyRepType).ToList();
+            }
+            if (!string.IsNullOrEmpty(qtyTroubleDes))   //錯誤描述(關鍵字)
+            {
+                rps = rps.Where(v => v.TroubleDes.Contains(qtyTroubleDes)).ToList();
             }
             if (string.IsNullOrEmpty(qtyDate1) == false || string.IsNullOrEmpty(qtyDate2) == false)  //申請日
             {
@@ -177,6 +201,11 @@ namespace EDIS.Controllers
             if (!string.IsNullOrEmpty(qtyDealStatus))   //處理狀態
             {
                 repairDtls = repairDtls.Where(r => r.DealState == Convert.ToInt32(qtyDealStatus)).ToList();
+            }
+            /* Search IsCharged. */
+            if (!string.IsNullOrEmpty(qtyIsCharged))    //有無費用
+            {
+                repairDtls = repairDtls.Where(r => r.IsCharged == qtyIsCharged).ToList();
             }
 
             /* If no search result. */
