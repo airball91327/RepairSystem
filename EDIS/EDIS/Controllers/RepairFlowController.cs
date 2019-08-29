@@ -554,14 +554,21 @@ namespace EDIS.Controllers
                 case "工務/營建工程師":
 
                     /* Get all engineers. */
-                    //s = _context.EngsInDepts.Include(e => e.AppUsers).Include(e => e.Departments)
-                    //                        .GroupBy(e => e.EngId).Select(group => group.First().EngId.ToString()).ToList();
                     s = roleManager.GetUsersInRole("RepEngineer").ToList();
+                    /* Get default engineer. */
                     var repEngId = _context.AppUsers.Find(r.EngId).UserName;
+                    var engTemp = _context.AppUsers.Find(r.EngId);
+                    var lastFlowEng = _context.RepairFlows.Where(rf => rf.DocId == docid)
+                                                          .Where(rf => rf.Cls.Contains("工程師"))
+                                                          .OrderByDescending(rf => rf.StepId).FirstOrDefault();
+                    if (lastFlowEng != null)
+                    {
+                        repEngId = _context.AppUsers.Find(lastFlowEng.UserId).UserName;
+                        engTemp = _context.AppUsers.Find(lastFlowEng.UserId);
+                    }
 
                     list = new List<SelectListItem>();
                     /* 負責工程師 */
-                    var engTemp = _context.AppUsers.Find(r.EngId);
                     li = new SelectListItem();
                     li.Text = engTemp.FullName + "(" + engTemp.UserName + ")";
                     li.Value = engTemp.Id.ToString();
