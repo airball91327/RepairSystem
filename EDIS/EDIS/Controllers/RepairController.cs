@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using X.PagedList;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -37,6 +38,7 @@ namespace EDIS.Controllers
         private readonly IEmailSender _emailSender;
         private readonly CustomUserManager userManager;
         private readonly CustomRoleManager roleManager;
+        private int pageSize = 100; //Setting XPageList's pageSize for one page.
 
         public RepairController(ApplicationDbContext context,
                                 IRepository<RepairModel, string> repairRepo,
@@ -84,7 +86,7 @@ namespace EDIS.Controllers
         }
 
         [HttpPost]
-        public ActionResult Index(QryRepListData qdata)
+        public ActionResult Index(QryRepListData qdata, int page = 1)
         {
             string docid = qdata.qtyDOCID;     
             string ano = qdata.qtyASSETNO;     
@@ -564,7 +566,11 @@ namespace EDIS.Controllers
                 rv = rv.Where(r => r.IsCharged == qtyIsCharged).ToList();
             }
 
-            return View("List", rv);
+            if (rv.ToPagedList(page, pageSize).Count <= 0)
+                return View("List", rv.ToPagedList(1, pageSize));
+
+            return View("List", rv.ToPagedList(page, pageSize));
+            //return View("List", rv);
         }
         [Authorize]
         public ActionResult Create()
