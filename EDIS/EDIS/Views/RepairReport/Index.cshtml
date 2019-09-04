@@ -32,6 +32,28 @@
                 }
             });
         });
+
+        $("#exportExcelBtn_2").click(function () {
+            var qtyMonth = $("#qtyMonth_2").val();
+
+            $.ajax({
+                url: "@Url.Action("EndDateReport", "RepairReport", new { Area = "" })",
+                data: { QtyMonth: qtyMonth },
+                beforeSend: $.Toast.showToast({
+                            'title': '報表產生中，因資料較龐大，請稍待片刻...',
+                            'icon': 'loading',
+                            'duration': 0
+                }),
+                success: function (response, textStatus, jqXHR) {
+                    window.location.href = '@Url.Action("EndDateReport", "RepairReport", new { Area = "" })' + '?QtyMonth=' + qtyMonth;
+                    $.Toast.hideToast();
+                },
+                error: function (xhr, status, error) {
+                    alert(error);
+                    $.Toast.hideToast();
+                }
+            });
+        });
     });
 </script>
 
@@ -71,6 +93,29 @@
                     </div>
                     <div>
                         <input type="button" class="btn btn-primary" value="匯出Excel" id="exportExcelBtn" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="panel panel-info">
+    <div class="panel-heading">
+        <h4><b>請修完工日</b></h4>
+    </div>
+    <div class="panel-body">
+        <div class="container">
+            <div class="row col-md-12">
+                <div class="form-inline">
+                    <div class="form-group col-md-4">
+                        <label class="control-label col-md-4">選擇月份:</label>
+                        <div class="col-md-8">
+                            <input type="month" class="form-control" id="qtyMonth_2" />
+                        </div>
+                    </div>
+                    <div>
+                        <input type="button" class="btn btn-primary" value="匯出Excel" id="exportExcelBtn_2" />
                     </div>
                 </div>
             </div>
