@@ -191,7 +191,7 @@ namespace EDIS.Controllers
         }
 
         [HttpPost]
-        public ActionResult QryVendor(QryVendor qryVendor)
+        public IActionResult QryVendor(QryVendor qryVendor)
         {
             List<SelectListItem> items = new List<SelectListItem>();
             items.Add(new SelectListItem() { Text = "", Value = "" });

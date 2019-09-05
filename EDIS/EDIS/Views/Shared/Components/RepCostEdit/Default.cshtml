@@ -3,14 +3,14 @@
 <script src="~/js/RepairCost.js"></script>
 
 <form asp-controller="RepairCost" asp-action="Edit" id="repCostForm" data-ajax="true"
-    data-ajax-method="POST" data-ajax-update="#pnlREPCOSTLIST" 
-    data-ajax-begin="$.Toast.showToast({
+      data-ajax-method="POST" data-ajax-update="#pnlREPCOSTLIST"
+      data-ajax-begin="$.Toast.showToast({
       'title':'作業進行中，請稍待...',
       'icon':'loading',
       'duration':0
       })"
-    data-ajax-complete="$.Toast.hideToast()"
-    data-ajax-success="showMsgAndPrint" data-ajax-failure="onFailed">
+      data-ajax-complete="$.Toast.hideToast()"
+      data-ajax-success="showMsgAndPrint" data-ajax-failure="onFailed">
 
     @Html.AntiForgeryToken()
     @Html.HiddenFor(model => model.DocId, new { id = "costDocId" })
@@ -153,7 +153,7 @@
 </div>
 
 <!-- 庫存品 Modal -->
-<div id="modalSTOCK" class="modal fade" role="dialog">
+@*<div id="modalSTOCK" class="modal fade" role="dialog">
     <div class="modal-dialog modal-lg">
         <div class="modal-content" style="background-color: #1D3C4C">
             <div class="modal-header">
@@ -161,29 +161,29 @@
                 <h4 class="modal-title">選擇庫存品</h4>
             </div>
             <div class="modal-body">
-                @*@await Component.InvokeAsync("DeptStockIndex")*@
+                @await Component.InvokeAsync("DeptStockIndex")
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">關閉</button>
             </div>
         </div>
     </div>
-</div>
+</div>*@
 
 <!-- 廠商 Modal -->
 <div id="modalVENDOR" class="modal fade" role="dialog">
-        <div class="modal-dialog">
-            <div class="modal-content" style="background-color: #1D3C4C">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" style="color:#fff">&times;</button>
-                    <h4 class="modal-title">選擇廠商</h4>
-                </div>
-                <div id="pnlSELECTVENDOR" class="modal-body">
-                    @await Component.InvokeAsync("QryVendor")
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">儲存</button>
-                </div>
+    <div class="modal-dialog">
+        <div class="modal-content" style="background-color: #1D3C4C">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" style="color:#fff">&times;</button>
+                <h4 class="modal-title">選擇廠商</h4>
+            </div>
+            <div id="pnlSELECTVENDOR" class="modal-body">
+                @await Component.InvokeAsync("QryVendor")
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">儲存</button>
             </div>
         </div>
     </div>
+</div>
