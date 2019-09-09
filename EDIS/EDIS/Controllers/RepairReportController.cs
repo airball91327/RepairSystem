@@ -1398,6 +1398,11 @@ namespace EDIS.Controllers
                 var ws = workbook.Worksheets.Add("請修完工日資料", 1);
                 //Style
                 ws.ColumnWidth = 15;
+                ws.Column(5).Width = 25;
+                ws.Column(6).Width = 50;
+                ws.Column(8).Width = 200;
+                ws.Columns(10,13).Width = 25;
+                ws.Column(12).Width = 10;
 
                 //Title1  【2019年各月統計】
                 ws.Cell(1, 1).Value = "表單編號";

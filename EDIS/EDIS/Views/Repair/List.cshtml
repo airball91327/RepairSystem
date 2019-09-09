@@ -33,6 +33,9 @@
     td a {
         color: deepskyblue;
     }
+    .printLink:visited {
+        color: mediumpurple;
+    }
 </style>
 @if (Model.Count() <= 0)
 {
@@ -137,7 +140,7 @@ else
                                 @Html.ActionLink("預覽", "Views", "Repair", new { Area = "", id = item.DocId })
                                 @Html.Raw(" |")
                             }
-                            @Html.ActionLink("列印", "PrintRepairDoc", "Repair", new { Area = "", DocId = item.DocId }, new { target = "_blank" })
+                            @Html.ActionLink("列印", "PrintRepairDoc", "Repair", new { Area = "", DocId = item.DocId }, new { target = "_blank", @class = "printLink"})
                             @* /* 該單的申請人 */ *@
                             @if (item.Flg == "?" && item.FlowUid == UserManager.GetCurrentUserId(User) && item.FlowCls == "申請人")
                             {
@@ -258,7 +261,7 @@ else
                         <td width="100px">
                             @Html.ActionLink("結案", "Edit", "Repair", new { Area = "", id = item.DocId, page = 5 }, new { target = "_blank" })
                             @Html.Raw(" |")
-                            @Html.ActionLink("列印", "PrintRepairDoc", "Repair", new { Area = "", DocId = item.DocId }, new { target = "_blank" })
+                            @Html.ActionLink("列印", "PrintRepairDoc", "Repair", new { Area = "", DocId = item.DocId }, new { target = "_blank", @class = "printLink" })
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.RepType)
