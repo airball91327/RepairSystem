@@ -207,7 +207,8 @@ namespace EDIS.Controllers
             /* If no search result. */
             if (rps.Count() == 0)
             {
-                return View("List", rv);
+                if (rv.ToPagedList(page, pageSize).Count <= 0)
+                    return View("List", rv.ToPagedList(1, pageSize));
             }
 
             switch (ftype)
