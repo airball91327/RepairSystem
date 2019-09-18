@@ -79,7 +79,9 @@ namespace EDIS.Areas.Admin.Controllers
             //}
 
             List<TicketModel> ts = _context.Tickets.ToList();
-            List<RepairCostModel> repairCost = _context.RepairCosts.Include(r => r.TicketDtl).ToList();
+            List<RepairCostModel> repairCost = _context.RepairCosts.Include(r => r.TicketDtl).Where(r => r.StockType != "3").ToList();
+            List<RepairModel> repair = _context.Repairs.ToList();
+            List<RepairListVModel> rv = new List<RepairListVModel>();
 
             if (!string.IsNullOrEmpty(ticketno))
             {
@@ -95,16 +97,56 @@ namespace EDIS.Areas.Admin.Controllers
                 ts = ts.Where(t => t.VendorId != null)
                        .Where(t => t.VendorId == Convert.ToInt32(vendorno)).ToList();
             }
-            if (!string.IsNullOrEmpty(docid))   //Search Tickets related to DocId
+            if (!string.IsNullOrEmpty(docid)) 
             {
-                /* 2 => 發票，4 => 零用金 */
-                repairCost = repairCost.Where(rc => rc.DocId == docid)
-                                       .Where(rc => rc.StockType == "2" || rc.StockType == "4")
-                                       .GroupBy(rc => rc.TicketDtl.TicketDtlNo).Select(group => group.First()).ToList();
-
-                ts = ts.Join(repairCost, t => t.TicketNo, r => r.TicketDtl.TicketDtlNo,
-                       (t, r) => t).ToList();
+                repair = repair.Where(r => r.DocId == docid).ToList();
             }
+
+            var docIdList = ts.Join(repairCost, t => t.TicketNo, r => r.TicketDtl.TicketDtlNo,
+                               (t, r) => new
+                               {
+                                   ticket = t,
+                                   repairCost = r
+                               }).Select(r => r.repairCost.DocId).Distinct();
+            repair.Join(docIdList, r => r.DocId, li => li, (r, li) => r)
+                  .Join(_context.RepairDtls, r => r.DocId, d => d.DocId,
+                       (r, d) => new
+                       {
+                           repair = r,
+                           repdtl = d
+                       })
+                       .Join(_context.Departments, j => j.repair.AccDpt, d => d.DptId,
+                       (j, d) => new
+                       {
+                           repair = j.repair,
+                           repdtl = j.repdtl,
+                           dpt = d
+                       })
+                  .Where(r => r.repdtl.ShutDate == null)    //篩選尚未關帳的請修單
+                  .ToList()
+                  .ForEach(j => rv.Add(new RepairListVModel
+                  {
+                      DocType = "請修",
+                      RepType = j.repair.RepType,
+                      DocId = j.repair.DocId,
+                      ApplyDate = j.repair.ApplyDate,
+                      AssetNo = j.repair.AssetNo,
+                      AssetName = j.repair.AssetName,
+                      PlaceLoc = j.repair.LocType,
+                      ApplyDpt = j.repair.DptId,
+                      AccDpt = j.repair.AccDpt,
+                      AccDptName = j.dpt.Name_C,
+                      TroubleDes = j.repair.TroubleDes,
+                      DealState = _context.DealStatuses.Find(j.repdtl.DealState).Title,
+                      DealDes = j.repdtl.DealDes,
+                      Cost = j.repdtl.Cost,
+                      Days = DateTime.Now.Subtract(j.repair.ApplyDate).Days,
+                      EndDate = j.repdtl.EndDate,
+                      CloseDate = j.repdtl.CloseDate,
+                      IsCharged = j.repdtl.IsCharged,
+                      repdata = j.repair
+                  }));
+
 
             /* Search date by Date. */
             //if (string.IsNullOrEmpty(qtyDate1) == false || string.IsNullOrEmpty(qtyDate2) == false)
@@ -112,30 +154,7 @@ namespace EDIS.Areas.Admin.Controllers
             //    ts = ts.Where(t => t.ShutDate >= applyDateFrom && t.ShutDate <= applyDateTo).ToList();
             //}
 
-            /* Get StockType for all Tickets */
-            foreach(var item in ts)
-            {
-                var repCost = _context.RepairCosts.Where(r => r.TicketDtl.TicketDtlNo.ToUpper() == item.TicketNo.ToUpper()).ToList()
-                                                  .OrderBy(r => r.SeqNo).FirstOrDefault();
-                                        
-                if (repCost != null)
-                {
-                    if (repCost.StockType == "2")
-                    {
-                        item.StockType = "發票";
-                    }
-                    if (repCost.StockType == "4")
-                    {
-                        item.StockType = "零用金";
-                    }
-                }
-                else
-                {
-                    item.StockType = "";
-                }
-            }
-
-            return PartialView("List", ts);
+            return PartialView("List", rv);
         }
 
         // GET: Admin/Ticket/List

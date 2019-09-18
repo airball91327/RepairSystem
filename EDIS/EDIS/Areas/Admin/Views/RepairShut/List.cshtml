@@ -4,116 +4,111 @@
     ViewBag.Title = "列表/請修單";
 }
 
+<script type="text/javascript">
+    $('input[name="chkALL"]').change(function () {
+        if ($(this).prop("checked")) {
+            $("input[name='chkREP']").each(function () {
+                $(this).prop("checked", true);
+            });
+        }
+        else {
+            $("input[name='chkREP']").each(function () {
+                $(this).prop("checked", false);
+            });
+        }
+    });
+</script>
+
 @if (Model.Count() <= 0)
 {
     <p class="text-danger">無任何資料!</p>
 }
 else
 {
-    @foreach (var item in Model)
-    {
-        <div class="panel">
-            <div class="panel-body" style="">
+    <h4>請修單</h4>
+    <table class="table">
+        <tr>
+            <th>
+                @Html.CheckBox("chkALL")
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RepType)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DocId)
+                <br />
+                @Html.DisplayNameFor(model => model.ApplyDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AccDptName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AssetName)
+            </th>
+            @*<th>
+                      @Html.DisplayNameFor(model => model.PlaceLoc)
+                </th>*@
+            <th style="width: 300px;">
+                @Html.DisplayNameFor(model => model.TroubleDes)
+                <br />
+                @Html.DisplayNameFor(model => model.DealDes)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DealState)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Cost)
+            </th>
+        </tr>
 
-                <h4>請修單</h4>
-                <table class="table table-bordered">
-                    <tr>
-                        <th>
-                            @Html.DisplayNameFor(model => model.)
-                        </th>
-                        <th>
-                            發票號碼
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.TicDate)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.VendorId)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.VendorName)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.TradeCode)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.TotalAmt)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.TaxAmt)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.Note)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.ScrapValue)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.ApplyDate)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.CancelDate)
-                        </th>
-                        @*<th>
-                                @Html.DisplayNameFor(model => model.ShutDate)
-                            </th>*@
-                        <th></th>
-                    </tr>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.CheckBox("chkREP")
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.RepType)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DocId)
+                    <br />
+                    @Html.DisplayFor(modelItem => item.ApplyDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AccDptName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AssetNo)
+                    <br />
+                    @Html.DisplayFor(modelItem => item.AssetName)
+                    <br />
+                </td>
+                @*<td>
+                          @Html.DisplayFor(modelItem => item.PlaceLoc)
+                          <br />
+                          @Html.DisplayFor(modelItem => item.Location1)
+                          <br />
+                          @Html.DisplayFor(modelItem => item.Location2)
+                    </td>*@
+                <td>
+                    @Html.DisplayFor(modelItem => item.TroubleDes)
+                    <br />
+                    @Html.DisplayFor(modelItem => item.DealDes)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DealState)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Cost)
+                </td>
+                @*<td style="text-align:center;">
+                          @Html.ActionLink("編輯", "Edit", new { id = item.TicketNo }) |
+                          @Html.ActionLink("預覽", "Details", new { id=item.TicketNo })
+                    </td>*@
+            </tr>
 
 
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.DocId)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.UserName)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.DptName)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.ApplyDate)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.AccDpt)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.AssetNo)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.AssetName)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.RepType)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.LocType)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.CheckerName)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.EndDate)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.CloseDate)
-                        </td>
-                        @*<td>
-                                @Html.DisplayFor(modelItem => item.ShutDate)
-                            </td>*@
-                        <td style="text-align:center;">
-                            <a class="btn btn-primary" href="@Url.Action("Edit", "Ticket", new { Area = "Admin", id = item.TicketNo })">編輯</a>
-                            @*@Html.ActionLink("編輯", "Edit", new { id = item.TicketNo }) |*@
-                            @*@Html.ActionLink("預覽", "Details", new { id=item.TicketNo })*@
-                            @*@Html.ActionLink("刪除", "Delete", new { id=item.TicketNo })*@
-                        </td>
-                    </tr>
-                </table>
-
-                <div>
-                    @await Component.InvokeAsync("TicketDtlList", new { id = item.TicketNo, viewType = "List2" })
-                </div>
-            </div>
-        </div>
-    }
+        }
+    </table>
 }
