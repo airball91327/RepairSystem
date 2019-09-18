@@ -574,6 +574,7 @@ namespace EDIS.Controllers
                 ws2.Columns(15, 17).Width = 20;
                 ws2.Columns(18, 20).Width = 20;
                 ws2.Row(1).Style.Alignment.WrapText = true;
+                ws2.Columns(12, 13).Hide();
 
                 //Title
                 ws2.Cell(1, 1).Value = "姓名";
@@ -587,19 +588,21 @@ namespace EDIS.Controllers
                 ws2.Cell(1, 9).Value = "維修件數\n(未處理)";
                 ws2.Cell(1, 10).Value = "報廢件數";
                 ws2.Cell(1, 11).Value = "總件數";
-                ws2.Cell(1, 12).Value = "維修(內修)\n3日內完成率";
-                ws2.Cell(1, 13).Value = "維修(內修)\n4 - 7日完成率";
-                ws2.Cell(1, 14).Value = "維修(內修)\n8日以上完成率";
-                ws2.Cell(1, 15).Value = "維修(外修、內外修)\n15日內完成率";
-                ws2.Cell(1, 16).Value = "維修(外修、內外修)\n16 - 30日完成率";
-                ws2.Cell(1, 17).Value = "維修(外修、內外修)\n31日以上完成率";
-                ws2.Cell(1, 18).Value = "增設\n15日內完成率";
-                ws2.Cell(1, 19).Value = "增設\n16 - 30日完成率";
-                ws2.Cell(1, 20).Value = "增設\n31日以上完成率";
-                ws2.Cell(1, 21).Value = "有費用件數";
-                ws2.Cell(1, 22).Value = "無費用件數";
-                ws2.Cell(1, 23).Value = "總費用";
-                ws2.Cell(1, 24).Value = "平均每件\n維修費用";
+                ws2.Cell(1, 12).Value = "平均每人件數";
+                ws2.Cell(1, 13).Value = "維修完工率";
+                ws2.Cell(1, 14).Value = "維修(內修)\n3日內完成率";
+                ws2.Cell(1, 15).Value = "維修(內修)\n4 - 7日完成率";
+                ws2.Cell(1, 16).Value = "維修(內修)\n8日以上完成率";
+                ws2.Cell(1, 17).Value = "維修(外修、內外修)\n15日內完成率";
+                ws2.Cell(1, 18).Value = "維修(外修、內外修)\n16 - 30日完成率";
+                ws2.Cell(1, 19).Value = "維修(外修、內外修)\n31日以上完成率";
+                ws2.Cell(1, 20).Value = "增設\n15日內完成率";
+                ws2.Cell(1, 21).Value = "增設\n16 - 30日完成率";
+                ws2.Cell(1, 22).Value = "增設\n31日以上完成率";
+                ws2.Cell(1, 23).Value = "有費用件數";
+                ws2.Cell(1, 24).Value = "無費用件數";
+                ws2.Cell(1, 25).Value = "總費用";
+                ws2.Cell(1, 26).Value = "平均每件\n維修費用";
 
                 //Data 整理及統計
 
@@ -785,7 +788,7 @@ namespace EDIS.Controllers
                 }
 
                 //如果是要塞入Query後的資料該資料一定要變成是data.AsEnumerable()
-                ws2.Cell(2, 1).InsertData(rvData);
+                ws2.Cell(2, 1).InsertData(rvData.AsEnumerable());
 
                 //WorkSheet3
                 var ws3 = workbook.Worksheets.Add("個人各月份統計", 3);

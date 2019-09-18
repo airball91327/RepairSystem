@@ -43,8 +43,8 @@ namespace EDIS.Repositories
         public void Update(DocIdStore entity)
         {
             var oriDpt = _context.DocIdStores.Single(x => x.DocType == entity.DocType);
-            Delete(new string[] { oriDpt.DocType, oriDpt.DocId });
             Create(entity);
+            Delete(new string[] { oriDpt.DocType, oriDpt.DocId });
         }
     }
 }
