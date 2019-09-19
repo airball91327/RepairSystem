@@ -79,13 +79,14 @@ namespace EDIS.Areas.Admin.Controllers
             //}
 
             List<TicketModel> ts = _context.Tickets.ToList();
-            List<RepairCostModel> repairCost = _context.RepairCosts.Include(r => r.TicketDtl).Where(r => r.StockType != "3").ToList();
+            List<RepairCostModel> repairCost = _context.RepairCosts.Include(r => r.TicketDtl).ToList();
             List<RepairModel> repair = _context.Repairs.ToList();
             List<RepairListVModel> rv = new List<RepairListVModel>();
 
             if (!string.IsNullOrEmpty(ticketno))
             {
                 ts = ts.Where(t => t.TicketNo.ToUpper() == ticketno).ToList();
+                repairCost = repairCost.Where(rc => rc.StockType != "3").ToList();  //篩選掉簽單的資料
             }
             if (!string.IsNullOrEmpty(vendorname))
             {
@@ -102,7 +103,7 @@ namespace EDIS.Areas.Admin.Controllers
                 repair = repair.Where(r => r.DocId == docid).ToList();
             }
 
-            var docIdList = ts.Join(repairCost, t => t.TicketNo, r => r.TicketDtl.TicketDtlNo,
+            var docIdList = ts.Join(repairCost, t => t.TicketNo.ToUpper(), r => r.TicketDtl.TicketDtlNo.ToUpper(),
                                (t, r) => new
                                {
                                    ticket = t,
