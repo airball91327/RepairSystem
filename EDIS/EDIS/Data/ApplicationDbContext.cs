@@ -49,6 +49,7 @@ namespace EDIS.Data
         public DbSet<EngDealingDocs> EngDealingDocs { get; set; }
         public DbSet<EngSubStaff> EngSubStaff { get; set; }
         public DbSet<ScrapAssetModel> ScrapAssets { get; set; }
+        public DbSet<RepairShutRecordsModel> RepairShutRecords { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -76,6 +77,7 @@ namespace EDIS.Data
             builder.Entity<EngDealingDocs>().HasKey(c => new { c.EngId });
             builder.Entity<EngSubStaff>().HasKey(c => new { c.EngId });
             builder.Entity<ScrapAssetModel>().HasKey(c => new { c.DocId, c.DeviceNo, c.AssetNo });
+            builder.Entity<RepairShutRecordsModel>().HasKey(c => new { c.DocId });
             // Customize the ASP.NET Identity model and override the defaults if needed.
             // For example, you can rename the ASP.NET Identity table names and more.
             // Add your customizations after calling base.OnModelCreating(builder);

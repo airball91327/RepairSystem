@@ -5,19 +5,64 @@
 }
 
 <script type="text/javascript">
-    $('input[name="chkALL"]').change(function () {
-        if ($(this).prop("checked")) {
-            $("input[name='chkREP']").each(function () {
-                $(this).prop("checked", true);
-            });
-        }
-        else {
-            $("input[name='chkREP']").each(function () {
-                $(this).prop("checked", false);
-            });
-        }
-    });
+    $(function () {
+        /* Shut Repairs. */
+        $("#btnSHUTREP").click(function () {
+            var r = confirm("確定執行關帳作業?");
+            if (r == true) {
+                var s = "";
+                $("input[name='chkREP']:checked").each(function () {
+                    s += $(this).parents("tr").children().get(2).innerText.trim();
+                    s += ";";
+                });
+                if (s != "") {
+                    $.ajax({
+                        url: '../Admin/RepairShut/ShutRep',
+                        data: { repairs: s },
+                        type: "POST",
+                        beforeSend: $.Toast.showToast({
+                            'title': '作業進行中，請稍待...',
+                            'icon': 'loading',
+                            'duration': 0
+                        }),
+                        success: function (data) {
+                            alert('關帳作業已完成!!');
+                            $.Toast.hideToast();
+                            ReSubmit();
+                        },
+                        error: function (msg) {
+                            alert(msg);
+                            $.Toast.hideToast();
+                        }
+                    });
+                }
+            }
+        });
+
+        $('input[name="chkALL"]').change(function () {
+            if ($(this).prop("checked")) {
+                $("input[name='chkREP']").each(function () {
+                    $(this).prop("checked", true);
+                });
+            }
+            else {
+                $("input[name='chkREP']").each(function () {
+                    $(this).prop("checked", false);
+                });
+            }
+        });
+    });  
 </script>
+
+<style>
+    /* Style the scale of checkbox. */
+    input[type=checkbox] {
+        -ms-transform: scale(1.5); /* IE */
+        -moz-transform: scale(1.5); /* FireFox */
+        -webkit-transform: scale(1.5); /* Safari and Chrome */
+        -o-transform: scale(1.5); /* Opera */
+    }
+</style>
 
 @if (Model.Count() <= 0)
 {
@@ -25,7 +70,9 @@
 }
 else
 {
-    <h4>請修單</h4>
+    <h4>選取欲關帳之請修單</h4>
+    <br />
+    <button class="btn btn-primary" id="btnSHUTREP">執行關帳作業</button>
     <table class="table">
         <tr>
             <th>
@@ -36,7 +83,8 @@ else
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.DocId)
-                <br />
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.ApplyDate)
             </th>
             <th>
@@ -54,7 +102,7 @@ else
                 @Html.DisplayNameFor(model => model.DealDes)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.DealState)
+                @Html.DisplayNameFor(model => model.CloseDate)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Cost)
@@ -72,7 +120,8 @@ else
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.DocId)
-                    <br />
+                </td>
+                <td>
                     @Html.DisplayFor(modelItem => item.ApplyDate)
                 </td>
                 <td>
@@ -97,7 +146,7 @@ else
                     @Html.DisplayFor(modelItem => item.DealDes)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.DealState)
+                    @Html.DisplayFor(modelItem => item.CloseDate)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Cost)
