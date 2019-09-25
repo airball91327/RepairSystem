@@ -85,30 +85,25 @@ namespace EDIS.Areas.Admin.Controllers
 
             if (!string.IsNullOrEmpty(ticketno))
             {
-                ts = ts.Where(t => t.TicketNo.ToUpper() == ticketno).ToList();
                 repairCost = repairCost.Where(rc => rc.StockType != "3").ToList();  //篩選掉簽單的資料
+                repairCost = repairCost.Where(rc => rc.TicketDtl.TicketDtlNo.ToUpper() == ticketno).ToList();
             }
             if (!string.IsNullOrEmpty(vendorname))
             {
-                ts = ts.Where(t => t.VendorName != null && t.VendorName != "")
-                       .Where(t => t.VendorName.Contains(vendorname)).ToList();
+                repairCost = repairCost.Where(rc => rc.VendorName != null && rc.VendorName != "")
+                                       .Where(rc => rc.VendorName.Contains(vendorname)).ToList();
             }
             if (!string.IsNullOrEmpty(vendorno))
             {
-                ts = ts.Where(t => t.VendorId != null)
-                       .Where(t => t.VendorId == Convert.ToInt32(vendorno)).ToList();
+                repairCost = repairCost.Where(rc => rc.VendorId != null)
+                                       .Where(rc => rc.VendorId == Convert.ToInt32(vendorno)).ToList();
             }
             if (!string.IsNullOrEmpty(docid)) 
             {
                 repair = repair.Where(r => r.DocId == docid).ToList();
             }
 
-            var docIdList = ts.Join(repairCost, t => t.TicketNo.ToUpper(), r => r.TicketDtl.TicketDtlNo.ToUpper(),
-                               (t, r) => new
-                               {
-                                   ticket = t,
-                                   repairCost = r
-                               }).Select(r => r.repairCost.DocId).Distinct();
+            var docIdList = repairCost.Select(rc => rc.DocId).Distinct();
             repair.Join(docIdList, r => r.DocId, li => li, (r, li) => r)
                   .Join(_context.RepairDtls, r => r.DocId, d => d.DocId,
                        (r, d) => new
