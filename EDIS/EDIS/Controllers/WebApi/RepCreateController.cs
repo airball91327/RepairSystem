@@ -108,7 +108,7 @@ namespace EDIS.Controllers.WebApi
         /// </summary>
         /// <param name="root">客戶指定傳入之XML格式參數</param>
         [HttpPost]
-        //[Produces("application/xml")] //強制回傳設定格式
+        [Produces("application/xml")] //強制回傳設定格式
         //[Consumes("application/xml")] //強制只接收設定格式
         public async Task<IActionResult> Post([FromBody] Root root)
         {
