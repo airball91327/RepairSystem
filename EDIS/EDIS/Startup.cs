@@ -84,7 +84,6 @@ namespace EDIS
             services.AddMvc(options =>
             {
                 options.Filters.Add<MyErrorHandlerFilter>();
-                //options.Filters.Add<WebApiValidateModelAttribute>();
             });
 
             //XML formatter.
