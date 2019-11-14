@@ -89,7 +89,7 @@ namespace EDIS.Controllers
 
             if (ur != null)   //Check is UserName exist
             {
-                string DESKey = "12345678";
+                string DESKey = "QqArSQ2G";
                 string userPW = CryptoExtensions.DESDecrypt(loginModel.PassWord, DESKey);    //DES decrypt.
                 Boolean CheckPassWord = false;
 
