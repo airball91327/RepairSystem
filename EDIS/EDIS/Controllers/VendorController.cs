@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using EDIS.Data;
 using EDIS.Models.RepairModels;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 
 namespace EDIS.Controllers
 {
@@ -24,7 +25,26 @@ namespace EDIS.Controllers
         // GET: Vendor
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Vendors.ToListAsync());
+            return View();
+        }
+
+        // POST: Vendor
+        [HttpPost]
+        public async Task<IActionResult> Index(FormCollection fm)
+        {
+            string qname = fm["qtyNAME"];
+            string uno = fm["qtyUNITENO"];
+            List<VendorModel> vt = _context.Vendors.Where(v => v.Status == "Y").ToList();
+            if (!string.IsNullOrEmpty(qname))
+            {
+                vt = vt.Where(v => v.VendorName.Contains(qname)).ToList();
+            }
+            if (!string.IsNullOrEmpty(uno))
+            {
+                vt = vt.Where(v => v.UniteNo == uno).ToList();
+            }
+
+            return PartialView("List", vt);
         }
 
         // GET: Vendor/Details/5
