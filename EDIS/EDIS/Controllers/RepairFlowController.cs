@@ -422,6 +422,17 @@ namespace EDIS.Controllers
                         }
                     }
                     break;
+                case "工務副主任":
+                    list = new List<SelectListItem>();
+                    u = _context.AppUsers.Where(ur => ur.UserName == "23310").FirstOrDefault();
+                    if (!string.IsNullOrEmpty(u.DptId))
+                    {
+                        li = new SelectListItem();
+                        li.Text = u.FullName + "(" + u.UserName + ")";
+                        li.Value = u.Id.ToString();
+                        list.Add(li);
+                    }
+                    break;
                 case "工務經辦":
                     list = new List<SelectListItem>();
                     u = _context.AppUsers.Where(ur => ur.UserName == "1814").FirstOrDefault();
@@ -478,7 +489,7 @@ namespace EDIS.Controllers
                     //        list.Add(li);
                     //}
                     break;
-                case "單位副院長":
+                case "單位直屬院長室主管":
                     s = roleManager.GetUsersInRole("ViceSI").ToList();
                     list = new List<SelectListItem>();
                     foreach (string l in s)
