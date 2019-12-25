@@ -65,6 +65,17 @@ namespace EDIS.Controllers
                         return BadRequest(msg);
                     }
                 }
+                /* 如點選無費用、卻有輸入費用明細 */
+                if (isCharged == "N")
+                {
+                    var CheckRepairCost = _context.RepairCosts.Where(c => c.DocId == assign.DocId).FirstOrDefault();
+                    if (CheckRepairCost != null)
+                    {
+                        string msg = "無費用案件，需刪除費用明細!";
+                        return BadRequest(msg);
+                    }
+                }
+
                 var repairDtl = _context.RepairDtls.Where(d => d.DocId == assign.DocId).FirstOrDefault();
                 /* 3 = 已完成，4 = 報廢 */
                 if (repairDtl.DealState == 3 || repairDtl.DealState == 4)
@@ -198,9 +209,10 @@ namespace EDIS.Controllers
                         }
                         mail.from = new System.Net.Mail.MailAddress(ur.Email); //u.Email
                         /* If is charged, send mail to all flow users. */
+                        /* 工務主管一律不寄信 */
                         if (rd.IsCharged == "Y")
                         {
-                            _context.RepairFlows.Where(f => f.DocId == assign.DocId)
+                            _context.RepairFlows.Where(f => f.DocId == assign.DocId).Where(f => f.Cls.Contains("工務主管") == false)
                                 .ToList()
                                 .ForEach(f =>
                                 {
@@ -211,6 +223,7 @@ namespace EDIS.Controllers
                         else
                         {
                             _context.RepairFlows.Where(f => f.DocId == assign.DocId).Where(f => f.Cls.Contains("工程師") == false)
+                                                .Where(f => f.Cls.Contains("工務主管") == false)
                                 .ToList()
                                 .ForEach(f =>
                                 {
