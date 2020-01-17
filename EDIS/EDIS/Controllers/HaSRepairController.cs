@@ -1234,7 +1234,7 @@ namespace EDIS.Controllers
                 }
 
                 var engDirector = _context.RepairFlows.Where(r => r.DocId == DocId)
-                                                      .Where(r => r.Cls.Contains("工務主任") || r.Cls.Contains("營建主任"))
+                                                      .Where(r => r.Cls.Contains("工務主任") || r.Cls.Contains("營建主任") || r.Cls.Contains("工務副主任"))
                                                       .Where(r => r.Opinions.Contains("[同意]")).LastOrDefault();
                 string firstString = "";
                 if (engDirector != null)
@@ -1265,7 +1265,7 @@ namespace EDIS.Controllers
                 vm.DelivDirector = delivDirector == null ? "" : _context.AppUsers.Find(delivDirector.UserId).FullName;
 
                 var ViceSI = _context.RepairFlows.Where(r => r.DocId == DocId)
-                                                 .Where(r => r.Cls.Contains("副院長"))
+                                                 .Where(r => r.Cls.Contains("院長室主管"))
                                                  .Where(r => r.Opinions.Contains("[同意]")).LastOrDefault();
                 vm.ViceSuperintendent = ViceSI == null ? "" : _context.AppUsers.Find(ViceSI.UserId).FullName;
 
