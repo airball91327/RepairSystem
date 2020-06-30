@@ -19,7 +19,7 @@
         $('label[for="AccountDate"]').text("發票日期");
 
         var stockType = $('#StockType').val();
-        console.log(stockType);
+        //console.log(stockType);
         /* According stock type to change labels and input textboxs. */
         if (stockType === "2" || stockType === "4") {             // 點選"發票" 或 "零用金"
             $('#btnQtyStok').hide();
@@ -57,10 +57,11 @@
             }
         });
 
+        var url = '@Url.Action("GetTicketSeq", "Ticket")';
         /* Get ticket seq. */
         $("#btnGETSEQ").click(function () {
             $.ajax({
-                url: '../../Ticket/GetTicketSeq',
+                url: url,
                 type: "POST",
                 async: true,
                 success: function (data) {
