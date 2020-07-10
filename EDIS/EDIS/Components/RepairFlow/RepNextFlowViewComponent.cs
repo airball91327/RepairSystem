@@ -73,7 +73,7 @@ namespace EDIS.Components.RepairFlow
                 listItem.Add(new SelectListItem { Text = "工務/營建工程師", Value = "工務/營建工程師" });
                 listItem.Add(new SelectListItem { Text = "工務主管", Value = "工務主管" });
                 listItem.Add(new SelectListItem { Text = "工務主任", Value = "工務主任" });
-                listItem.Add(new SelectListItem { Text = "工務副主任", Value = "工務副主任" });
+                //listItem.Add(new SelectListItem { Text = "工務副主任", Value = "工務副主任" });
                 listItem.Add(new SelectListItem { Text = "營建主管", Value = "營建主管" });
                 listItem.Add(new SelectListItem { Text = "營建主任", Value = "營建主任" });
             }
@@ -85,7 +85,7 @@ namespace EDIS.Components.RepairFlow
                 listItem.Add(new SelectListItem { Text = "工務/營建工程師", Value = "工務/營建工程師" });
                 listItem.Add(new SelectListItem { Text = "工務主管", Value = "工務主管" });
                 listItem.Add(new SelectListItem { Text = "工務主任", Value = "工務主任" });
-                listItem.Add(new SelectListItem { Text = "工務副主任", Value = "工務副主任" });
+                //listItem.Add(new SelectListItem { Text = "工務副主任", Value = "工務副主任" });
                 listItem.Add(new SelectListItem { Text = "營建主管", Value = "營建主管" });
                 listItem.Add(new SelectListItem { Text = "營建主任", Value = "營建主任" });
                 listItem.Add(new SelectListItem { Text = "工務經辦", Value = "工務經辦" });
