@@ -377,7 +377,13 @@ namespace EDIS.Controllers
                     {
                         repair = r,
                         flow = f
-                    }).ToList();
+                    }).Join(_context.AppUsers, f => f .flow.UserId, a => a.Id,
+                    (f, a) => new 
+                    {
+                        repair = f.repair,
+                        flow = f.flow,
+                        fuser = a
+                    });
 
                     if (userManager.IsInRole(User, "Admin") || userManager.IsInRole(User, "RepEngineer"))
                     {
@@ -385,20 +391,20 @@ namespace EDIS.Controllers
                         /* Else return the docs belong the login engineer.  */
                         if (userManager.IsInRole(User, "RepEngineer") && searchAllDoc == true)
                         {
-                            repairFlows = repairFlows.Where(f => f.flow.Status == "?" && f.flow.Cls.Contains("工程師")).ToList();
+                            repairFlows = repairFlows.Where(f => f.flow.Status == "?" && f.flow.Cls.Contains("工程師"));
                         }
                         else
                         {
                             repairFlows = repairFlows.Where(f => (f.flow.Status == "?" && f.flow.UserId == ur.Id) ||
                                                                  (f.flow.Status == "?" && f.flow.Cls == "驗收人" && 
-                                                                  _context.AppUsers.Find(f.flow.UserId).DptId == ur.DptId)).ToList();
+                                                                  f.fuser.DptId == ur.DptId));
                         }
                     }
                     else
                     {
                         repairFlows = repairFlows.Where(f => ( f.flow.Status == "?" && f.flow.UserId == ur.Id ) ||
                                                              ( f.flow.Status == "?" && f.flow.Cls == "驗收人" &&
-                                                               _context.AppUsers.Find(f.flow.UserId).DptId == ur.DptId)).ToList();
+                                                               f.fuser.DptId == ur.DptId));
                     }
 
                     //repairFlows.Select(f => new
