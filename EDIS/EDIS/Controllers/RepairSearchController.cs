@@ -140,44 +140,44 @@ namespace EDIS.Controllers
             List<RepairSearchListVModel> rv = new List<RepairSearchListVModel>();
 
             /* Querying data. */
-            var rps = _context.Repairs.ToList();
-            var repairFlows = _context.RepairFlows.ToList();
-            var repairDtls = _context.RepairDtls.ToList();
+            var rps = _context.Repairs.AsQueryable();
+            var repairFlows = _context.RepairFlows.AsQueryable();
+            var repairDtls = _context.RepairDtls.AsQueryable();
             if (!string.IsNullOrEmpty(docid))   //表單編號
             {
                 docid = docid.Trim();
-                rps = rps.Where(v => v.DocId == docid).ToList();
+                rps = rps.Where(v => v.DocId == docid);
             }
             if (!string.IsNullOrEmpty(ano))     //財產編號
             {
-                rps = rps.Where(v => v.AssetNo == ano).ToList();
+                rps = rps.Where(v => v.AssetNo == ano);
             }
             if (!string.IsNullOrEmpty(dptid))   //所屬部門編號
             {
-                rps = rps.Where(v => v.DptId == dptid).ToList();
+                rps = rps.Where(v => v.DptId == dptid);
             }
             if (!string.IsNullOrEmpty(acc))     //成本中心
             {
-                rps = rps.Where(v => v.AccDpt == acc).ToList();
+                rps = rps.Where(v => v.AccDpt == acc);
             }
             if (!string.IsNullOrEmpty(aname))   //物品名稱(關鍵字)
             {
                 rps = rps.Where(v => v.AssetName != null)
-                         .Where(v => v.AssetName.Contains(aname)).ToList();
+                         .Where(v => v.AssetName.Contains(aname));
             }
             if (!string.IsNullOrEmpty(qtyRepType))  //請修類別
             {
-                rps = rps.Where(v => v.RepType == qtyRepType).ToList();
+                rps = rps.Where(v => v.RepType == qtyRepType);
             }
             if (!string.IsNullOrEmpty(qtyTroubleDes))   //錯誤描述(關鍵字)
             {
-                rps = rps.Where(v => v.TroubleDes.Contains(qtyTroubleDes)).ToList();
+                rps = rps.Where(v => v.TroubleDes.Contains(qtyTroubleDes));
             }
             if (string.IsNullOrEmpty(qtyDate1) == false || string.IsNullOrEmpty(qtyDate2) == false)  //申請日
             {
                 if (qtyDateType == "申請日")
                 {
-                    rps = rps.Where(v => v.ApplyDate >= applyDateFrom && v.ApplyDate <= applyDateTo).ToList();
+                    rps = rps.Where(v => v.ApplyDate >= applyDateFrom && v.ApplyDate <= applyDateTo);
                 }
             }
             if (!string.IsNullOrEmpty(ftype))   //流程狀態
@@ -185,28 +185,25 @@ namespace EDIS.Controllers
                 switch(ftype)
                 {
                     case "未結案":
-                        repairFlows = repairFlows.GroupBy(f => f.DocId).Where(group => group.Last().Status == "?")
-                                                                       .Select(group => group.Last()).ToList();
+                        repairFlows = repairFlows.Where(f => f.Status == "?");
                         break;
                     case "已結案":
-                        repairFlows = repairFlows.GroupBy(f => f.DocId).Where(group => group.Last().Status == "2")
-                                                                       .Select(group => group.Last()).ToList();
+                        repairFlows = repairFlows.Where(f => f.Status == "2");
                         break;
                 }
             }
             else
             {
-                repairFlows = repairFlows.GroupBy(f => f.DocId).Where(group => group.Last().Status != "3")
-                                                               .Select(group => group.Last()).ToList(); ;
+                repairFlows = repairFlows.Where(f => f.Status == "2" || f.Status == "?");
             }
             if (!string.IsNullOrEmpty(qtyDealStatus))   //處理狀態
             {
-                repairDtls = repairDtls.Where(r => r.DealState == Convert.ToInt32(qtyDealStatus)).ToList();
+                repairDtls = repairDtls.Where(r => r.DealState == Convert.ToInt32(qtyDealStatus));
             }
             /* Search IsCharged. */
             if (!string.IsNullOrEmpty(qtyIsCharged))    //有無費用
             {
-                repairDtls = repairDtls.Where(r => r.IsCharged == qtyIsCharged).ToList();
+                repairDtls = repairDtls.Where(r => r.IsCharged == qtyIsCharged);
             }
 
             /* If no search result. */

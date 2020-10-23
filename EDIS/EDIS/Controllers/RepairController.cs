@@ -153,11 +153,11 @@ namespace EDIS.Controllers
             //        searchAllDoc = true;
             //}
 
-            var rps = _context.Repairs.ToList();
+            var rps = _context.Repairs.AsQueryable();
             if (!string.IsNullOrEmpty(docid))   //表單編號
             {
                 docid = docid.Trim();
-                rps = rps.Where(v => v.DocId == docid).ToList();
+                rps = rps.Where(v => v.DocId == docid);
                 //案件是否為廢除
                 if (rps.Count() > 0)
                 {
@@ -171,36 +171,35 @@ namespace EDIS.Controllers
             }
             if (!string.IsNullOrEmpty(ano))     //財產編號
             {
-                rps = rps.Where(v => v.AssetNo == ano).ToList();
+                rps = rps.Where(v => v.AssetNo == ano);
             }
             if (!string.IsNullOrEmpty(dptid))   //所屬部門編號
             {
-                rps = rps.Where(v => v.DptId == dptid).ToList();
+                rps = rps.Where(v => v.DptId == dptid);
             }
             if (!string.IsNullOrEmpty(acc))     //成本中心
             {
-                rps = rps.Where(v => v.AccDpt == acc).ToList();
+                rps = rps.Where(v => v.AccDpt == acc);
             }
             if (!string.IsNullOrEmpty(aname))   //物品名稱(關鍵字)
             {
                 rps = rps.Where(v => v.AssetName != null)
-                        .Where(v => v.AssetName.Contains(aname))
-                        .ToList();
+                        .Where(v => v.AssetName.Contains(aname));
             }
             if (!string.IsNullOrEmpty(qtyRepType))  //請修類別
             {
-                rps = rps.Where(v => v.RepType == qtyRepType).ToList();
+                rps = rps.Where(v => v.RepType == qtyRepType);
             }
             if (!string.IsNullOrEmpty(qtyTroubleDes))   //錯誤描述(關鍵字)
             {
-                rps = rps.Where(v => v.TroubleDes.Contains(qtyTroubleDes)).ToList();
+                rps = rps.Where(v => v.TroubleDes.Contains(qtyTroubleDes));
             }
             /* Search date by DateType.(ApplyDate) */
             if (string.IsNullOrEmpty(qtyDate1) == false || string.IsNullOrEmpty(qtyDate2) == false)
             {
                 if(qtyDateType == "申請日")
                 {
-                    rps = rps.Where(v => v.ApplyDate >= applyDateFrom && v.ApplyDate <= applyDateTo).ToList();
+                    rps = rps.Where(v => v.ApplyDate >= applyDateFrom && v.ApplyDate <= applyDateTo);
                 }
             }
 
@@ -282,7 +281,7 @@ namespace EDIS.Controllers
                 /* 與登入者相關且結案的文件 */
                 case "已結案":
                     /* Get all closed repair docs. */
-                    List<RepairFlowModel> rf = _context.RepairFlows.Where(f => f.Status == "2").ToList();
+                    var rf = _context.RepairFlows.Where(f => f.Status == "2");
 
                     if (userManager.IsInRole(User, "Admin") || userManager.IsInRole(User, "Manager")
                                                             || userManager.IsInRole(User, "RepEngineer"))
@@ -290,19 +289,19 @@ namespace EDIS.Controllers
                         if (userManager.IsInRole(User, "Manager"))
                         {
                             rf = rf.Join(_context.Repairs.Where(r => r.AccDpt == ur.DptId),
-                            f => f.DocId, r => r.DocId, (f, r) => f).ToList();
+                            f => f.DocId, r => r.DocId, (f, r) => f);
                         }
                         /* If no other search values, search the docs belong the login engineer. */
                         if (userManager.IsInRole(User, "RepEngineer") && searchAllDoc == false)
                         {
                             rf = rf.Join(_context.RepairFlows.Where(f2 => f2.UserId == ur.Id),
-                                 f => f.DocId, f2 => f2.DocId, (f, f2) => f).ToList();
+                                 f => f.DocId, f2 => f2.DocId, (f, f2) => f);
                         }
                     }
                     else /* If normal user, search the docs belong himself. */
                     {
                         rf = rf.Join(_context.RepairFlows.Where(f2 => f2.UserId == ur.Id),
-                             f => f.DocId, f2 => f2.DocId, (f, f2) => f).ToList();
+                             f => f.DocId, f2 => f2.DocId, (f, f2) => f);
                     }
 
                     rf.Select(f => new
@@ -1363,36 +1362,35 @@ namespace EDIS.Controllers
             //        searchAllDoc = true;
             //}
 
-            var rps = _context.Repairs.ToList();
+            var rps = _context.Repairs.AsQueryable();
             if (!string.IsNullOrEmpty(docid))
             {
                 docid = docid.Trim();
-                rps = rps.Where(v => v.DocId == docid).ToList();
+                rps = rps.Where(v => v.DocId == docid);
             }
             if (!string.IsNullOrEmpty(ano))
             {
-                rps = rps.Where(v => v.AssetNo == ano).ToList();
+                rps = rps.Where(v => v.AssetNo == ano);
             }
             if (!string.IsNullOrEmpty(dptid))
             {
-                rps = rps.Where(v => v.DptId == dptid).ToList();
+                rps = rps.Where(v => v.DptId == dptid);
             }
             if (!string.IsNullOrEmpty(acc))
             {
-                rps = rps.Where(v => v.AccDpt == acc).ToList();
+                rps = rps.Where(v => v.AccDpt == acc);
             }
             if (!string.IsNullOrEmpty(aname))
             {
                 rps = rps.Where(v => v.AssetName != null)
-                        .Where(v => v.AssetName.Contains(aname))
-                        .ToList();
+                        .Where(v => v.AssetName.Contains(aname));
             }
             /* Search date by DateType.(ApplyDate) */
             if (string.IsNullOrEmpty(qtyDate1) == false || string.IsNullOrEmpty(qtyDate2) == false)
             {
                 if (qtyDateType == "申請日")
                 {
-                    rps = rps.Where(v => v.ApplyDate >= applyDateFrom && v.ApplyDate <= applyDateTo).ToList();
+                    rps = rps.Where(v => v.ApplyDate >= applyDateFrom && v.ApplyDate <= applyDateTo);
                 }
             }
 
@@ -1455,7 +1453,7 @@ namespace EDIS.Controllers
                 /* 與登入者相關且結案的文件 */
                 case "已結案":
                     /* Get all closed repair docs. */
-                    List<RepairFlowModel> rf = _context.RepairFlows.Where(f => f.Status == "2").ToList();
+                    var rf = _context.RepairFlows.Where(f => f.Status == "2");
 
                     if (userManager.IsInRole(User, "Admin") || userManager.IsInRole(User, "Manager")
                                                             || userManager.IsInRole(User, "RepEngineer"))
@@ -1463,19 +1461,19 @@ namespace EDIS.Controllers
                         if (userManager.IsInRole(User, "Manager"))
                         {
                             rf = rf.Join(_context.Repairs.Where(r => r.AccDpt == ur.DptId),
-                            f => f.DocId, r => r.DocId, (f, r) => f).ToList();
+                            f => f.DocId, r => r.DocId, (f, r) => f);
                         }
                         /* If no other search values, search the docs belong the login engineer. */
                         if (userManager.IsInRole(User, "RepEngineer") && searchAllDoc == false)
                         {
                             rf = rf.Join(_context.RepairFlows.Where(f2 => f2.UserId == ur.Id),
-                                 f => f.DocId, f2 => f2.DocId, (f, f2) => f).ToList();
+                                 f => f.DocId, f2 => f2.DocId, (f, f2) => f);
                         }
                     }
                     else /* If normal user, search the docs belong himself. */
                     {
                         rf = rf.Join(_context.RepairFlows.Where(f2 => f2.UserId == ur.Id),
-                             f => f.DocId, f2 => f2.DocId, (f, f2) => f).ToList();
+                             f => f.DocId, f2 => f2.DocId, (f, f2) => f);
                     }
 
                     rf.Select(f => new
