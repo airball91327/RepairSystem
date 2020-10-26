@@ -112,10 +112,13 @@ namespace EDIS.Controllers
 
                     var repairModel = _context.Repairs.Find(repairDtl.DocId);
                     repairModel.AssetNo = repairDtl.AssetNo;
-                    var tempAsset = _context.Assets.Where(a => a.AssetNo == repairDtl.AssetNo).FirstOrDefault();
-                    if(tempAsset != null)
+                    if (!string.IsNullOrEmpty(repairDtl.AssetNo))
                     {
-                        repairModel.AssetName = tempAsset.Cname;
+                        var tempAsset = _context.Assets.Where(a => a.AssetNo == repairDtl.AssetNo).FirstOrDefault();
+                        if (tempAsset != null)
+                        {
+                            repairModel.AssetName = tempAsset.Cname;
+                        }
                     }
                     //else
                     //{
