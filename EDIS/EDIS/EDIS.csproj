@@ -4,16 +4,18 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <ApplicationInsightsResourceId>/subscriptions/2546476a-2208-424a-9795-689d514f7e69/resourcegroups/Default-ApplicationInsights-EastUS/providers/microsoft.insights/components/EDIS</ApplicationInsightsResourceId>
     <ApplicationInsightsAnnotationResourceId>/subscriptions/2546476a-2208-424a-9795-689d514f7e69/resourcegroups/Default-ApplicationInsights-EastUS/providers/microsoft.insights/components/EDIS</ApplicationInsightsAnnotationResourceId>
+    <UserSecretsId>9dcd8074-83bc-4204-8294-ce0ebeb27876</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="ClosedXML" Version="0.94.2" />
+    <PackageReference Include="EPPlus" Version="4.5.3.3" />
     <!--<PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.1.1" />-->
-    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.3" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.0.3" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.1.9" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.1.14" PrivateAssets="All" />
     <PackageReference Include="Microsoft.jQuery.Unobtrusive.Ajax" Version="3.2.6" />
     <PackageReference Include="Microsoft.jQuery.Unobtrusive.Validation" Version="3.2.11" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.3" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.10" />
     <PackageReference Include="X.PagedList.Mvc.Core" Version="7.6.0" />
   </ItemGroup>
 

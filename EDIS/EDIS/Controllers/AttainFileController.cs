@@ -149,6 +149,11 @@ namespace EDIS.Controllers
                 throw new Exception(msg);
             }
 
+            if (attainFile.DocType == "2")
+            {
+                TempData["SendMsg"] = "上傳成功";
+                return RedirectToAction("Edit", "Keep", new { area = "", id = attainFile.DocId });
+            }
             TempData["SendMsg"] = "上傳成功";
             return RedirectToAction("Edit", "Repair", new { area = "", id = attainFile.DocId });
 

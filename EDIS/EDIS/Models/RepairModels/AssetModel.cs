@@ -47,7 +47,7 @@ namespace EDIS.Models.RepairModels
         [Display(Name = "電流")]
         public string Current { get; set; }
         [Display(Name = "代理商")]
-        public int? VendorId { get; set; }
+        public string VendorId { get; set; }
         [NotMapped]
         [Display(Name = "廠商名稱")]
         public string VendorName { get; set; }
@@ -99,5 +99,33 @@ namespace EDIS.Models.RepairModels
         public DateTime? Rtt { get; set; }
         [NotMapped]
         public string upload { get; set; }
+    }
+
+    [Table("DeviceClassCodes")]
+    public class DeviceClassCode
+    {
+        [Display(Name = "設備分類碼")]
+        [Key]
+        public string M_code { get; set; }
+        [Required(ErrorMessage = "必填寫項目")]
+        [Display(Name = "設備分類名稱")]
+        public string M_name { get; set; }
+    }
+
+    public class QryAsset
+    {
+        [Display(Name = "成本中心")]
+        public string AccDpt { get; set; }
+        [Display(Name = "保管部門")]
+        public string DelivDpt { get; set; }
+        [Display(Name = "財產編號")]
+        public string AssetNo { get; set; }
+        [Display(Name = "設備名稱")]
+        public string AssetName { get; set; }
+        //[Display(Name = "醫工碼")]
+        //public string BmedNo { get; set; }
+        [Display(Name = "型號")]
+        public string Type { get; set; }
+
     }
 }

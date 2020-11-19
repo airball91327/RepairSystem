@@ -46,6 +46,29 @@ ul.nav-second-level {
     height: auto !important;
 }
 
+.nav-second-level li,
+.nav-third-level li,
+.nav-fourth{
+    border-bottom: none !important;
+}
+
+.nav-second-level li a {
+    padding: 14px 10px 14px 10px;
+    padding-left: 40px;
+}
+
+.nav-third-level li a {
+    padding-left: 50px;
+}
+
+.nav-fourth-level li a {
+    padding-left: 60px;
+}
+
+.nav-second-level li:last-child {
+    margin-bottom: 10px;
+}
+
 @media (min-width: 1200px) {
 }
 @media (min-width: 768px) {
@@ -79,7 +102,7 @@ ul.nav-second-level {
         display: none;
     }
     .navbar-form-custom {
-    display: none;
+        display: none;
     }
 
     .navbar-header {

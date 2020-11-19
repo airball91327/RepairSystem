@@ -1,0 +1,40 @@
+﻿@model IEnumerable<EDIS.Models.KeepModels.KeepFormatListVModel>
+
+@{ 
+    int countList = Convert.ToInt32(ViewData["CountList"]);
+}
+
+<script src="~/js/KeepRecordEdit.js" asp-append-version="true"></script>
+
+<ul class="nav nav-pills" style="font-size:120%" id="keepRecordPanel">
+    <li role="presentation" id="List1" class="active"><a href="#ListNo1" data-toggle="tab" style="padding-left:20px">1</a></li>
+
+    @for (int i = 2; i <= countList; i++)
+    {
+        string id = "List" + i;
+        string href = "#ListNo" + i;
+        <li role="presentation" id="@id"><a href="@href" data-toggle="tab" style="padding-left:20px">@i</a></li>
+    }
+</ul>
+<br />
+<button type="button" class="btn btn-primary" id="addListBtn" value="@Model.FirstOrDefault().Docid">新增</button>
+<button type="button" class="btn btn-primary" id="deleteListBtn" value="@Model.FirstOrDefault().Docid">刪除</button>
+<hr />
+<div class="tab-content" id="keepRecordPanelContent">
+    <div id="ListNo1" class="tab-pane fade in active">
+        <div>
+            @await Component.InvokeAsync("KeepRecordEditList", new { listNo = 1, id = Model.FirstOrDefault().Docid })
+        </div>
+    </div>
+    @for (int i = 2; i <= countList; i++)
+    {
+        string id = "ListNo" + i;
+        <div id="@id" class="tab-pane fade">
+            <div>
+                @await Component.InvokeAsync("KeepRecordEditList", new { listNo = i, id = Model.FirstOrDefault().Docid })
+            </div>
+        </div>
+    }
+</div>
+
+<br />

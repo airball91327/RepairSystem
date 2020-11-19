@@ -1,0 +1,143 @@
+﻿@model IEnumerable<EDIS.Models.KeepModels.KeepFormatListVModel>
+
+<script>
+    $(function(){
+        $(":radio").click(function () {
+            var isFunctional = $(this).val();
+            var isRequired = $(this).parent("td").children("input[name='item.IsRequired']").val();
+            if (isFunctional == 'N') {
+                $(this).parent("td").children("textarea").attr("required", "required");
+                $(this).parent("td").children("p").children("span").html(" 必填寫欄位");
+            }
+            else {
+                if (isRequired == 'N') {
+                    $(this).parent("td").children("textarea").removeAttr("required");
+                    $(this).parent("td").children("p").children("span").html("");
+                }
+            }
+        });
+    });
+</script>
+
+<style>
+    /* Style the scale of radio. */
+    .biggerRadio input[type=radio] {
+        -ms-transform: scale(1.5); /* IE */
+        -moz-transform: scale(1.5); /* FireFox */
+        -webkit-transform: scale(1.5); /* Safari and Chrome */
+        -o-transform: scale(1.5); /* Opera */
+    }
+</style>
+
+<form asp-action="Edit" asp-controller="KeepRecord" asp-area="" data-ajax="true" data-ajax-method="POST"
+      data-ajax-begin="$.Toast.showToast({
+      'title':'作業進行中，請稍待...',
+      'icon':'loading',
+      'duration':0
+      })"
+      data-ajax-success="smgKEEPRECORD">
+
+    <div class="container">
+        <table class="table">
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Sno)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Plants)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Descript)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.KeepDes)
+                </th>
+            </tr>
+
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.HiddenFor(modelItem => item.Docid)
+                        @Html.HiddenFor(modelItem => item.FormatId)
+                        @Html.HiddenFor(modelItem => item.Sno)
+                        @Html.HiddenFor(modelItem => item.ListNo)
+                        @Html.HiddenFor(modelItem => item.Descript)
+                        @Html.DisplayFor(modelItem => item.Sno)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Plants)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Descript)
+                    </td>
+                    <td class="biggerRadio">
+                        @Html.HiddenFor(modelItem => item.IsRequired)
+                        @if (item.IsFunctional == "Y")
+                        {
+                            @Html.RadioButton("item.IsFunctional[" + item.Sno + "]", "Y", true)
+                            <span>&nbsp;正常&nbsp;</span>
+                            @Html.RadioButton("item.IsFunctional[" + item.Sno + "]", "N")
+                            <span>&nbsp;異常&nbsp;</span>
+                            @Html.RadioButton("item.IsFunctional[" + item.Sno + "]", "N/A")
+                            <span>&nbsp;N/A&nbsp;</span>
+                            <p></p>
+                            @if (item.IsRequired == "Y")
+                            {
+                                <p>備註欄位<span class="text-danger"> 必填寫欄位</span></p>
+                                @Html.TextAreaFor(modelItem => item.KeepDes, 4, 50, new { @class = "form-control", required = "required" })
+                            }
+                            else
+                            {
+                                <p>備註欄位<span class="text-danger"></span></p>
+                                @Html.TextAreaFor(modelItem => item.KeepDes, 4, 50, new { @class = "form-control" })
+                            }
+                        }
+                        else if (item.IsFunctional == "N")
+                        {
+                            @Html.RadioButton("item.IsFunctional[" + item.Sno + "]", "Y")
+                            <span>&nbsp;正常&nbsp;</span>
+                            @Html.RadioButton("item.IsFunctional[" + item.Sno + "]", "N", true)
+                            <span>&nbsp;異常&nbsp;</span>
+                            @Html.RadioButton("item.IsFunctional[" + item.Sno + "]", "N/A")
+                            <span>&nbsp;N/A&nbsp;</span>
+                            <p></p>
+                            <p>備註欄位<span class="text-danger"> 必填寫欄位</span></p>
+                            @Html.TextAreaFor(modelItem => item.KeepDes, 4, 50, new { @class = "form-control", required = "required" })
+                        }
+                        else
+                        {
+                            @Html.RadioButton("item.IsFunctional[" + item.Sno + "]", "Y")
+                            <span>&nbsp;正常&nbsp;</span>
+                            @Html.RadioButton("item.IsFunctional[" + item.Sno + "]", "N")
+                            <span>&nbsp;異常&nbsp;</span>
+                            @Html.RadioButton("item.IsFunctional[" + item.Sno + "]", "N/A", true)
+                            <span>&nbsp;N/A&nbsp;</span>
+                            <p></p>
+                            @if (item.IsRequired == "Y")
+                            {
+                                <p>備註欄位<span class="text-danger"> 必填寫欄位</span></p>
+                                @Html.TextAreaFor(modelItem => item.KeepDes, 4, 50, new { @class = "form-control", required = "required" })
+                            }
+                            else
+                            {
+                                <p>備註欄位<span class="text-danger"></span></p>
+                                @Html.TextAreaFor(modelItem => item.KeepDes, 4, 50, new { @class = "form-control" })
+                            }
+                        }
+                    </td>
+                </tr>
+            }
+        </table>
+
+        <div class="row">
+            <div class="col-md-12">
+                <input type="submit" value="儲存" class="btn btn-default col-md-1" />
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

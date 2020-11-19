@@ -40,10 +40,12 @@ namespace EDIS.Controllers
 
             var repairCount = _context.RepairFlows.Where(f => f.Status == "?")
                                                   .Where(f => f.UserId == ur.Id).Count();
+            var keepCount = _context.KeepFlows.Where(f => f.Status == "?")
+                                              .Where(f => f.UserId == ur.Id).Count();
 
             UnsignCounts v = new UnsignCounts();
             v.RepairCount = repairCount;
-            v.KeepCount = 0;
+            v.KeepCount = keepCount;
 
             if (fBrowserIsMobile())
             {

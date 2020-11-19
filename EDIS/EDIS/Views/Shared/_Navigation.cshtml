@@ -2,12 +2,8 @@
 
 @inject CustomUserManager UserManager
 @inject CustomSignInManager SignInManager
+@using EDIS.Extensions;
 
-<style>
-    .nav-third-level {
-        margin-left: 10px;
-    }
-</style>
 
 <nav class="navbar navbar-inverse navbar-fixed-top mobileNavBar">
     <div class="container">
@@ -35,9 +31,7 @@
 
 <nav class="navbar-default navbar-static-side" role="navigation" style="padding-top:0px; width:11%">
     <img src="~/images/logo.png" style="width:97%" />
-    @*<div class="navbar-brand" style="padding-left:0px; ">
-        @Html.Partial("_LoginPartial")
-    </div>*@
+
     <div class="sidebar-collapse">
         <ul class="nav" id="side-menu">
             <li class="nav-header">
@@ -59,133 +53,143 @@
             <li class="">
                 <a href="@Url.Action("Index", "Home", new { Area = "" })"><span class="nav-label">個人首頁</span></a>
             </li>
-            <li class="active">
+
+            <li class="@Html.IsSelected(controller: "Repair", area: null) @Html.IsSelected(controller: "Keep", area: null) @Html.IsSelected(controller: "Home", area: null)">
                 <a href="#"><span class="nav-label">申請表單</span><span class="fa arrow"></span></a>
-                <ul class="nav nav-second-level collapse in">
-                    <li>
+                <ul class="nav nav-second-level collapse @Html.IsSelected(controller: "Repair", area: null, cssClass: "in") @Html.IsSelected(controller: "Keep", area: null, cssClass: "in") @Html.IsSelected(controller: "Home", area: null, cssClass: "in")">
+                    <li class="@Html.IsSelected(action: "Create", area: null)">
                         <a href="@Url.Action("Create", "Repair", new { Area = "" })">請修單</a>
                     </li>
-                    @*<li><a href="#">保養單</a></li>
-                <li><a href="#">巡檢單</a></li>*@
+                    <li class="@Html.IsSelected(action: "Create", area: null)">
+                        <a href="@Url.Action("Create", "Keep", new { Area = "" })">保養單</a>
+                    </li>
                 </ul>
             </li>
-            <li class="">
+            <li class="@Html.IsSelected(controller: "RepairSearch", area: null)">
                 <a href="@Url.Action("Index", "RepairSearch", new { Area = "" })"><span class="nav-label">全院請修單查詢</span></a>
+            </li>
+            <li class="@Html.IsSelected(controller: "KeepSearch", area: null)">
+                <a href="@Url.Action("Index", "KeepSearch", new { Area = "" })"><span class="nav-label">全院保養單查詢</span></a>
             </li>
             <li class="">
                 <a href="~/Files/Manual/UserManual.pptx" target="_blank"><span class="nav-label">說明手冊下載</span></a>
             </li>
             @{
-                if (UserManager.IsInRole(User, "RepEngineer") == true ||
+                if (UserManager.IsInRole(User, "RepEngineer") == true || UserManager.IsInRole(User, "RepAdmin") == true ||
                     UserManager.IsInRole(User, "Admin") == true)
                 {
-                    <li class="">
+                    <li class="@Html.IsSelected(controller: "EngSubStaff", area: null)">
                         <a href="@Url.Action("Index", "EngSubStaff", new { Area = "" })"><span class="nav-label">設定代理人</span></a>
                     </li>
                 }
             }
             @{
                 if (UserManager.IsInRole(User, "RepMgr") == true || UserManager.IsInRole(User, "RepToDo") == true ||
-                    UserManager.IsInRole(User, "RepDirector") == true || UserManager.IsInRole(User, "Admin") == true)
+                    UserManager.IsInRole(User, "RepDirector") == true || UserManager.IsInRole(User, "Admin") == true ||
+                    UserManager.IsInRole(User, "RepAdmin") == true)
                 {
-                    <li class="">
+                    <li class="@Html.IsSelected(controller: "RepairReport", area: null)">
                         <a href="@Url.Action("Index", "RepairReport", new { Area = "" })"><span class="nav-label">報表輸出</span></a>
                     </li>
                 }
             }
-            @*<li class="">
-            <a href="#"><span class="nav-label">工程設施</span><span class="fa arrow"></span></a>
-            <ul class="nav nav-second-level collapse">
-                <li>
-                    <a href="#">設備管理</a>
-                </li>
-                <li>
-                    <a href="#">設施管理</a>
-                </li>
-            </ul>
-        </li>*@
             @{
-                if (UserManager.IsInRole(User, "Admin"))
+                if (UserManager.IsInRole(User, "Admin") || UserManager.IsInRole(User, "RepAdmin"))
                 {
-                    <li class="">
+                    <li class="@Html.IsSelected(area: "Admin") @Html.IsSelected(controller: "KeepFormat", area: null) @Html.IsSelected(controller: "Asset", area: null) @Html.IsSelected(controller: "Vendor", area: null)">
                         <a href="#"><span class="nav-label">後台管理</span><span class="fa arrow"></span></a>
-                        <ul class="nav nav-second-level collapse">
+                        <ul class="nav nav-second-level collapse @Html.IsSelected(area: "Admin", cssClass: "in") @Html.IsSelected(controller: "KeepFormat", area: null, cssClass: "in") @Html.IsSelected(controller: "Asset", area: null, cssClass: "in") @Html.IsSelected(controller: "Vendor", area: null, cssClass: "in")">
 
-                            <li class="">
+                            <li class="@Html.IsSelected(controller: "Building", area: "Admin")">
                                 <a href="#"><span class="nav-label">建築維護</span><span class="fa arrow"></span></a>
-                                <ul class="nav nav-third-level collapse">
-                                    <li>
+                                <ul class="nav nav-third-level collapse @Html.IsSelected(controller: "Building", area: "Admin", cssClass: "in")">
+                                    <li class="@Html.IsSelected(action: "Index", area: "Admin")">
                                         <a href="@Url.Action("Index", "Building", new { Area = "Admin" })">建築一覽</a>
                                     </li>
-                                    <li>
+                                    <li class="@Html.IsSelected(action: "Create", area: "Admin")">
                                         <a href="@Url.Action("Create", "Building", new { Area = "Admin" })">建築新增</a>
                                     </li>
                                 </ul>
                             </li>
-                            <li class="">
+                            <li class="@Html.IsSelected(controller: "Floor", area: "Admin")">
                                 <a href="#"><span class="nav-label">樓層維護</span><span class="fa arrow"></span></a>
-                                <ul class="nav nav-third-level collapse">
-                                    <li>
+                                <ul class="nav nav-third-level collapse @Html.IsSelected(controller: "Floor", area: "Admin", cssClass: "in")">
+                                    <li class="@Html.IsSelected(action: "Index", area: "Admin")">
                                         <a href="@Url.Action("Index", "Floor", new { Area = "Admin" })">樓層一覽</a>
                                     </li>
                                 </ul>
                             </li>
-                            <li class="">
+                            <li class="@Html.IsSelected(controller: "Place", area: "Admin")">
                                 <a href="#"><span class="nav-label">地點維護</span><span class="fa arrow"></span></a>
-                                <ul class="nav nav-third-level collapse">
-                                    <li>
+                                <ul class="nav nav-third-level collapse @Html.IsSelected(controller: "Place", area: "Admin", cssClass: "in")">
+                                    <li class="@Html.IsSelected(action: "Index", area: "Admin")">
                                         <a href="@Url.Action("Index", "Place", new { Area = "Admin" })">地點一覽</a>
                                     </li>
                                 </ul>
                             </li>
-                            <li class="">
-                                <a href="#"><span class="nav-label">外部帳號維護</span><span class="fa arrow"></span></a>
-                                <ul class="nav nav-third-level collapse">
-                                    <li>
+                            <li class="@Html.IsSelected(controller: "ExternalUser", area: "Admin")">
+                                <a href="#"><span class="nav-label" style="">外部帳號維護</span><span class="fa arrow"></span></a>
+                                <ul class="nav nav-third-level collapse @Html.IsSelected(controller: "ExternalUser", area: "Admin", cssClass: "in")">
+                                    <li class="@Html.IsSelected(action: "Index", area: "Admin")">
                                         <a href="@Url.Action("Index", "ExternalUser", new { Area = "Admin" })">帳號一覽</a>
                                     </li>
-                                    <li>
+                                    <li class="@Html.IsSelected(action: "Create", area: "Admin")">
                                         <a href="@Url.Action("Create", "ExternalUser", new { Area = "Admin" })">新增帳號</a>
                                     </li>
                                 </ul>
                             </li>
-                            <li class="">
+                            <li class="@Html.IsSelected(controller: "EngsInDepts", area: "Admin")">
                                 <a href="#"><span class="nav-label">各區負責人維護</span><span class="fa arrow"></span></a>
-                                <ul class="nav nav-third-level collapse">
-                                    <li>
+                                <ul class="nav nav-third-level collapse @Html.IsSelected(controller: "EngsInDepts", area: "Admin", cssClass: "in")">
+                                    <li class="@Html.IsSelected(action: "Index", area: "Admin")">
                                         <a href="@Url.Action("Index", "EngsInDepts", new { Area = "Admin" })">搜尋、編輯</a>
                                     </li>
                                 </ul>
                             </li>
-                            <li class="">
-                                <a href="#"><span class="nav-label">廠商維護</span><span class="fa arrow"></span></a>
-                                <ul class="nav nav-third-level collapse">
-                                    <li>
-                                        <a href="@Url.Action("Index", "Vendor", new { Area = "" })">廠商一覽</a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li class="">
+                            <li class="@Html.IsSelected(controller: "Repair", area: "Admin")">
                                 <a href="#"><span class="nav-label">請修單維護</span><span class="fa arrow"></span></a>
-                                <ul class="nav nav-third-level collapse">
-                                    <li>
+                                <ul class="nav nav-third-level collapse @Html.IsSelected(controller: "Repair", area: "Admin", cssClass: "in")">
+                                    <li class="@Html.IsSelected(action: "EditRepFlow", area: "Admin")">
                                         <a href="@Url.Action("EditRepFlow", "Repair", new { Area = "Admin" })">轉單功能</a>
                                     </li>
-                                    <li>
+                                    <li class="@Html.IsSelected(action: "Index", area: "Admin")">
                                         <a href="@Url.Action("Index", "Repair", new { Area = "Admin" })">請修單編輯</a>
                                     </li>
                                 </ul>
                             </li>
-
-                            <li class="">
+                            <li class="@Html.IsSelected(controller: "Ticket", area: "Admin") @Html.IsSelected(controller: "RepairShut", area: "Admin")">
                                 <a href="#"><span class="nav-label">財務</span><span class="fa arrow"></span></a>
-                                <ul class="nav nav-third-level collapse">
-                                    <li>
+                                <ul class="nav nav-third-level collapse @Html.IsSelected(controller: "Ticket", area: "Admin", cssClass: "in")">
+                                    <li class="@Html.IsSelected(action: "Index", area: "Admin")">
                                         <a href="@Url.Action("Index", "Ticket", new { Area = "Admin" })">發票作業</a>
                                     </li>
-                                    @*<li>
-                    <a href="@Url.Action("Index", "RepairShut", new { Area = "Admin" })">關帳作業</a>
-                </li>*@
+                                    <li class="@Html.IsSelected(action: "Index", area: "Admin")">
+                                        <a href="@Url.Action("Index", "RepairShut", new { Area = "Admin" })">關帳作業</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="@Html.IsSelected(controller: "KeepFormat", area: null)">
+                                <a href="#"><span class="nav-label">保養格式管理</span><span class="fa arrow"></span></a>
+                                <ul class="nav nav-third-level collapse @Html.IsSelected(controller: "KeepFormat", area: null, cssClass: "in")">
+                                    <li>
+                                        <a href="@Url.Action("Index", "KeepFormat", new { Area = "" })">保養格式一覽</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="@Html.IsSelected(controller: "Asset", area: null)">
+                                <a href="#"><span class="nav-label">資產設備管理</span><span class="fa arrow"></span></a>
+                                <ul class="nav nav-third-level collapse @Html.IsSelected(controller: "Asset", area: null, cssClass: "in")">
+                                    <li>
+                                        <a href="@Url.Action("Index", "Asset", new { Area = "" })">資產設備一覽</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="@Html.IsSelected(controller: "Vendor", area: null)">
+                                <a href="#"><span class="nav-label">廠商資料維護</span><span class="fa arrow"></span></a>
+                                <ul class="nav nav-third-level collapse @Html.IsSelected(controller: "Vendor", area: null, cssClass: "in")">
+                                    <li>
+                                        <a href="@Url.Action("Index", "Vendor", new { Area = "" })">廠商一覽</a>
+                                    </li>
                                 </ul>
                             </li>
 
@@ -193,45 +197,44 @@
                     </li>
 
                     @*<li class="">
-                        <a href="#"><span class="nav-label">庫存維護</span><span class="fa arrow"></span></a>
-                        <ul class="nav nav-second-level collapse">
-                            <li>
-                                <a href="@Url.Action("Index", "DeptStockClass", new { Area = "Admin" })">庫存類別維護</a>
-                            </li>
-                            <li>
-                                <a href="@Url.Action("Index", "DeptStockItem", new { Area = "Admin" })">庫存品項維護</a>
-                            </li>
-                            <li>
-                                <a href="@Url.Action("Index", "DeptStock", new { Area = "Admin" })">庫存一覽</a>
-                            </li>
-                        </ul>
-                    </li>*@
+                            <a href="#"><span class="nav-label">庫存維護</span><span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level collapse">
+                                <li>
+                                    <a href="@Url.Action("Index", "DeptStockClass", new { Area = "Admin" })">庫存類別維護</a>
+                                </li>
+                                <li>
+                                    <a href="@Url.Action("Index", "DeptStockItem", new { Area = "Admin" })">庫存品項維護</a>
+                                </li>
+                                <li>
+                                    <a href="@Url.Action("Index", "DeptStock", new { Area = "Admin" })">庫存一覽</a>
+                                </li>
+                            </ul>
+                        </li>*@
                 }
 
                 if (UserManager.IsInRole(User, "RepToDo"))
                 {
-                    <li class="">
+                    <li class="@Html.IsSelected(area: "Admin")">
                         <a href="#"><span class="nav-label">後台管理</span><span class="fa arrow"></span></a>
-                        <ul class="nav nav-second-level collapse">
+                        <ul class="nav nav-second-level collapse @Html.IsSelected(area: "Admin", cssClass: "in")">
 
-                            <li class="">
+                            <li class="@Html.IsSelected(controller: "Repair", area: "Admin")">
                                 <a href="#"><span class="nav-label">請修單維護</span><span class="fa arrow"></span></a>
-                                <ul class="nav nav-third-level collapse">
-                                    <li>
+                                <ul class="nav nav-third-level collapse @Html.IsSelected(controller: "Repair", area: "Admin", cssClass: "in")">
+                                    <li class="@Html.IsSelected(action: "EditRepFlow", area: "Admin")">
                                         <a href="@Url.Action("EditRepFlow", "Repair", new { Area = "Admin" })">轉單功能</a>
                                     </li>
                                 </ul>
                             </li>
-
-                            <li class="">
+                            <li class="@Html.IsSelected(controller: "Ticket", area: "Admin") @Html.IsSelected(controller: "RepairShut", area: "Admin")">
                                 <a href="#"><span class="nav-label">財務</span><span class="fa arrow"></span></a>
-                                <ul class="nav nav-third-level collapse">
-                                    <li>
+                                <ul class="nav nav-third-level collapse @Html.IsSelected(controller: "Ticket", area: "Admin", cssClass: "in")">
+                                    <li class="@Html.IsSelected(action: "Index", area: "Admin")">
                                         <a href="@Url.Action("Index", "Ticket", new { Area = "Admin" })">發票作業</a>
                                     </li>
-                                    @*<li>
+                                    <li class="@Html.IsSelected(action: "Index", area: "Admin")">
                                         <a href="@Url.Action("Index", "RepairShut", new { Area = "Admin" })">關帳作業</a>
-                                    </li>*@
+                                    </li>
                                 </ul>
                             </li>
 
@@ -240,6 +243,8 @@
                 }
 
             }
+
+
         </ul>
     </div>
 </nav>
