@@ -65,5 +65,8 @@ namespace EDIS.Models.RepairModels
         [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd}")]
         public DateTime? ArriveDate { get; set; }
         public RepairModel repdata { get; set; }
+
+        [Display(Name = "增設案件主管是否同意")]
+        public string IsAccepted { get; set; }
     }
 }

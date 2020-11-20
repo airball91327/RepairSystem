@@ -518,6 +518,17 @@ namespace EDIS.Controllers
                     item.Location1 = "(無資料)";
                     item.Location2 = item.repdata.Area + item.PlaceLoc;
                 }
+                // 確認增設案件主管是否已同意
+                if (item.RepType == "增設")
+                {
+                    var isAccept = _context.RepairFlows.Where(rf => rf.DocId == item.DocId)
+                                                       .Where(rf => rf.Cls.Contains("工務主任") || rf.Cls.Contains("營建主任"))
+                                                       .Where(rf => rf.Opinions.Contains("同意")).FirstOrDefault();
+                    if (isAccept != null)
+                    {
+                        item.IsAccepted = "Y";
+                    }
+                }
             }
 
             /* Search date by DateType. */
