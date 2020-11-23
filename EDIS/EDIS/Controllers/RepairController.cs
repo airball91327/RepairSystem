@@ -161,11 +161,58 @@ namespace EDIS.Controllers
                 //案件是否為廢除
                 if (rps.Count() > 0)
                 {
-                    var tempLastFlow = _context.RepairFlows.Where(f => f.DocId == rps.First().DocId)
-                                                          .OrderBy(f => f.StepId).LastOrDefault();
-                    if (tempLastFlow.Status == "3")
+                    var tempLastFlow = _context.RepairFlows.Where(f => f.DocId == docid)
+                                                           .Where(f => f.Status == "3").FirstOrDefault();
+                    if (tempLastFlow != null)
                     {
                         ViewData["IsDocDeleted"] = "Y";
+                        rps.Join(_context.RepairFlows.Where(f => f.DocId == docid && f.Status == "3"), r => r.DocId, f => f.DocId,
+                           (r, f) => new
+                           {
+                               repair = r,
+                               flow = f
+                           })
+                           .Join(_context.RepairDtls, m => m.repair.DocId, d => d.DocId,
+                           (m, d) => new
+                           {
+                               repair = m.repair,
+                               flow = m.flow,
+                               repdtl = d
+                           })
+                           .Join(_context.Departments, j => j.repair.AccDpt, d => d.DptId,
+                           (j, d) => new
+                           {
+                               repair = j.repair,
+                               flow = j.flow,
+                               repdtl = j.repdtl,
+                               dpt = d
+                           })
+                           .ToList()
+                           .ForEach(j => rv.Add(new RepairListVModel
+                           {
+                               DocType = "請修",
+                               RepType = j.repair.RepType,
+                               DocId = j.repair.DocId,
+                               ApplyDate = j.repair.ApplyDate,
+                               PlaceLoc = j.repair.LocType,
+                               ApplyDpt = j.repair.DptId,
+                               AccDpt = j.repair.AccDpt,
+                               AccDptName = j.dpt.Name_C,
+                               TroubleDes = j.repair.TroubleDes,
+                               DealState = _context.DealStatuses.Find(j.repdtl.DealState).Title,
+                               DealDes = j.repdtl.DealDes,
+                               Cost = j.repdtl.Cost,
+                               Days = DateTime.Now.Subtract(j.repair.ApplyDate).Days,
+                               Flg = j.flow.Status,
+                               FlowUid = j.flow.UserId,
+                               FlowCls = j.flow.Cls,
+                               FlowDptId = _context.AppUsers.Find(j.flow.UserId).DptId,
+                               EndDate = j.repdtl.EndDate,
+                               CloseDate = j.repdtl.CloseDate,
+                               IsCharged = j.repdtl.IsCharged,
+                               repdata = j.repair
+                           }));
+                        return View("List", rv.ToPagedList(page, pageSize));
                     }
                 }
             }

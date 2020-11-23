@@ -43,14 +43,7 @@
 </style>
 @if (Model.Count() <= 0)
 {
-    if (ViewData["IsDocDeleted"] != null)
-    {
-        <p class="text-danger">此案件已廢除!</p>
-    }
-    else
-    {
-        <p class="text-danger">無任何資料!</p>
-    }
+    <p class="text-danger">無任何資料!</p>
 }
 else
 {
@@ -149,7 +142,7 @@ else
                             @* /* if 流程非使用者 */*@
                             @if (!(item.Flg == "?" && item.FlowUid == UserManager.GetCurrentUserId(User)))
                             {
-                                @Html.ActionLink("預覽", "Views", "Repair", new { Area = "", id = item.DocId })
+                                @Html.ActionLink("預覽", "Views", "Repair", new { Area = "", id = item.DocId }, new { target = "_blank" })
                                 @Html.Raw(" |")
                             }
                             @Html.ActionLink("列印", "PrintRepairDoc", "Repair", new { Area = "", DocId = item.DocId }, new { target = "_blank", @class = "printLink" })
@@ -166,6 +159,11 @@ else
                             {
                                 @Html.Raw(" | ")
                                 @Html.ActionLink("廢除", "CheckBeforeDelete", "Repair", new { id = item.DocId })
+                            }
+                            @* //已廢除案件 *@
+                            @if (ViewData["IsDocDeleted"] != null)
+                            {
+                                <span style="color:red">(案件已廢除)</span>
                             }
                         </td>
                         <td>

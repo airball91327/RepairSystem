@@ -121,6 +121,7 @@ namespace EDIS.Controllers
                 else
                 {
                     vendorModel.VendorId = Convert.ToInt32(vendorModel.UniteNo);
+                    vendorModel.Status = "Y";
                     _context.Add(vendorModel);
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
@@ -164,6 +165,7 @@ namespace EDIS.Controllers
                 else
                 {
                     vendorModel.VendorId = Convert.ToInt32(vendorModel.UniteNo);
+                    vendorModel.Status = "Y";
                     _context.Add(vendorModel);
                     await _context.SaveChangesAsync();
                     return ViewComponent("QryVendor");
@@ -261,7 +263,8 @@ namespace EDIS.Controllers
             {
                 if(qryVendor.KeyWord != null)
                 {
-                    _context.Vendors.Where(v => v.VendorName.Contains(qryVendor.KeyWord.Trim()))
+                    _context.Vendors.Where(v => v.Status == "Y")
+                        .Where(v => v.VendorName.Contains(qryVendor.KeyWord.Trim()))
                         .ToList()
                         .ForEach(v => {
                             items.Add(new SelectListItem()
@@ -276,7 +279,8 @@ namespace EDIS.Controllers
             {
                 if (qryVendor.UniteNo != null)
                 {
-                    _context.Vendors.Where(v => v.UniteNo == qryVendor.UniteNo)
+                    _context.Vendors.Where(v => v.Status == "Y")
+                            .Where(v => v.UniteNo == qryVendor.UniteNo)
                             .ToList()
                             .ForEach(v => {
                                 items.Add(new SelectListItem()
