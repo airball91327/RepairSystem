@@ -27,6 +27,8 @@ namespace EDIS.Models.RepairModels
         public int RepScraps { get; set; }
         [Display(Name = "總件數")]
         public int RepTotals { get; set; }
+        [Display(Name = "總工時")]
+        public decimal RepTotalTime { get; set; }
         [Display(Name = "平均每人件數")]
         [DisplayFormat(DataFormatString = "{0:N0}")]
         public decimal RepAvgPerPerson { get; set; }
