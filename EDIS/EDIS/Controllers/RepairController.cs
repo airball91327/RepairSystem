@@ -1209,6 +1209,18 @@ namespace EDIS.Controllers
                                                  .Where(r => r.Opinions.Contains("[同意]")).LastOrDefault();
                 vm.ViceSuperintendent = ViceSI == null ? "" : _context.AppUsers.Find(ViceSI.UserId).FullName;
 
+                var others = _context.RepairFlows.Where(r => r.DocId == DocId)
+                                     .Where(r => r.Cls.Contains("其他"))
+                                     .Where(r => r.Opinions.Contains("[同意]")).ToList();
+                if (others.Count() != 0)
+                {
+                    others = others.GroupBy(e => e.UserId).Select(group => group.FirstOrDefault()).ToList();
+                    foreach (var item in others)
+                    {
+                        vm.Others += item == null ? "" : _context.AppUsers.Find(item.UserId).FullName + "  ";
+                    }
+                }
+
                 if (flow != null)
                 {
                     if (flow.Status == "2")

@@ -71,6 +71,8 @@ namespace EDIS.Models.RepairModels
         public string DelivDirector { get; set; }
         [Display(Name = "單位直屬院長室主管")]
         public string ViceSuperintendent { get; set; }
+        [Display(Name = "其他")]
+        public string Others { get; set; }
     }
 
     public class KeepPrintVModel
