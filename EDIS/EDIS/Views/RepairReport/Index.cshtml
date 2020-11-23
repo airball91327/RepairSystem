@@ -34,25 +34,30 @@
         });
 
         $("#exportExcelBtn_2").click(function () {
-            var qtyMonth = $("#qtyMonth_2").val();
-
-            $.ajax({
-                url: "@Url.Action("EndDateReport", "RepairReport", new { Area = "" })",
-                data: { QtyMonth: qtyMonth },
-                beforeSend: $.Toast.showToast({
-                            'title': '報表產生中，因資料較龐大，請稍待片刻...',
-                            'icon': 'loading',
-                            'duration': 0
-                }),
-                success: function (response, textStatus, jqXHR) {
-                    window.location.href = '@Url.Action("EndDateReport", "RepairReport", new { Area = "" })' + '?QtyMonth=' + qtyMonth;
-                    $.Toast.hideToast();
-                },
-                error: function (xhr, status, error) {
-                    alert(error);
-                    $.Toast.hideToast();
-                }
-            });
+            var qtyMonthFrom = $("#qtyMonth_2_from").val();
+            var qtyMonthTo = $("#qtyMonth_2_to").val();
+            if (qtyMonthFrom == "" && qtyMonthTo == "") {
+                alert('請選擇一個日期區間');
+            }
+            else {
+                $.ajax({
+                    url: '@Url.Action("EndDateReport", "RepairReport", new { Area = "" })',
+                    data: { QtyMonthFrom: qtyMonthFrom, QtyMonthTo: qtyMonthTo },
+                    beforeSend: $.Toast.showToast({
+                                'title': '報表產生中，因資料較龐大，請稍待片刻...',
+                                'icon': 'loading',
+                                'duration': 0
+                    }),
+                    success: function (response, textStatus, jqXHR) {
+                        window.location.href = '@Url.Action("EndDateReport", "RepairReport", new { Area = "" })' + '?QtyMonthFrom=' + qtyMonthFrom + '&QtyMonthTo=' + qtyMonthTo;
+                        $.Toast.hideToast();
+                    },
+                    error: function (xhr, status, error) {
+                        alert(error);
+                        $.Toast.hideToast();
+                    }
+                });
+            }
         });
     });
 </script>
@@ -73,7 +78,9 @@
 <hr />
 <div class="panel panel-info">
     <div class="panel-heading">
-        <h4><b>維護月指標</b></h4>
+        <h4>
+            <b>維護月指標</b>
+        </h4>
     </div>
     <div class="panel-body">
         <div class="container">
@@ -102,16 +109,20 @@
 
 <div class="panel panel-info">
     <div class="panel-heading">
-        <h4><b>月請修完工日資料</b></h4>
+        <h4>
+            <b>月請修完工日資料</b>
+        </h4>
     </div>
     <div class="panel-body">
         <div class="container">
             <div class="row col-md-12">
                 <div class="form-inline">
-                    <div class="form-group col-md-4">
-                        <label class="control-label col-md-4">選擇月份:</label>
+                    <div class="form-group col-md-8">
+                        <label class="control-label col-md-3">選擇日期區間:</label>
                         <div class="col-md-8">
-                            <input type="month" class="form-control" id="qtyMonth_2" />
+                            <input type="date" class="form-control" id="qtyMonth_2_from" />
+                            <span> ~ </span>
+                            <input type="date" class="form-control" id="qtyMonth_2_to" />
                         </div>
                     </div>
                     <div>

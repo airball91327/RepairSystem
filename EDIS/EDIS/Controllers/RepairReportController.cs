@@ -1308,15 +1308,24 @@ namespace EDIS.Controllers
         }
 
         // GET: /RepairReport/EndDateReport
-        public IActionResult EndDateReport(DateTime QtyMonth)
+        public IActionResult EndDateReport(DateTime? QtyMonthFrom, DateTime? QtyMonthTo)
         {
-            DateTime reportMonth = QtyMonth;
-            int qryYear = reportMonth.Year;
-            int qryMonth = reportMonth.Month;
+            DateTime? qryMonthFrom = QtyMonthFrom;
+            DateTime? qryMonthTo = QtyMonthTo;
 
-            //完工日為當月的所有案件
-            var repairDtls = _context.RepairDtls.Where(rd => rd.EndDate.Value.Year == qryYear && 
-                                                             rd.EndDate.Value.Month == qryMonth).ToList();
+            if (qryMonthFrom == null)
+            {
+                qryMonthFrom = qryMonthTo;
+            }
+            else if (qryMonthTo == null)
+            {
+                qryMonthTo = qryMonthFrom;
+            }
+            string filemonth = qryMonthFrom.Value.ToString("yyyy-MM");
+            //完工日為該區間的所有案件
+            var repairDtls = _context.RepairDtls.Where(rd => rd.EndDate != null)
+                                                .Where(rd => rd.EndDate.Value.Date >= qryMonthFrom.Value.Date && 
+                                                             rd.EndDate.Value.Date <= qryMonthTo.Value.Date).ToList();
             var qtyResults = _context.Repairs.Join(repairDtls, r => r.DocId, d => d.DocId,
                                              (r, d) => new
                                              {
@@ -1454,7 +1463,7 @@ namespace EDIS.Controllers
                     //請注意 一定要加入這行,不然Excel會是空檔
                     memoryStream.Seek(0, SeekOrigin.Begin);
                     //注意Excel的ContentType,是要用這個"application/vnd.ms-excel"
-                    string fileName = "月報表_" + QtyMonth.ToString("yyyy-MM") + "月請修完工日資料" + ".xlsx";
+                    string fileName = "月報表_" + filemonth + "月請修完工日資料" + ".xlsx";
                     return this.File(memoryStream.ToArray(), "application/vnd.ms-excel", fileName);
                 }
             }
