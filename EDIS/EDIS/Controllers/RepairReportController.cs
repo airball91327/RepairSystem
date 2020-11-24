@@ -1321,6 +1321,7 @@ namespace EDIS.Controllers
             {
                 qryMonthTo = qryMonthFrom;
             }
+            qryMonthTo = qryMonthTo.Value.AddMonths(1).AddSeconds(-1);
             string filemonth = qryMonthFrom.Value.ToString("yyyy-MM");
             //完工日為該區間的所有案件
             var repairDtls = _context.RepairDtls.Where(rd => rd.EndDate != null)

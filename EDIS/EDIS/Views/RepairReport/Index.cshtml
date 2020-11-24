@@ -37,7 +37,7 @@
             var qtyMonthFrom = $("#qtyMonth_2_from").val();
             var qtyMonthTo = $("#qtyMonth_2_to").val();
             if (qtyMonthFrom == "" && qtyMonthTo == "") {
-                alert('請選擇一個日期區間');
+                alert('請至少選擇一個月份');
             }
             else {
                 $.ajax({
@@ -120,9 +120,9 @@
                     <div class="form-group col-md-8">
                         <label class="control-label col-md-3">選擇日期區間:</label>
                         <div class="col-md-8">
-                            <input type="date" class="form-control" id="qtyMonth_2_from" />
+                            <input type="month" class="form-control" id="qtyMonth_2_from" />
                             <span> ~ </span>
-                            <input type="date" class="form-control" id="qtyMonth_2_to" />
+                            <input type="month" class="form-control" id="qtyMonth_2_to" />
                         </div>
                     </div>
                     <div>
