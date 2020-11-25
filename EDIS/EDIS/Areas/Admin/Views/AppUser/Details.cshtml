@@ -1,0 +1,85 @@
+﻿@model EDIS.Models.Identity.AppUserModel
+
+@{
+    ViewData["Title"] = "預覽使用者";
+    Layout = "~/Views/Shared/_PassedLayout.cshtml";
+}
+
+<h2>預覽</h2>
+
+<div>
+    <h4>使用者</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.UserName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.UserName)
+        </dd>
+
+        @*<dt>
+            @Html.DisplayNameFor(model => model.Password)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Password)
+        </dd>*@
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Email)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Email)
+        </dd>
+
+        <dt>
+            設定角色
+        </dt>
+
+        <dd>
+            <table style="width: 50%">
+                @for (int i = 0; i < Model.InRoles.Count; i++)
+                {
+                    if (i % 3 == 0)
+                    {
+                        @Html.Raw("<tr>")
+                    }
+                        @Html.Raw("<td width='25%'>")
+                        @Html.CheckBoxFor(model => model.InRoles[i].IsSelected)
+                        @Html.HiddenFor(model => model.InRoles[i].RoleName)
+                        @Html.Raw(Model.InRoles[i].Description)
+                        @Html.Raw("</td>")
+                    if (i % 3 == 2)
+                    {
+                        @Html.Raw("</tr>")
+                    }
+                }
+            </table>
+
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DateCreated)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DateCreated)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.LastActivityDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.LastActivityDate)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("修改", "Edit", new { Area = "Admin", id = Model.Id }, new { @class = "btn btn-primary"})
+    @Html.ActionLink("回到使用者列表", "Index", new { Area = "Admin" }, new { @class = "btn btn-primary" })
+</p>

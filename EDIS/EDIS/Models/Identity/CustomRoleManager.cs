@@ -35,5 +35,37 @@ namespace EDIS.Models.Identity
             }         
             return roleUsers;
         }
+
+        public string[] GetRolesForUser(string userName)
+        {
+            int userId = _context.AppUsers.Where(r => r.UserName == userName).FirstOrDefault().Id;
+            var getRoles = _context.UsersInRoles.Where(r => r.UserId == userId).ToList();
+            string[] userRoles = new string[getRoles.Count];
+            int i = 0;
+            foreach (var role in getRoles)
+            {
+                userRoles[i] = role.AppRoles.RoleName;
+                i++;
+            }
+            return userRoles;
+        }
+
+        public List<UserInRolesViewModel> getRoles()
+        {
+            List<UserInRolesViewModel> rolelist = new List<UserInRolesViewModel>();
+            UserInRolesViewModel rv;
+
+            foreach (AppRoleModel r in _context.AppRoles.ToList())
+            {
+                rv = new UserInRolesViewModel();
+                rv.RoleName = r.RoleName;
+                rv.Description = r.Description;
+                rv.IsSelected = false;
+                rolelist.Add(rv);
+            }
+            var rst = rolelist.GroupBy(g => g.RoleName).Select(g => g.First());
+            return rst.ToList();
+        }
+
     }
 }

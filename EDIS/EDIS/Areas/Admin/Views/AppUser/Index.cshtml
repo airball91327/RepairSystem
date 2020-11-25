@@ -1,0 +1,91 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_PassedLayout.cshtml";
+    ViewBag.Title = "使用者列表";
+}
+
+<link href="~/css/bootstrap-combobox.css" rel="stylesheet" />
+<script src="~/js/bootstrap-combobox.js"></script>
+
+<h2>使用者列表</h2>
+
+@using (Html.BeginForm("Index", "AppUser", new { Area = "Admin" }, FormMethod.Post, null, new { id = "frmAPPUSERLIST" }))
+{
+    <div class="form-horizontal">
+        <div class="form-group">
+            @Html.Label("qtyNAME", "姓名關鍵字", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBox("qtyNAME", "", new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("qtyUSERNAME", "員工編號", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBox("qtyUSERNAME", "", new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("qtyDEPT", "所屬部門", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.DropDownList("qtyDEPT", ViewData["DEPT"] as SelectList, "請選擇", new { @class = "form-control combobox" })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input id="btnQTY" type="button" value="查詢" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div id="pnlAPPUSERLIST" style="margin-top: 40px">
+
+</div>
+
+<script>
+    $(function () {
+        $('.combobox').combobox();
+        var page = window.location.hash
+            ? window.location.hash.slice(1) : 1;
+        fetchPage(page);
+        $('#btnQTY').click(function () {
+            fetchPage(1);
+        });
+
+    });
+
+    var fetchPage = function (page) {
+        var pagedPartialUrl = '@Url.Action("Index", "AppUser", new { Area = "Admin" })';
+        var s = $('#frmAPPUSERLIST').serialize();
+        $.Toast.showToast({
+            'title': '搜尋中，請稍待...',
+            'icon': 'loading',
+            'duration': 0
+        })
+        $.ajax({
+            url: pagedPartialUrl,
+            type: "POST",
+            data: s + "&page=" + page,
+            success: function (data) {
+
+                window.location.hash = page;
+
+                $('#pnlAPPUSERLIST').html(data);
+
+                $('#pnlAPPUSERLIST .pagination li a').each(function (i, item) {
+                    var hyperLinkUrl = $(item).attr('href');
+                    if (typeof hyperLinkUrl !== 'undefined' && hyperLinkUrl !== false) {
+                        var pageNumber = $(item).attr('href').replace(pagedPartialUrl + '?page=', '');
+                        $(item).attr('href', '#').click(function (event) {
+                            event.preventDefault();
+                            $(event.target).attr('href');
+                            fetchPage(pageNumber);
+                        });
+                    }
+                });
+                $.Toast.hideToast();
+            }
+        });
+
+    };
+</script>
