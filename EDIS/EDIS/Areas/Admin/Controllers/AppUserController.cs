@@ -195,31 +195,22 @@ namespace EDIS.Areas.Admin.Controllers
                         //user.Email = appUser.Email;
                         if (userManager.IsInRole(User, "Admin"))
                         {
-                            var ur = await userManager.FindByNameAsync(appUserModel.UserName);
+                            var ur = await userManager.FindByNameAsync(user.UserName);
                             if (roleManager.GetRolesForUser(appUserModel.UserName).Count() > 0)
                             {                            
-                                //userManager.RemoveFromRoles(ur, roleManager.GetRolesForUser(appUserModel.UserName));
+                                userManager.RemoveFromRoles(ur, roleManager.GetRolesForUser(appUserModel.UserName));
                             }                 
                             List<UserInRolesViewModel> uv = appUserModel.InRoles.Where(v => v.IsSelected == true).ToList();
                             foreach (UserInRolesViewModel u in uv)
                             {
-                                //userManager.AddToRole(ur, u.RoleName);
+                                userManager.AddToRole(ur, u.RoleName);
                             }
                         }
                         //
+                        _context.Entry(user).State = EntityState.Detached;
                         appUserModel.LastActivityDate = DateTime.Now;
                         _context.Entry(appUserModel).State = EntityState.Modified;
                         _context.SaveChanges();
-                    }
-                    if (userManager.IsInRole(User, "Admin"))
-                    {
-                        var ur = _context.AppUsers.Find(appUserModel.Id);
-                        if (ur != null)
-                        {
-                            ur.Status = appUserModel.Status;
-                            _context.Entry(ur).State = EntityState.Modified;
-                            _context.SaveChanges();
-                        }
                     }
                 }
                 catch (DbUpdateConcurrencyException)

@@ -71,5 +71,66 @@ namespace EDIS.Models.Identity
             var dptId = _context.AppUsers.Where(u => u.UserName == userName).FirstOrDefault().DptId;
             return dptId;
         }
+
+        public IdentityResult AddToRole(ApplicationUser user, string roleName)
+        {
+            var uid = Convert.ToInt32(user.Id);
+            var role = _context.AppRoles.Where(r => r.RoleName == roleName).FirstOrDefault();
+            if (role != null)
+            {
+                UsersInRolesModel usersInRoles = new UsersInRolesModel();
+                usersInRoles.UserId = uid;
+                usersInRoles.UserName = user.UserName;
+                usersInRoles.RoleId = role.RoleId;
+                try
+                {
+                    _context.UsersInRoles.Add(usersInRoles);
+                    _context.SaveChanges();
+                    return IdentityResult.Success;
+                }
+                catch (Exception e)
+                {
+                    IdentityError[] errors = new IdentityError[1];
+                    errors[0].Code = "500";
+                    errors[0].Description = e.Message;
+                    return IdentityResult.Failed();
+                }
+            }
+            else
+            {
+                IdentityError[] errors = new IdentityError[1];
+                errors[0].Code = "500";
+                errors[0].Description = "無此腳色";
+                return IdentityResult.Failed();
+            }
+        }
+
+        public IdentityResult RemoveFromRoles(ApplicationUser user, string[] roleNames)
+        {
+            var uid = Convert.ToInt32(user.Id);
+            foreach(var rName in roleNames)
+            {
+                var role = _context.AppRoles.Where(r => r.RoleName == rName).FirstOrDefault();
+                if (role != null)
+                {
+                    UsersInRolesModel usersInRoles = _context.UsersInRoles.Find(uid, role.RoleId);
+                    _context.UsersInRoles.Remove(usersInRoles);
+                }
+            }
+            try
+            {
+                _context.SaveChanges();
+                return IdentityResult.Success;
+            }
+            catch (Exception e)
+            {
+                IdentityError[] errors = new IdentityError[1];
+                errors[0].Code = "500";
+                errors[0].Description = e.Message;
+                return IdentityResult.Failed();
+            }
+
+        }
+
     }
 }
