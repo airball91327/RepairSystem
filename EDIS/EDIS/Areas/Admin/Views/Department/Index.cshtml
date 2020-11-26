@@ -1,0 +1,82 @@
+﻿@model IEnumerable<EDIS.Models.Identity.DepartmentModel>
+
+@{
+    ViewData["Title"] = "部門一覽";
+    Layout = "~/Views/Shared/_PassedLayout.cshtml";
+}
+
+<h2>部門一覽</h2>
+
+@using (Html.BeginForm("Index", "Department", new { Area = "Admin" }, FormMethod.Post, null, new { id = "frmDEPTLIST" }))
+{
+    <div class="form-horizontal">
+        <div class="form-group">
+            @Html.Label("qtyDPTNAME", "部門關鍵字", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBox("qtyDPTNAME", "", new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("qtyDPTID", "部門代號", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBox("qtyDPTID", "", new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input id="btnQTY" type="button" value="查詢" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div id="pnlDEPTLIST" style="margin-top: 40px">
+
+</div>
+
+<script>
+    $(function () {
+        var page = window.location.hash
+            ? window.location.hash.slice(1) : 1;
+        fetchPage(page);
+        $('#btnQTY').click(function () {
+            fetchPage(1);
+        });
+
+    });
+
+    var fetchPage = function (page) {
+        var pagedPartialUrl = '@Url.Action("Index", "Department", new { Area = "Admin" })';
+        var s = $('#frmDEPTLIST').serialize();
+        $.Toast.showToast({
+            'title': '搜尋中，請稍待...',
+            'icon': 'loading',
+            'duration': 0
+        })
+        $.ajax({
+            url: pagedPartialUrl,
+            type: "POST",
+            data: s + "&page=" + page,
+            success: function (data) {
+
+                window.location.hash = page;
+
+                $('#pnlDEPTLIST').html(data);
+
+                $('#pnlDEPTLIST .pagination li a').each(function (i, item) {
+                    var hyperLinkUrl = $(item).attr('href');
+                    if (typeof hyperLinkUrl !== 'undefined' && hyperLinkUrl !== false) {
+                        var pageNumber = $(item).attr('href').replace(pagedPartialUrl + '?page=', '');
+                        $(item).attr('href', '#').click(function (event) {
+                            event.preventDefault();
+                            $(event.target).attr('href');
+                            fetchPage(pageNumber);
+                        });
+                    }
+                });
+                $.Toast.hideToast();
+            }
+        });
+
+    };
+</script>

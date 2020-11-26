@@ -1,0 +1,54 @@
+﻿@model EDIS.Models.Identity.DepartmentModel
+
+@{
+    ViewData["Title"] = "新增";
+    Layout = "~/Views/Shared/_PassedLayout.cshtml";
+}
+
+<h2>新增</h2>
+
+<h4>部門</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="DptId" class="control-label"></label>
+                <input asp-for="DptId" class="form-control" />
+                <span asp-validation-for="DptId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Name_C" class="control-label"></label>
+                <input asp-for="Name_C" class="form-control" />
+                <span asp-validation-for="Name_C" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Name_E" class="control-label"></label>
+                <input asp-for="Name_E" class="form-control" />
+                <span asp-validation-for="Name_E" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Email" class="control-label"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Loc" class="control-label"></label>
+                <input asp-for="Loc" class="form-control" />
+                <span asp-validation-for="Loc" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="儲存" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index" class="btn btn-primary">回到列表</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

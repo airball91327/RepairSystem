@@ -168,6 +168,7 @@
     <Folder Include="Areas\Mobile\Data\" />
     <Folder Include="Areas\Mobile\Models\RepairModels\" />
     <Folder Include="Views\RepairDtl\Components\" />
+    <Folder Include="wwwroot\Files\Keep\" />
     <Folder Include="wwwroot\Files\Repair\" />
   </ItemGroup>
   <ItemGroup>

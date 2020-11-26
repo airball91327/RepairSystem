@@ -192,6 +192,14 @@
                                     </li>
                                 </ul>
                             </li>
+                            <li class="@Html.IsSelected(controller: "Department", area: "Admin")">
+                                <a href="#"><span class="nav-label">部門資料維護</span><span class="fa arrow"></span></a>
+                                <ul class="nav nav-third-level collapse @Html.IsSelected(controller: "Department", area: "Admin", cssClass: "in")">
+                                    <li>
+                                        <a href="@Url.Action("Index", "Department", new { Area = "Admin" })">部門一覽</a>
+                                    </li>
+                                </ul>
+                            </li>
                             <li class="@Html.IsSelected(controller: "AppUser", area: "Admin")">
                                 <a href="#"><span class="nav-label">使用者維護</span><span class="fa arrow"></span></a>
                                 <ul class="nav nav-third-level collapse @Html.IsSelected(controller: "AppUser", area: "Admin", cssClass: "in")">

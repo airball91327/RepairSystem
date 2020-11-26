@@ -78,22 +78,27 @@ namespace EDIS.Areas.Admin.Controllers
             //    applyDateTo = DateTime.Parse(qtyDate1);
             //}
 
-            List<TicketModel> ts = _context.Tickets.ToList();
-            List<RepairCostModel> repairCost = _context.RepairCosts.Include(r => r.TicketDtl).ToList();
+            var ts = _context.Tickets.AsQueryable();
+            var repairCost = _context.RepairCosts.Include(r => r.TicketDtl).AsQueryable();
 
             if (!string.IsNullOrEmpty(ticketno))
             {
-                ts = ts.Where(t => t.TicketNo.ToUpper() == ticketno).ToList();
+                ts = ts.Where(t => t.TicketNo.ToUpper() == ticketno);
             }
             if (!string.IsNullOrEmpty(vendorname))
             {
-                ts = ts.Where(t => t.VendorName != null && t.VendorName != "")
-                       .Where(t => t.VendorName.Contains(vendorname)).ToList();
+                ts = ts.Where(t => !string.IsNullOrEmpty(t.VendorName))
+                       .Where(t => t.VendorName.Contains(vendorname));
             }
             if (!string.IsNullOrEmpty(vendorno))
             {
                 ts = ts.Where(t => t.VendorId != null)
-                       .Where(t => t.VendorId == Convert.ToInt32(vendorno)).ToList();
+                       .Join(_context.Vendors, t => t.VendorId, v => v.VendorId, 
+                       (t, v) => new 
+                       { 
+                           ticket = t,
+                           vendor = v
+                       }).Where(r => r.vendor.UniteNo.Contains(vendorno)).Select(r => r.ticket);
             }
             if (!string.IsNullOrEmpty(docid))   //若依單號搜尋，搜尋該單的所有費用(包括簽單)
             {
@@ -137,6 +142,15 @@ namespace EDIS.Areas.Admin.Controllers
                 else
                 {
                     item.StockType = "";
+                }
+                //
+                if (item.VendorId != null)
+                {
+                    var vendor = _context.Vendors.Find(item.VendorId);
+                    if (vendor != null)
+                    {
+                        item.UniteNo = vendor.UniteNo;
+                    }
                 }
             }
 
