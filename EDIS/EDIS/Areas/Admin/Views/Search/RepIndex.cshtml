@@ -1,0 +1,124 @@
+﻿@model EDIS.Models.RepairModels.QryRepListData
+@{
+    ViewData["Title"] = "請修案件查詢";
+    Layout = "~/Views/Shared/_PassedLayout.cshtml";
+}
+
+<link href="~/css/bootstrap-combobox.css" rel="stylesheet" />
+<script src="~/js/bootstrap-combobox.js"></script>
+
+
+<h2>請修案件查詢</h2>
+<hr />
+
+<form asp-controller="RepIndex" asp-action="Search" asp-area="Admin" data-ajax="true"
+      data-ajax-update="#pnlREPLIST" data-ajax-method="POST" id="repSearchForm"
+      data-ajax-complete="$.Toast.hideToast()">
+
+    <h4>查詢條件</h4>
+
+    <div class="container">
+        <div class="row">
+            <div class=form-inline>
+                <div class="form-group">
+                    <label for="qtyDealStatus" class="control-title">處理狀態</label>
+                    <select asp-for="qtyDealStatus" asp-items="@ViewData["DealStatus"] as SelectList" class="form-control">
+                        <option value="">請選擇</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="qtyFLOWTYPE" class="control-title">流程狀態</label>
+                    <select asp-for="qtyFLOWTYPE" asp-items="@ViewData["FLOWTYPE"] as SelectList" class="form-control-s">
+                        <option value="">請選擇</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="qtyEngId" class="control-title">工程師</label>
+                    <select asp-for="qtyEngId" asp-items="@ViewData["Engineers"] as SelectList" class="form-control">
+                        <option value="">所有</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class=form-inline>
+                <div class="form-group">
+                    <div style="margin-left:115px">
+                        <input id="btnQTY" type="submit" value="查詢" class="btn btn-default" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div>
+                        <input type="button" class="btn btn-primary" id="exportExcelBtn" value="匯出Excel" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<div id="pnlREPLIST"></div>
+
+
+
+<script>
+    $(function () {
+        $('.combobox').combobox();
+        var page = window.location.hash
+            ? window.location.hash.slice(1) : 1;
+        $('#btnQTY').click(function () {
+            fetchPage(1);
+        });
+
+        // Export excel.
+        $("#exportExcelBtn").click(function () {
+            var s = $('#repSearchForm').serialize();
+            $.ajax({
+                url: "@Url.Action("RepToExcel", "Search", new { Area = "Admin" })",
+                data: s,
+                success: function (response, textStatus, jqXHR) {
+
+                    window.location.href = '@Url.Action("RepToExcel", "Search", new { Area = "Admin" })' + '?' + s;
+                },
+                error: function (xhr, status, error) {
+                    alert(error);
+                }
+            });
+        });
+    });
+
+    var fetchPage = function (page) {
+        var pagedPartialUrl = '@Url.Action("RepIndex", "Search", new { Area = "Admin" })';
+        var s = $('#repSearchForm').serialize();
+        $.Toast.showToast({
+            'title': '搜尋中，請稍待...',
+            'icon': 'loading',
+            'duration': 0
+        })
+        $.ajax({
+            url: pagedPartialUrl,
+            type: "POST",
+            data: s + "&page=" + page,
+            success: function (data) {
+
+                window.location.hash = page;
+
+                $('#pnlREPLIST').html(data);
+
+                $('#pnlREPLIST .pagination li a').each(function (i, item) {
+                    var hyperLinkUrl = $(item).attr('href');
+                    if (typeof hyperLinkUrl !== 'undefined' && hyperLinkUrl !== false) {
+                        var pageNumber = $(item).attr('href').replace(pagedPartialUrl + '?page=', '');
+                        $(item).attr('href', '#').click(function (event) {
+                            event.preventDefault();
+                            $(event.target).attr('href');
+                            fetchPage(pageNumber);
+                        });
+                    }
+                });
+                $.Toast.hideToast();
+            }
+        });
+
+    };
+</script>

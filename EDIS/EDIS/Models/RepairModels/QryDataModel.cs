@@ -28,5 +28,6 @@ namespace EDIS.Models.RepairModels
         public string qtyRepType { get; set; }
         public string qtyOrderType { get; set; }
         public string qtyTroubleDes { get; set; }
+        public string qtyEngId { get; set; }
     }
 }

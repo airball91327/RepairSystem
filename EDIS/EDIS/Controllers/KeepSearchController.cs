@@ -133,31 +133,30 @@ namespace EDIS.Controllers
             List<KeepSearchListViewModel> kv = new List<KeepSearchListViewModel>();
 
             /* Querying data. */
-            var kps = _context.Keeps.ToList();
-            var keepFlows = _context.KeepFlows.ToList();
-            var keepDtls = _context.KeepDtls.ToList();
+            var kps = _context.Keeps.AsQueryable();
+            var keepFlows = _context.KeepFlows.AsQueryable();
+            var keepDtls = _context.KeepDtls.AsQueryable();
             if (!string.IsNullOrEmpty(docid))   //表單編號
             {
                 docid = docid.Trim();
-                kps = kps.Where(v => v.DocId == docid).ToList();
+                kps = kps.Where(v => v.DocId == docid);
             }
             if (!string.IsNullOrEmpty(ano))     //財產編號
             {
-                kps = kps.Where(v => v.AssetNo == ano).ToList();
+                kps = kps.Where(v => v.AssetNo == ano);
             }
             if (!string.IsNullOrEmpty(dptid))   //所屬部門編號
             {
-                kps = kps.Where(v => v.DptId == dptid).ToList();
+                kps = kps.Where(v => v.DptId == dptid);
             }
             if (!string.IsNullOrEmpty(acc))     //成本中心
             {
-                kps = kps.Where(v => v.AccDpt == acc).ToList();
+                kps = kps.Where(v => v.AccDpt == acc);
             }
             if (!string.IsNullOrEmpty(aname))   //物品名稱(關鍵字)
             {
                 kps = kps.Where(v => v.AssetName != null)
-                         .Where(v => v.AssetName.Contains(aname))
-                         .ToList();
+                         .Where(v => v.AssetName.Contains(aname));
             }
             if (!string.IsNullOrEmpty(qtyTicketNo))   //發票號碼
             {
@@ -167,7 +166,7 @@ namespace EDIS.Controllers
                                                      .Select(kc => kc.DocId).Distinct();
                 kps = (from k in kps
                        where resultDocIds.Any(val => k.DocId.Contains(val))
-                       select k).ToList();
+                       select k);
             }
             if (!string.IsNullOrEmpty(qtyVendor))   //廠商關鍵字
             {
@@ -176,13 +175,13 @@ namespace EDIS.Controllers
                                                      .Select(kc => kc.DocId).Distinct();
                 kps = (from k in kps
                        where resultDocIds.Any(val => k.DocId.Contains(val))
-                       select k).ToList();
+                       select k);
             }
             if (string.IsNullOrEmpty(qtyDate1) == false || string.IsNullOrEmpty(qtyDate2) == false)  //送單日
             {
                 if (qtyDateType == "送單日")
                 {
-                    kps = kps.Where(v => v.SentDate >= applyDateFrom && v.SentDate <= applyDateTo).ToList();
+                    kps = kps.Where(v => v.SentDate >= applyDateFrom && v.SentDate <= applyDateTo);
                 }
             }
             if (!string.IsNullOrEmpty(ftype))   //流程狀態
@@ -190,19 +189,16 @@ namespace EDIS.Controllers
                 switch (ftype)
                 {
                     case "未結案":
-                        keepFlows = keepFlows.GroupBy(f => f.DocId).Where(group => group.Last().Status == "?")
-                                                                   .Select(group => group.Last()).ToList();
+                        keepFlows = keepFlows.Where(kf => kf.Status == "?");
                         break;
                     case "已結案":
-                        keepFlows = keepFlows.GroupBy(f => f.DocId).Where(group => group.Last().Status == "2")
-                                                                   .Select(group => group.Last()).ToList();
+                        keepFlows = keepFlows.Where(kf => kf.Status == "2");
                         break;
                 }
             }
             else
             {
-               keepFlows = keepFlows.GroupBy(f => f.DocId).Where(group => group.Last().Status != "3")
-                                                          .Select(group => group.Last()).ToList(); ;
+                keepFlows = keepFlows.Where(kf => kf.Status == "?" || kf.Status == "2");
             }
 
             /* If no search result. */

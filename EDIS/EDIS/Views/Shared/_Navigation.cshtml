@@ -208,6 +208,17 @@
                                     </li>
                                 </ul>
                             </li>
+                            <li class="@Html.IsSelected(controller: "Search", area: "Admin")">
+                                <a href="#"><span class="nav-label">工程師案件查詢</span><span class="fa arrow"></span></a>
+                                <ul class="nav nav-third-level collapse @Html.IsSelected(controller: "Search", area: "Admin", cssClass: "in")">
+                                    <li>
+                                        <a href="@Url.Action("RepIndex", "Search", new { Area = "Admin" })">請修案件</a>
+                                    </li>
+                                    <li>
+                                        <a href="@Url.Action("KeepIndex", "Search", new { Area = "Admin" })">保養案件</a>
+                                    </li>
+                                </ul>
+                            </li>
 
                         </ul>
                     </li>
