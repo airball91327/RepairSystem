@@ -10,10 +10,12 @@ using EDIS.Models.Identity;
 using EDIS.Repositories;
 using X.PagedList;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EDIS.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize]
     public class AppUserController : Controller
     {
         private readonly ApplicationDbContext _context;

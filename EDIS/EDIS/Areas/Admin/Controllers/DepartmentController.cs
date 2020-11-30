@@ -9,10 +9,12 @@ using EDIS.Data;
 using EDIS.Models.Identity;
 using Microsoft.AspNetCore.Http;
 using X.PagedList;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EDIS.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize]
     public class DepartmentController : Controller
     {
         private readonly ApplicationDbContext _context;

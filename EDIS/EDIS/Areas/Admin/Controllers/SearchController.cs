@@ -12,10 +12,12 @@ using X.PagedList;
 using ClosedXML.Excel;
 using System.IO;
 using EDIS.Models.KeepModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EDIS.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize]
     public class SearchController : Controller
     {
         private readonly ApplicationDbContext _context;
