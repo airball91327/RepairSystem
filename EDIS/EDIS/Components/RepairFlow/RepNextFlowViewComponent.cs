@@ -31,6 +31,8 @@ namespace EDIS.Components.RepairFlow
 
         public async Task<IViewComponentResult> InvokeAsync(string id)
         {
+            ViewData["IsTempSave"] = "N";   //控制頁面是否需要做暫存(關卡於工程師時暫存)
+
             /* Get repair and flow details. */
             RepairModel repair = _context.Repairs.Find(id);
             RepairFlowModel repairFlow = _context.RepairFlows.Where(f => f.DocId == id && f.Status == "?")
@@ -59,6 +61,10 @@ namespace EDIS.Components.RepairFlow
                     {
                         listItem.Add(new SelectListItem { Text = "結案", Value = "結案" });
                     }
+                    // 暫存的簽核意見
+                    var tempOpn = _context.RepFlowOpinions.Find(id);
+                    assign.AssignOpn = tempOpn == null ? "" : tempOpn.Opinions;
+                    ViewData["IsTempSave"] = "Y";
                 }
             }
 

@@ -654,5 +654,29 @@ namespace EDIS.Controllers
             }
             return Json(checkResult);
         }
+
+        [HttpPost]
+        public void OpnTempSave(string docid, string assignOpn)
+        {
+            var ur = _userRepo.Find(u => u.UserName == this.User.Identity.Name).FirstOrDefault();
+            var flowOpinionModel = _context.RepFlowOpinions.Find(docid);
+            if (flowOpinionModel == null)
+            {
+                RepFlowOpinionModel flowOpinionModel2 = new RepFlowOpinionModel();
+                flowOpinionModel2.DocId = docid;
+                flowOpinionModel2.Opinions = assignOpn;
+                flowOpinionModel2.Rtp = ur.Id;
+                flowOpinionModel2.Rtt = DateTime.Now;
+                _context.RepFlowOpinions.Add(flowOpinionModel2);
+            }
+            else
+            {
+                flowOpinionModel.Opinions = assignOpn;
+                flowOpinionModel.Rtp = ur.Id;
+                flowOpinionModel.Rtt = DateTime.Now;
+                _context.Entry(flowOpinionModel).State = EntityState.Modified;
+            }
+            _context.SaveChanges();
+        }
     }
 }

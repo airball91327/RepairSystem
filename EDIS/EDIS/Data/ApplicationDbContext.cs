@@ -51,6 +51,7 @@ namespace EDIS.Data
         public DbSet<EngSubStaff> EngSubStaff { get; set; }
         public DbSet<ScrapAssetModel> ScrapAssets { get; set; }
         public DbSet<RepairShutRecordsModel> RepairShutRecords { get; set; }
+        public DbSet<RepFlowOpinionModel> RepFlowOpinions { get; set; }
         // Keep tables
         public DbSet<KeepModel> Keeps { get; set; }
         public DbSet<KeepDtlModel> KeepDtls { get; set; }
@@ -91,6 +92,7 @@ namespace EDIS.Data
             builder.Entity<EngSubStaff>().HasKey(c => new { c.EngId });
             builder.Entity<ScrapAssetModel>().HasKey(c => new { c.DocId, c.DeviceNo, c.AssetNo });
             builder.Entity<RepairShutRecordsModel>().HasKey(c => new { c.DocId });
+            builder.Entity<RepFlowOpinionModel>().HasKey(c => new { c.DocId });
             // Keep tables
             builder.Entity<KeepModel>().HasKey(c => new { c.DocId });
             builder.Entity<KeepDtlModel>().HasKey(c => new { c.DocId });

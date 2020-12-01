@@ -23,6 +23,18 @@
         if (activePage != 0) {
             $("#page" + activePage).children("a").click();
         }
+        $('#btnFILES').click(function () {
+            var isTempSave = $('#isTempSave').html();
+            if (isTempSave == 'Y') {
+                var assignOpn = $('#AssignOpn').val();
+                var docId = $('#DocId').val();
+                $.ajax({
+                    url: '@Url.Action("OpnTempSave", "RepairFlow", new { Area = "" })',
+                    method: 'POST',
+                    data: { docId: docId, assignOpn: assignOpn}
+                });
+            }
+        });
     });
 </script>
 

@@ -2,6 +2,25 @@
 
 <script src="~/js/RepNextFlow.js"></script>
 
+<script>
+    $(function () {
+        $('.nav-pills a[href="#repairflow"]').on('hidden.bs.tab', function (event) {
+            var isTempSave = $('#isTempSave').html();
+            if (isTempSave == 'Y') {
+                var assignOpn = $('#AssignOpn').val();
+                var docId = $('#DocId').val();
+                $.ajax({
+                    url: '@Url.Action("OpnTempSave", "RepairFlow", new { Area = "" })',
+                    method: 'POST',
+                    data: { docId: docId, assignOpn: assignOpn}
+                });
+            }
+        });
+    });
+</script>
+
+<p id="isTempSave" hidden>@ViewData["IsTempSave"]</p>
+
 <form asp-controller="RepairFlow" asp-action="NextFlow" data-ajax="true" data-ajax-method="POST" id="nextFlowForm"
     data-ajax-begin="$.Toast.showToast({
       'title':'作業進行中，請稍待...',
@@ -116,7 +135,7 @@
         </div>
     </div>
 </form>
-<!-- 夾帶檔案 Modal -->
+
 <div id="modalSELUSER" class="modal fade" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">
