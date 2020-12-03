@@ -47,7 +47,7 @@ namespace EDIS.Components.TicketDtl
             {
                 return View("List2", dtls);
             }
-
+            dtls = dtls.OrderBy(d => d.DocId).ToList();
             return View(dtls);
         }
     }

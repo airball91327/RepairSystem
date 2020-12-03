@@ -8,6 +8,11 @@ namespace EDIS.Models.RepairModels
 {
     public class TicketModel
     {
+        public TicketModel()
+        {
+            TradeCode = "44";   //Default value.
+        }
+
         [Key]
         [Display(Name = "發票/簽單號碼")]
         public string TicketNo { get; set; }
@@ -33,7 +38,7 @@ namespace EDIS.Models.RepairModels
         public string Note { get; set; }
         [Display(Name = "殘值")]
         public int ScrapValue { get; set; }
-        [Display(Name = "請款日期")]
+        [Display(Name = "作帳日期")]
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd}")]
         public DateTime? ApplyDate { get; set; }

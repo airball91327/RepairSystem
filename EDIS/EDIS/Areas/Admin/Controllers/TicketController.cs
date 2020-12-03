@@ -31,52 +31,55 @@ namespace EDIS.Areas.Admin.Controllers
 
         // POST: Admin/Ticket
         [HttpPost]
-        public IActionResult Index(IFormCollection fm)
+        public IActionResult Index(QryTicketListData qdata)
         {
-            string ticketno = fm["qtyTICKET"];
-            string vendorname = fm["qtyVENDORNAME"];
-            string vendorno = fm["qtyVENDORNO"];
-            string docid = fm["qtyDOCID"];
-            docid = docid.Trim();
-            ticketno = ticketno.ToUpper();
+            string ticketno = qdata.qtyTICKETNO;
+            string vendorname = qdata.qtyVENDORNAME;
+            string vendorno = qdata.qtyVENDORNO;
+            string docid = qdata.qtyDOCID;
+            string ticketStatus = qdata.qtyTICKETSTATUS;
+            if (!string.IsNullOrEmpty(docid))
+                docid = docid.Trim();
+            if (!string.IsNullOrEmpty(ticketno))
+                ticketno = ticketno.ToUpper();
 
-            //string qtyDate1 = fm["qtyApplyDateFrom"];
-            //string qtyDate2 = fm["qtyApplyDateTo"];
+            DateTime? qtyDate1 = qdata.qtyApplyDateFrom;
+            DateTime? qtyDate2 = qdata.qtyApplyDateFrom;
 
-            //DateTime applyDateFrom = DateTime.Now;
-            //DateTime applyDateTo = DateTime.Now;
-            ///* Dealing search by date. */
-            //if (qtyDate1 != "" && qtyDate2 != "")// If 2 date inputs have been insert, compare 2 dates.
-            //{
-            //    DateTime date1 = DateTime.Parse(qtyDate1);
-            //    DateTime date2 = DateTime.Parse(qtyDate2);
-            //    int result = DateTime.Compare(date1, date2);
-            //    if (result < 0)
-            //    {
-            //        applyDateFrom = date1.Date;
-            //        applyDateTo = date2.Date;
-            //    }
-            //    else if (result == 0)
-            //    {
-            //        applyDateFrom = date1.Date;
-            //        applyDateTo = date1.Date;
-            //    }
-            //    else
-            //    {
-            //        applyDateFrom = date2.Date;
-            //        applyDateTo = date1.Date;
-            //    }
-            //}
-            //else if (qtyDate1 == "" && qtyDate2 != "")
-            //{
-            //    applyDateFrom = DateTime.Parse(qtyDate2);
-            //    applyDateTo = DateTime.Parse(qtyDate2);
-            //}
-            //else if (qtyDate1 != "" && qtyDate2 == "")
-            //{
-            //    applyDateFrom = DateTime.Parse(qtyDate1);
-            //    applyDateTo = DateTime.Parse(qtyDate1);
-            //}
+            DateTime applyDateFrom = DateTime.Now;
+            DateTime applyDateTo = DateTime.Now;
+            /* Dealing search by date. */
+            if (qtyDate1 != null && qtyDate2 != null)// If 2 date inputs have been insert, compare 2 dates.
+            {
+                DateTime date1 = qtyDate1.Value;
+                DateTime date2 = qtyDate2.Value;
+                int result = DateTime.Compare(date1, date2);
+                if (result < 0)
+                {
+                    applyDateFrom = date1.Date;
+                    applyDateTo = date2.Date;
+                }
+                else if (result == 0)
+                {
+                    applyDateFrom = date1.Date;
+                    applyDateTo = date1.Date;
+                }
+                else
+                {
+                    applyDateFrom = date2.Date;
+                    applyDateTo = date1.Date;
+                }
+            }
+            else if (qtyDate1 == null && qtyDate2 != null)
+            {
+                applyDateFrom = qtyDate2.Value;
+                applyDateTo = qtyDate2.Value;
+            }
+            else if (qtyDate1 != null && qtyDate2 == null)
+            {
+                applyDateFrom = qtyDate1.Value;
+                applyDateTo = qtyDate1.Value;
+            }
 
             var ts = _context.Tickets.AsQueryable();
             var repairCost = _context.RepairCosts.Include(r => r.TicketDtl).AsQueryable();
@@ -117,13 +120,14 @@ namespace EDIS.Areas.Admin.Controllers
             }
 
             /* Search date by Date. */
-            //if (string.IsNullOrEmpty(qtyDate1) == false || string.IsNullOrEmpty(qtyDate2) == false)
-            //{
-            //    ts = ts.Where(t => t.ShutDate >= applyDateFrom && t.ShutDate <= applyDateTo).ToList();
-            //}
+            if (qtyDate1 != null || qtyDate2 != null)
+            {
+                ts = ts.Where(t => t.ApplyDate != null)
+                       .Where(t => t.ApplyDate >= applyDateFrom && t.ApplyDate <= applyDateTo);
+            }
 
             /* Get StockType for all Tickets */
-            foreach(var item in ts)
+            foreach (var item in ts)
             {
                 var repCost = _context.RepairCosts.Where(r => r.TicketDtl.TicketDtlNo.ToUpper() == item.TicketNo.ToUpper()).ToList()
                                                   .OrderBy(r => r.SeqNo).FirstOrDefault();
@@ -200,22 +204,22 @@ namespace EDIS.Areas.Admin.Controllers
 
             /* 交易代號列表 */
             List<SelectListItem> TradeCodeList = new List<SelectListItem>();
-            TradeCodeList.Add(new SelectListItem { Text = "維476", Value = "476" });
-            TradeCodeList.Add(new SelectListItem { Text = "維41", Value = "41" });
-            TradeCodeList.Add(new SelectListItem { Text = "維44", Value = "44" });
-            TradeCodeList.Add(new SelectListItem { Text = "維608", Value = "608" });
-            TradeCodeList.Add(new SelectListItem { Text = "維609", Value = "609" });
-            TradeCodeList.Add(new SelectListItem { Text = "維610", Value = "610" });
-            TradeCodeList.Add(new SelectListItem { Text = "其它151", Value = "151" });
-            TradeCodeList.Add(new SelectListItem { Text = "購468", Value = "468" });
-            TradeCodeList.Add(new SelectListItem { Text = "購386", Value = "386" });
-            TradeCodeList.Add(new SelectListItem { Text = "購106", Value = "106" });
-            TradeCodeList.Add(new SelectListItem { Text = "購105", Value = "105" });
-            TradeCodeList.Add(new SelectListItem { Text = "慈24", Value = "24" });
-            TradeCodeList.Add(new SelectListItem { Text = "教188", Value = "188" });
-            TradeCodeList.Add(new SelectListItem { Text = "其它527", Value = "527" });
-            TradeCodeList.Add(new SelectListItem { Text = "其它458", Value = "458" });
-            ViewData["TradeCode"] = new SelectList(TradeCodeList, "Value", "Text", "44");
+            TradeCodeList.Add(new SelectListItem { Text = "476", Value = "476" });
+            TradeCodeList.Add(new SelectListItem { Text = "41", Value = "41" });
+            TradeCodeList.Add(new SelectListItem { Text = "44", Value = "44" });
+            TradeCodeList.Add(new SelectListItem { Text = "608", Value = "608" });
+            TradeCodeList.Add(new SelectListItem { Text = "609", Value = "609" });
+            TradeCodeList.Add(new SelectListItem { Text = "610", Value = "610" });
+            TradeCodeList.Add(new SelectListItem { Text = "151", Value = "151" });
+            TradeCodeList.Add(new SelectListItem { Text = "468", Value = "468" });
+            TradeCodeList.Add(new SelectListItem { Text = "386", Value = "386" });
+            TradeCodeList.Add(new SelectListItem { Text = "106", Value = "106" });
+            TradeCodeList.Add(new SelectListItem { Text = "105", Value = "105" });
+            TradeCodeList.Add(new SelectListItem { Text = "24", Value = "24" });
+            TradeCodeList.Add(new SelectListItem { Text = "188", Value = "188" });
+            TradeCodeList.Add(new SelectListItem { Text = "527", Value = "527" });
+            TradeCodeList.Add(new SelectListItem { Text = "458", Value = "458" });
+            ViewData["TradeCode"] = new SelectList(TradeCodeList, "Value", "Text", ticket.TradeCode);
 
             return View(ticket);
         }

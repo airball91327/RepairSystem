@@ -1,4 +1,4 @@
-﻿
+﻿@model EDIS.Models.RepairModels.QryTicketListData
 @{
     Layout = "~/Views/Shared/_PassedLayout.cshtml";
     ViewBag.Title = "列表/發票";
@@ -15,15 +15,13 @@
         background-color: inherit;
         border-color: white;
     }
+
     td a {
         color: deepskyblue;
     }
 </style>
 
 <h2>發票作業</h2>
-
-@*<a class="btn btn-primary" href="@Url.Action("Create")">新增發票</a>
-<br />*@
 <br />
 
 <div class="panel panel-primary">
@@ -41,24 +39,39 @@
                 <div class="row">
                     <div class="form-inline">
                         <div class="form-group">
-                            @Html.Label("qtyTICKET", "發票號碼", htmlAttributes: new { @class = "control-title" })
-                            @Html.TextBox("qtyTICKET", "", new { @class = "form-control", style = "text-transform:uppercase;" })
+                            <label asp-for="qtyTICKETNO" class="control-title"></label>
+                            <input asp-for="qtyTICKETNO" class="form-control" style="text-transform: uppercase;"/>
                         </div>
                         <div class="form-group">
-                            @Html.Label("qtyVENDORNO", "廠商統編", htmlAttributes: new { @class = "control-title" })
-                            @Html.TextBox("qtyVENDORNO", "", new { @class = "form-control", type = "number" })
+                            <label asp-for="qtyVENDORNO" class="control-title"></label>
+                            <input asp-for="qtyVENDORNO" class="form-control" type="number"/>
                         </div>
                         <div class="form-group">
-                            @Html.Label("qtyVENDORNAME", "廠商關鍵字", htmlAttributes: new { @class = "control-title" })
-                            @Html.TextBox("qtyVENDORNAME", "", new { @class = "form-control" })
+                            <label asp-for="qtyVENDORNAME" class="control-title"></label>
+                            <input asp-for="qtyVENDORNAME" class="form-control" />
                         </div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="form-inline">
                         <div class="form-group">
-                            @Html.Label("qtyDOCID", "請修單號", htmlAttributes: new { @class = "control-title" })
-                            @Html.TextBox("qtyDOCID", "", new { @class = "form-control" })
+                            <label asp-for="qtyDOCID" class="control-title"></label>
+                            <input asp-for="qtyDOCID" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="qtyTICKETSTATUS" class="control-title"></label>
+                            <input asp-for="qtyTICKETSTATUS" type="radio" value="未關帳" checked/>未關帳
+                            <input asp-for="qtyTICKETSTATUS" type="radio" value="已關帳" />已關帳
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class=form-inline>
+                        <div class="form-group">
+                            <label asp-for="qtyApplyDateFrom" class="control-title"></label>
+                            <input asp-for="qtyApplyDateFrom" class="form-control" />
+                            <span> ~ </span>
+                            <input asp-for="qtyApplyDateTo" class="form-control" />
                         </div>
                     </div>
                 </div>
