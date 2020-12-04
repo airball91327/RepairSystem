@@ -48,6 +48,8 @@ namespace EDIS.Models.RepairModels
         public DateTime? CancelDate { get; set; }
         [Display(Name = "交易代號")]
         public string TradeCode { get; set; }
+        [Display(Name = "是否關帳")]
+        public string IsShuted { get; set; }
         //[Display(Name = "關帳日期")]
         //public DateTime? ShutDate { get; set; }
         [NotMapped]

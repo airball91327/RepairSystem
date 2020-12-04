@@ -76,6 +76,9 @@
     <Content Update="Areas\Admin\Views\Ticket\Edit.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
+    <Content Update="Areas\Admin\Views\Ticket\ListTest.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
     <Content Update="Areas\Admin\Views\Ticket\List2.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
