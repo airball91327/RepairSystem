@@ -4,6 +4,7 @@
     ViewBag.Title = "Index";
 }
 
+<p id="ticketNo" hidden>@ViewData["TicketDtlNo"]</p>
 <a class="btn btn-primary" href="@Url.Action("Create2", "TicketDtl", new { Area = "Admin", id = ViewData["TicketDtlNo"] })" target="_blank">新增發票明細</a>
 
 @if (Model.Count() <= 0)
@@ -73,8 +74,16 @@ else
                         }
                         else
                         {
-                            @Html.Raw(" | ")
-                            @Html.ActionLink("至請修單編輯", "Edit", "Repair", new { Area = "", id = item.DocId })
+                            if (item.Doctyp == "請修")
+                            {
+                                @Html.Raw(" | ")
+                                @Html.ActionLink("至請修單編輯", "Edit", "Repair", new { Area = "", id = item.DocId })
+                            }
+                            else
+                            {
+                                @Html.Raw(" | ")
+                                @Html.ActionLink("至保養單編輯", "Edit", "Keep", new { Area = "", id = item.DocId })
+                            }
                         }
                     }
                 </td>

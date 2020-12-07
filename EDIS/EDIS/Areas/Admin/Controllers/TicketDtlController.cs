@@ -44,6 +44,14 @@ namespace EDIS.Areas.Admin.Controllers
                 if (rc != null)
                 {
                     item.DocId = rc.DocId;
+                    item.Doctyp = "請修";
+                }
+                var kc = _context.KeepCosts.Where(r => r.TicketDtl.TicketDtlNo == item.TicketDtlNo &&
+                                                       r.TicketDtl.SeqNo == item.SeqNo).FirstOrDefault();
+                if (kc != null)
+                {
+                    item.DocId = kc.DocId;
+                    item.Doctyp = "保養";
                 }
             }
             ViewData["Total"] = dtls.Sum(t => t.Cost);

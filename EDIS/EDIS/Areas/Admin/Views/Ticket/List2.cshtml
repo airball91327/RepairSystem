@@ -61,7 +61,7 @@ else
                         <td>
                             @Html.DisplayFor(modelItem => item.VendorName)
                             <br />
-                            @Html.DisplayFor(modelItem => item.VendorId)
+                            @Html.DisplayFor(modelItem => item.VendorUniteNo)
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.TicketDtl.TicketDtlNo)
@@ -72,9 +72,9 @@ else
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.PartNo)
-                            <br />
+                            <span> / </span>
                             @Html.DisplayFor(modelItem => item.PartName)
-                            <br />
+                            <span> / </span>
                             @Html.DisplayFor(modelItem => item.Standard)
                         </td>
                         <td>

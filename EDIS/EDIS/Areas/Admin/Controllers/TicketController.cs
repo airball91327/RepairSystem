@@ -107,9 +107,9 @@ namespace EDIS.Areas.Admin.Controllers
             if (!string.IsNullOrEmpty(vendorno))
             {
                 ts = ts.Where(t => t.VendorId != null)
-                       .Join(_context.Vendors, t => t.VendorId, v => v.VendorId, 
-                       (t, v) => new 
-                       { 
+                       .Join(_context.Vendors, t => t.VendorId, v => v.VendorId,
+                       (t, v) => new
+                       {
                            ticket = t,
                            vendor = v
                        }).Where(r => r.vendor.UniteNo.Contains(vendorno)).Select(r => r.ticket);
@@ -118,6 +118,7 @@ namespace EDIS.Areas.Admin.Controllers
             {
                 var rc = repairCost.Where(r => r.DocId == docid).OrderBy(r => r.SeqNo).ToList();
                 rc.ForEach(r => {
+                    r.VendorUniteNo = _context.Vendors.Find(r.VendorId) == null ? "" : _context.Vendors.Find(r.VendorId).UniteNo;
                     if (r.StockType == "0")
                         r.StockType = "庫存";
                     else if (r.StockType == "2")
@@ -140,18 +141,26 @@ namespace EDIS.Areas.Admin.Controllers
             /* Get StockType for all Tickets */
             foreach (var item in ts)
             {
-                var repCost = _context.RepairCosts.Where(r => r.TicketDtl.TicketDtlNo.ToUpper() == item.TicketNo.ToUpper()).ToList()
-                                                  .OrderBy(r => r.SeqNo).FirstOrDefault();
-                                        
+                var repCost = _context.RepairCosts.Where(r => r.TicketDtl.TicketDtlNo.ToUpper() == item.TicketNo.ToUpper())
+                                                  .ToList().OrderBy(r => r.SeqNo).FirstOrDefault();
+
                 if (repCost != null)
                 {
-                    if (repCost.StockType == "2")
+                    if (repCost.StockType == "0")
+                    {
+                        item.StockType = "庫存";
+                    }
+                    else if (repCost.StockType == "2")
                     {
                         item.StockType = "發票";
                     }
-                    if (repCost.StockType == "4")
+                    else if (repCost.StockType == "4")
                     {
                         item.StockType = "零用金";
+                    }
+                    else 
+                    {
+                        item.StockType = "簽單";
                     }
                 }
                 else
@@ -168,157 +177,8 @@ namespace EDIS.Areas.Admin.Controllers
                     }
                 }
             }
-
-            return PartialView("List", ts);
-        }
-
-        // GET: Admin/Ticket
-        public IActionResult IndexTest()
-        {
-            return View();
-        }
-
-        // POST: Admin/Ticket
-        [HttpPost]
-        public IActionResult IndexTest(QryTicketListData qdata)
-        {
-            string ticketno = qdata.qtyTICKETNO;
-            string vendorname = qdata.qtyVENDORNAME;
-            string vendorno = qdata.qtyVENDORNO;
-            string docid = qdata.qtyDOCID;
-            string ticketStatus = qdata.qtyTICKETSTATUS;
-            if (!string.IsNullOrEmpty(docid))
-                docid = docid.Trim();
-            if (!string.IsNullOrEmpty(ticketno))
-                ticketno = ticketno.ToUpper();
-
-            DateTime? qtyDate1 = qdata.qtyApplyDateFrom;
-            DateTime? qtyDate2 = qdata.qtyApplyDateFrom;
-
-            DateTime applyDateFrom = DateTime.Now;
-            DateTime applyDateTo = DateTime.Now;
-            /* Dealing search by date. */
-            if (qtyDate1 != null && qtyDate2 != null)// If 2 date inputs have been insert, compare 2 dates.
-            {
-                DateTime date1 = qtyDate1.Value;
-                DateTime date2 = qtyDate2.Value;
-                int result = DateTime.Compare(date1, date2);
-                if (result < 0)
-                {
-                    applyDateFrom = date1.Date;
-                    applyDateTo = date2.Date;
-                }
-                else if (result == 0)
-                {
-                    applyDateFrom = date1.Date;
-                    applyDateTo = date1.Date;
-                }
-                else
-                {
-                    applyDateFrom = date2.Date;
-                    applyDateTo = date1.Date;
-                }
-            }
-            else if (qtyDate1 == null && qtyDate2 != null)
-            {
-                applyDateFrom = qtyDate2.Value;
-                applyDateTo = qtyDate2.Value;
-            }
-            else if (qtyDate1 != null && qtyDate2 == null)
-            {
-                applyDateFrom = qtyDate1.Value;
-                applyDateTo = qtyDate1.Value;
-            }
-
-            var ts = _context.Tickets.AsQueryable();
-            var repairCost = _context.RepairCosts.Include(r => r.TicketDtl).AsQueryable();
-
-            if (!string.IsNullOrEmpty(ticketStatus))
-            {
-                if (ticketStatus == "已關帳")
-                {
-                    ts = ts.Where(t => t.IsShuted == "Y");
-                }
-                else
-                {
-                    ts = ts.Where(t => t.IsShuted != "Y");
-                }
-            }
-            if (!string.IsNullOrEmpty(ticketno))
-            {
-                ts = ts.Where(t => t.TicketNo.ToUpper() == ticketno);
-            }
-            if (!string.IsNullOrEmpty(vendorname))
-            {
-                ts = ts.Where(t => !string.IsNullOrEmpty(t.VendorName))
-                       .Where(t => t.VendorName.Contains(vendorname));
-            }
-            if (!string.IsNullOrEmpty(vendorno))
-            {
-                ts = ts.Where(t => t.VendorId != null)
-                       .Join(_context.Vendors, t => t.VendorId, v => v.VendorId,
-                       (t, v) => new
-                       {
-                           ticket = t,
-                           vendor = v
-                       }).Where(r => r.vendor.UniteNo.Contains(vendorno)).Select(r => r.ticket);
-            }
-            if (!string.IsNullOrEmpty(docid))   //若依單號搜尋，搜尋該單的所有費用(包括簽單)
-            {
-                var rc = repairCost.Where(r => r.DocId == docid).OrderBy(r => r.SeqNo).ToList();
-                rc.ForEach(r => {
-                    if (r.StockType == "0")
-                        r.StockType = "庫存";
-                    else if (r.StockType == "2")
-                        r.StockType = "發票(含收據)";
-                    else if (r.StockType == "4")
-                        r.StockType = "零用金";
-                    else
-                        r.StockType = "簽單";
-                });
-                return PartialView("ListTest", rc);
-            }
-
-            /* Search date by Date. */
-            if (qtyDate1 != null || qtyDate2 != null)
-            {
-                ts = ts.Where(t => t.ApplyDate != null)
-                       .Where(t => t.ApplyDate >= applyDateFrom && t.ApplyDate <= applyDateTo);
-            }
-
-            /* Get StockType for all Tickets */
-            foreach (var item in ts)
-            {
-                var repCost = _context.RepairCosts.Where(r => r.TicketDtl.TicketDtlNo.ToUpper() == item.TicketNo.ToUpper()).ToList()
-                                                  .OrderBy(r => r.SeqNo).FirstOrDefault();
-
-                if (repCost != null)
-                {
-                    if (repCost.StockType == "2")
-                    {
-                        item.StockType = "發票";
-                    }
-                    if (repCost.StockType == "4")
-                    {
-                        item.StockType = "零用金";
-                    }
-                }
-                else
-                {
-                    item.StockType = "";
-                }
-                //
-                if (item.VendorId != null)
-                {
-                    var vendor = _context.Vendors.Find(item.VendorId);
-                    if (vendor != null)
-                    {
-                        item.UniteNo = vendor.UniteNo;
-                    }
-                }
-            }
-
-            return PartialView("ListTest", ts);
+            ts = ts.Where(t => t.StockType == "發票" || t.StockType == "");
+            return PartialView("List", ts.ToList());
         }
 
         // GET: Admin/Ticket/List
@@ -430,6 +290,47 @@ namespace EDIS.Areas.Admin.Controllers
                 }
                 throw new Exception(msg);
             }
+        }
+
+        // GET: Admin/Tickets/Edit/5
+        public IActionResult RefreshCost(string ticketNo)
+        {
+            TicketModel ticketModel = _context.Tickets.Find(ticketNo);
+            if (ticketModel != null)
+            {
+                decimal total = _context.TicketDtls.Where(t => t.TicketDtlNo == ticketModel.TicketNo).DefaultIfEmpty()
+                                                   .Sum(t => t.Cost);
+
+                ticketModel.ScrapValue = ticketModel.TotalAmt - Convert.ToInt32(total);
+                _context.Entry(ticketModel).State = EntityState.Modified;
+                _context.SaveChanges();
+                return new JsonResult(ticketModel)
+                {                   
+                    Value = new { Data = ticketModel.ScrapValue, success = true, error = "" }
+                };
+            }
+            throw new Exception("沖銷失敗!");
+        }
+
+        // POST: Admin/Ticket/SetApplyNo/5
+        [HttpPost]
+        public IActionResult SetApplyNo(string ticketNos)
+        {
+            string[] s = ticketNos.Split(new char[] { ';' });
+            return new JsonResult(ticketNos)
+            {
+                Value = new { success = true, error = "" }
+            };
+        }
+
+        // GET: Admin/Ticket/ExportExcel/5
+        public IActionResult ExportExcel(string ticketNos)
+        {
+            string[] s = ticketNos.Split(new char[] { ';' });
+            return new JsonResult(ticketNos)
+            {
+                Value = new { success = true, error = "" }
+            };
         }
 
     }

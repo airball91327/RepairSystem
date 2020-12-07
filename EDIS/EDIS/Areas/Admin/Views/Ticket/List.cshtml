@@ -4,20 +4,165 @@
     ViewBag.Title = "列表/發票";
 }
 
+<style>
+    #ticketTable {
+        max-height: 300px;
+        overflow-y: scroll;
+        display: block;
+        width: 100%;
+    }
+
+        #ticketTable > tbody > tr:hover {
+            background-color: blue;
+        }
+</style>
+
+<script>
+    $(function () {
+        $('.btnShowDtl').click(function () {
+            var ticketNo = $(this).parents('tr').children().get(2).innerText.trim();
+            $.ajax({
+                url: '@Url.Action("List", "TicketDtl", new { Area = "Admin" })',
+                type: "GET",
+                data: { id: ticketNo },
+                success: function (data) {
+                    $("#divTicketDtl").html(data);
+                }
+            });
+        });
+        $('#ticketTable tbody tr').click(function () {
+            var ticketNo = $(this).find('td:eq(2)').html().trim();
+            $.ajax({
+                url: '@Url.Action("List", "TicketDtl", new { Area = "Admin" })',
+                type: "GET",
+                data: { id: ticketNo },
+                success: function (data) {
+                    $("#divTicketDtl").html(data);
+                }
+            });
+        });
+        $('#btnCount').click(function () {
+            var ticketNo = $('#ticketNo').html();
+            if (ticketNo == '' || ticketNo == undefined) {
+                alert('尚未選擇發票!');
+            }
+            $.ajax({
+                url: '@Url.Action("RefreshCost", "Ticket", new { Area = "Admin" })',
+                type: "GET",
+                data: { ticketNo: ticketNo },
+                success: function (data) {
+                    if (data.success) {
+                        $('#ticketTable tr').each(function (index) {
+                            if (index != 0) {
+                                var row = $(this);
+                                var id = row.find('td:eq(2)').html().trim();
+                                if (id == ticketNo) {
+                                    row.find('td:eq(9)').html(data.data);
+                                }
+                            }
+                        });
+                    } else {
+                        alert(data.error);
+                    }
+
+                }
+            });
+        });
+        $('#btnSetApplyNo').click(function () {
+            var s = "";
+            $("input[name='chkTICKET']:checked").each(function () {
+                s += $(this).parents("tr").children().get(2).innerText.trim();
+                s += ";";
+            });
+            if (s != "") {
+                $.ajax({
+                    url: '@Url.Action("SetApplyNo", "Ticket", new { Area = "Admin" })',
+                    data: { ticketNos: s },
+                    type: "POST",
+                    beforeSend: $.Toast.showToast({
+                        'title': '一般申請編號產生中，請稍待...',
+                        'icon': 'loading',
+                        'duration': 0
+                    }),
+                    success: function (data) {
+                        alert('一般申請編號已產生!');
+                        $.Toast.hideToast();
+                    },
+                    error: function (msg) {
+                        alert(msg);
+                        $.Toast.hideToast();
+                    }
+                });
+            }
+        });
+        $('#btnExcel').click(function () {
+            var s = "";
+            $("input[name='chkTICKET']:checked").each(function () {
+                s += $(this).parents("tr").children().get(2).innerText.trim();
+                s += ";";
+            });
+            if (s != "") {
+                $.ajax({
+                    url: '@Url.Action("ExportExcel", "Ticket", new { Area = "Admin" })',
+                    data: { ticketNos: s },
+                    type: "GET",
+                    beforeSend: $.Toast.showToast({
+                        'title': 'Excel產生中，請稍待...',
+                        'icon': 'loading',
+                        'duration': 0
+                    }),
+                    success: function (data) {
+                        
+                        $.Toast.hideToast();
+                    },
+                    error: function (msg) {
+                        alert(msg);
+                        $.Toast.hideToast();
+                    }
+                });
+            }
+        });
+        $('input[name="chkALL"]').change(function () {
+            if ($(this).prop("checked")) {
+                $("input[name='chkTICKET']").each(function () {
+                    $(this).prop("checked", true);
+                });
+            }
+            else {
+                $("input[name='chkTICKET']").each(function () {
+                    $(this).prop("checked", false);
+                });
+            }
+        });
+    });
+</script>
+
 @if (Model.Count() <= 0)
 {
     <p class="text-danger">無任何資料!</p>
 }
 else
 {
-    @foreach (var item in Model)
-    {
-        <div class="panel">
-            <div class="panel-body" style="">
+    <div class="panel" id="pnlTicket">
+        <div class="panel-body">
+            <h4>發票主檔</h4>
 
-                <h4>發票主檔</h4>
-                <table class="table table-bordered">
+            <div class="row">
+                <div class="col-md-10">
+                    <button class="btn btn-default" id="btnExcel">匯出Excel</button>
+                </div>
+                <div class="col-md-2 pull-right">
+                    <button class="btn btn-default" id="btnCount">沖銷</button>
+                    <button class="btn btn-info" id="btnSetApplyNo">產生編號</button>
+                </div>
+            </div>
+
+            <table class="table table-bordered table-hover" id="ticketTable">
+                <thead>
                     <tr>
+                        <th>
+                            @Html.CheckBox("chkALL") 全選
+                        </th>
                         <th>
                             @Html.DisplayNameFor(model => model.StockType)
                         </th>
@@ -28,10 +173,9 @@ else
                             @Html.DisplayNameFor(model => model.TicDate)
                         </th>
                         <th>
+                            @Html.DisplayNameFor(model => model.VendorName) /
+                            <br />
                             @Html.DisplayNameFor(model => model.UniteNo)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.VendorName)
                         </th>
                         <th>
                             @Html.DisplayNameFor(model => model.TradeCode)
@@ -54,63 +198,70 @@ else
                         <th>
                             @Html.DisplayNameFor(model => model.CancelDate)
                         </th>
-                        @*<th>
-                                @Html.DisplayNameFor(model => model.ShutDate)
-                            </th>*@
                         <th></th>
                     </tr>
+                </thead>
 
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.CheckBox("chkTICKET")
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.StockType)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.TicketNo)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.TicDate)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.VendorName) /
+                                <br />
+                                @Html.DisplayFor(modelItem => item.UniteNo)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.TradeCode)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.TotalAmt)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.TaxAmt)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Note)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ScrapValue)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ApplyDate)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.CancelDate)
+                            </td>
+                            <td style="text-align:center;">
+                                <button class="btn btn-primary btnShowDtl">發票明細</button>
+                                <a class="btn btn-primary" href="@Url.Action("Edit", "Ticket", new { Area = "Admin", id = item.TicketNo })">編輯</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
 
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.StockType)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.TicketNo)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.TicDate)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.UniteNo)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.VendorName)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.TradeCode)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.TotalAmt)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.TaxAmt)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Note)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.ScrapValue)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.ApplyDate)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.CancelDate)
-                        </td>
-                        @*<td>
-                                @Html.DisplayFor(modelItem => item.ShutDate)
-                            </td>*@
-                        <td style="text-align:center;">
-                            <a class="btn btn-primary" href="@Url.Action("Edit", "Ticket", new { Area = "Admin", id = item.TicketNo })">編輯</a>
-                        </td>
-                    </tr>
-                </table>
+            </table>
+        </div>
+    </div>
 
-                <div>
-                    @await Component.InvokeAsync("TicketDtlList", new { id = item.TicketNo, viewType = "List2" })
-                </div>
+    <div class="panel" id="pnlTicketDtl">
+        <div class="panel-body">
+            <h4>發票明細</h4>
+            <div id="divTicketDtl">
+
             </div>
         </div>
-    }
+    </div>
 }
