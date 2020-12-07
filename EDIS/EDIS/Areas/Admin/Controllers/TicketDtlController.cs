@@ -27,6 +27,31 @@ namespace EDIS.Areas.Admin.Controllers
             return View();
         }
 
+        // GET: Admin/TicketDtl/List/5
+        public IActionResult List(string id)
+        {
+            if (id == null)
+            {
+                return BadRequest();
+            }
+            List<TicketDtlModel> dtls = _context.TicketDtls.Where(t => t.TicketDtlNo == id).ToList();
+            ViewData["TicketDtlNo"] = id;
+
+            foreach (var item in dtls)
+            {
+                var rc = _context.RepairCosts.Where(r => r.TicketDtl.TicketDtlNo == item.TicketDtlNo &&
+                                                         r.TicketDtl.SeqNo == item.SeqNo).FirstOrDefault();
+                if (rc != null)
+                {
+                    item.DocId = rc.DocId;
+                }
+            }
+            ViewData["Total"] = dtls.Sum(t => t.Cost);
+            dtls = dtls.OrderBy(d => d.DocId).ToList();
+
+            return PartialView(dtls);
+        }
+
         // GET: Admin/TicketDtl/Details/5
         public IActionResult Details(string id, int seq)
         {
