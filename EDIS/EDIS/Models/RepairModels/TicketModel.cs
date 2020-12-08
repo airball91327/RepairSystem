@@ -53,6 +53,8 @@ namespace EDIS.Models.RepairModels
         [Display(Name = "一般支出申請編號")]
         public string Appl_No { get; set; }
         [Display(Name = "一般支出申請日期")]
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd}")]
         public DateTime? Appl_Date { get; set; }
         [Display(Name = "院區")]
         public string Zone { get; set; }

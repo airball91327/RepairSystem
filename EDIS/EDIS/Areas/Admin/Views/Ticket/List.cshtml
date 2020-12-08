@@ -19,6 +19,8 @@
 
 <script>
     $(function () {
+
+        //Click button or the tr to show the ticket details.
         $('.btnShowDtl').click(function () {
             var ticketNo = $(this).parents('tr').children().get(2).innerText.trim();
             $.ajax({
@@ -41,6 +43,7 @@
                 }
             });
         });
+        // Button to recount the ticket totalAmt.
         $('#btnCount').click(function () {
             var ticketNo = $('#ticketNo').html();
             if (ticketNo == '' || ticketNo == undefined) {
@@ -68,13 +71,19 @@
                 }
             });
         });
+        //Button to set the ticket's ApplyNo.
         $('#btnSetApplyNo').click(function () {
             var s = "";
+            var checkAmt = true;
             $("input[name='chkTICKET']:checked").each(function () {
                 s += $(this).parents("tr").children().get(2).innerText.trim();
                 s += ";";
+                var totalAmt = $(this).parents("tr").children().get(9).innerText.trim();
+                if (parseInt(totalAmt) != 0) {
+                    checkAmt = false;
+                }
             });
-            if (s != "") {
+            if (s != "" && checkAmt == true) {
                 $.ajax({
                     url: '@Url.Action("SetApplyNo", "Ticket", new { Area = "Admin" })',
                     data: { ticketNos: s },
@@ -94,7 +103,11 @@
                     }
                 });
             }
+            else {
+                alert('選取的發票有殘值尚未為0!');
+            }
         });
+        //Button to export excel.
         $('#btnExcel').click(function () {
             var s = "";
             $("input[name='chkTICKET']:checked").each(function () {
@@ -125,7 +138,7 @@
                 alert("請至少選擇一張發票!")
             }
         });
-
+        //Checkbox to check all.
         $('input[name="chkALL"]').change(function () {
             if ($(this).prop("checked")) {
                 $("input[name='chkTICKET']").each(function () {
