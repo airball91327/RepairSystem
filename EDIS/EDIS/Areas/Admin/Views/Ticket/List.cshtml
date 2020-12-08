@@ -112,7 +112,7 @@
                         'duration': 0
                     }),
                     success: function (data) {
-                        
+                        window.location.href = '@Url.Action("ExportExcel", "Ticket", new { Area = "Admin" })' + '?ticketNos=' + s;
                         $.Toast.hideToast();
                     },
                     error: function (msg) {
@@ -121,7 +121,11 @@
                     }
                 });
             }
+            else {
+                alert("請至少選擇一張發票!")
+            }
         });
+
         $('input[name="chkALL"]').change(function () {
             if ($(this).prop("checked")) {
                 $("input[name='chkTICKET']").each(function () {

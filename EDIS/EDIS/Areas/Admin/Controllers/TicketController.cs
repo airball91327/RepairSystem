@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using ClosedXML.Excel;
 using EDIS.Data;
 using EDIS.Models.RepairModels;
 using Microsoft.AspNetCore.Authorization;
@@ -327,10 +329,86 @@ namespace EDIS.Areas.Admin.Controllers
         public IActionResult ExportExcel(string ticketNos)
         {
             string[] s = ticketNos.Split(new char[] { ';' });
-            return new JsonResult(ticketNos)
+            List<TicketModel> ticketList = new List<TicketModel>();
+            foreach (var ticketNo in s)
             {
-                Value = new { success = true, error = "" }
-            };
+                var ticket = _context.Tickets.Find(ticketNo);
+                if (ticket != null)
+                {
+                    ticketList.Add(ticket);
+                }
+            }
+
+            var output = ticketList.GroupJoin(_context.Vendors, t => t.VendorId, v => v.VendorId,
+                                    (t, v) => new
+                                    {
+                                        ticket = t,
+                                        vendor = v,
+                                        ticDate = t.TicDate.HasValue == false ? "" : (t.TicDate.Value.Year - 1911).ToString() + t.TicDate.Value.ToString("MM")
+                                    })
+                                    .Select(r => new 
+                                    {
+                                        ticket = r.ticket,
+                                        vendor = r.vendor.FirstOrDefault(),
+                                        ticDate = r.ticDate
+                                    }).ToList();
+            foreach (var item in output)
+            {
+                var rc = _context.RepairCosts.Where(r => r.StockType == "2")
+                                             .Where(r => r.TicketDtl.TicketDtlNo == item.ticket.TicketNo).ToList();
+                if (rc.Count() > 0)
+                {
+                    item.ticket.TradeMemo = item.ticket.TradeCode + "：";
+                    foreach (var item2 in rc)
+                    {
+                        item.ticket.TradeMemo += item2.DocId + " ";
+                    }
+                    item.ticket.TradeMemo += rc.First().PartName + rc.First().Standard + rc.First().PartNo;
+                }
+            }
+
+            //ClosedXML的用法 先new一個Excel Workbook
+            using (XLWorkbook workbook = new XLWorkbook())
+            {
+                //取得要塞入Excel內的資料
+                var data = output.Select(c => new {
+                    c.ticket.Appl_No,
+                    UniteNo = c.vendor != null ? c.vendor.UniteNo : "",
+                    c.ticket.TicketNo,
+                    c.ticket.TotalAmt,
+                    c.ticDate,
+                    AccDpt = "",
+                    c.ticket.TradeCode,
+                    c.ticket.TradeMemo,
+                });
+
+                //一個workbook內至少會有一個worksheet,並將資料Insert至這個位於A1這個位置上
+                var ws = workbook.Worksheets.Add("sheet1", 1);
+
+                //Title
+                ws.Cell(1, 1).Value = "申請單序號";
+                ws.Cell(1, 2).Value = "受款人統一編號";
+                ws.Cell(1, 3).Value = "發票號碼";
+                ws.Cell(1, 4).Value = "金額";
+                ws.Cell(1, 5).Value = "憑證年月\n(發票年月)";
+                ws.Cell(1, 6).Value = "成本中心";
+                ws.Cell(1, 7).Value = "交易代號";
+                ws.Cell(1, 8).Value = "交易說明(含發票號碼,請修單號,零件名稱/規格/料號)";
+
+                //如果是要塞入Query後的資料該資料一定要變成是data.AsEnumerable()
+                ws.Cell(2, 1).InsertData(data);
+
+                //因為是用Query的方式,這個地方要用串流的方式來存檔
+                using (MemoryStream memoryStream = new MemoryStream())
+                {
+                    workbook.SaveAs(memoryStream);
+                    //請注意 一定要加入這行,不然Excel會是空檔
+                    memoryStream.Seek(0, SeekOrigin.Begin);
+                    //注意Excel的ContentType,是要用這個"application/vnd.ms-excel"
+                    string fileName = "發票作業_" + DateTime.Now.ToString("yyyy-MM-dd") + ".xlsx";
+                    return this.File(memoryStream.ToArray(), "application/vnd.ms-excel", fileName);
+                }
+            }
         }
 
     }

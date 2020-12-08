@@ -50,11 +50,20 @@ namespace EDIS.Models.RepairModels
         public string TradeCode { get; set; }
         [Display(Name = "是否關帳")]
         public string IsShuted { get; set; }
+        [Display(Name = "一般支出申請編號")]
+        public string Appl_No { get; set; }
+        [Display(Name = "一般支出申請日期")]
+        public DateTime? Appl_Date { get; set; }
+        [Display(Name = "院區")]
+        public string Zone { get; set; }
         //[Display(Name = "關帳日期")]
         //public DateTime? ShutDate { get; set; }
         [NotMapped]
         [Display(Name = "費用別")]
         public string StockType { get; set; }
+        [NotMapped]
+        [Display(Name = "交易說明")]
+        public string TradeMemo { get; set; }
 
         public ICollection<TicketDtlModel> TicketDtls { get; set; }
     }
