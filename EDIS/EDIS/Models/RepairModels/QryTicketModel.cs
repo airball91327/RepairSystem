@@ -24,5 +24,7 @@ namespace EDIS.Models.RepairModels
         public DateTime? qtyApplyDateFrom { get; set; }
         [DataType(DataType.Date)]
         public DateTime? qtyApplyDateTo { get; set; }
+        [Display(Name = "發票類別")]
+        public string qtySTOCKTYPE { get; set; }
     }
 }

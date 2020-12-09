@@ -71,6 +71,15 @@
                     </div>
                 </div>
                 <div class="row">
+                    <div class="form-inline">
+                        <div class="form-group">
+                            <label asp-for="qtySTOCKTYPE" class="control-title"></label>
+                            <input asp-for="qtySTOCKTYPE" type="radio" value="發票" checked />發票
+                            <input asp-for="qtySTOCKTYPE" type="radio" value="零用金" />零用金
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
                     <div class="col-md-offset-1 col-md-11">
                         <input id="btnQTY" type="submit" value="查詢" class="btn btn-default" />
                     </div>

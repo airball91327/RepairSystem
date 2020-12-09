@@ -40,6 +40,7 @@ namespace EDIS.Areas.Admin.Controllers
             string vendorno = qdata.qtyVENDORNO;
             string docid = qdata.qtyDOCID;
             string ticketStatus = qdata.qtyTICKETSTATUS;
+            string qryStockType = qdata.qtySTOCKTYPE;
             if (!string.IsNullOrEmpty(docid))
                 docid = docid.Trim();
             if (!string.IsNullOrEmpty(ticketno))
@@ -179,7 +180,7 @@ namespace EDIS.Areas.Admin.Controllers
                     }
                 }
             }
-            ts = ts.Where(t => t.StockType == "發票" || t.StockType == "");
+            ts = ts.Where(t => t.StockType == qryStockType || t.StockType == "");
             return PartialView("List", ts.ToList());
         }
 
