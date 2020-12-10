@@ -107,6 +107,43 @@
                 alert('選取的發票有殘值尚未為0!');
             }
         });
+
+        //Button to set the petty.
+        $('#btnSendPetty').click(function () {
+            var s = "";
+            var checkAmt = true;
+            $("input[name='chkTICKET']:checked").each(function () {
+                s += $(this).parents("tr").children().get(2).innerText.trim();
+                s += ";";
+                var totalAmt = $(this).parents("tr").children().get(9).innerText.trim();
+                if (parseInt(totalAmt) != 0) {
+                    checkAmt = false;
+                }
+            });
+            if (s != "" && checkAmt == true) {
+                $.ajax({
+                    url: '@Url.Action("", "Ticket", new { Area = "Admin" })',
+                    data: { ticketNos: s },
+                    type: "POST",
+                    beforeSend: $.Toast.showToast({
+                        'title': '轉出費用申請中，請稍待...',
+                        'icon': 'loading',
+                        'duration': 0
+                    }),
+                    success: function (data) {
+                        alert('已轉出!');
+                        $.Toast.hideToast();
+                    },
+                    error: function (msg) {
+                        alert(msg);
+                        $.Toast.hideToast();
+                    }
+                });
+            }
+            else {
+                alert('選取的發票有殘值尚未為0!');
+            }
+        });
         //Button to export excel.
         $('#btnExcel').click(function () {
             var s = "";
@@ -151,6 +188,17 @@
                 });
             }
         });
+
+        var stockType = '@Html.Raw(ViewData["QryStockType"].ToString())';
+        if (stockType == "發票") {
+            $('#btnSetApplyNo').show();
+            $('#btnSendPetty').hide();
+            $('#btnExcel').show();
+        } else {
+            $('#btnSetApplyNo').hide();
+            $('#btnSendPetty').show();
+            $('#btnExcel').hide();
+        }
     });
 </script>
 
@@ -165,12 +213,13 @@ else
             <h4>發票主檔</h4>
 
             <div class="row">
-                <div class="col-md-10">
+                <div class="col-md-9">
                     <button class="btn btn-default" id="btnExcel">匯出Excel</button>
                 </div>
-                <div class="col-md-2 pull-right">
+                <div class="col-md-3" style="text-align:right;">
                     <button class="btn btn-default" id="btnCount">沖銷</button>
                     <button class="btn btn-info" id="btnSetApplyNo">產生編號</button>
+                    <button class="btn btn-info" id="btnSendPetty">轉出費用申請</button>
                 </div>
             </div>
 
@@ -223,9 +272,14 @@ else
                     @foreach (var item in Model)
                     {
                         <tr>
-                            <td>
-                                @Html.CheckBox("chkTICKET")
-                            </td>
+                            @if (item.IsShuted == "Y")
+                            {
+                                <td></td>
+                            }
+                            else
+                            {
+                                <td>@Html.CheckBox("chkTICKET")</td>
+                            }
                             <td>
                                 @Html.DisplayFor(modelItem => item.StockType)
                             </td>

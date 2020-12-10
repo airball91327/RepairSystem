@@ -41,6 +41,7 @@ namespace EDIS.Areas.Admin.Controllers
             string docid = qdata.qtyDOCID;
             string ticketStatus = qdata.qtyTICKETSTATUS;
             string qryStockType = qdata.qtySTOCKTYPE;
+            string qryDocType = qdata.qtyDOCTYPE;
             if (!string.IsNullOrEmpty(docid))
                 docid = docid.Trim();
             if (!string.IsNullOrEmpty(ticketno))
@@ -87,7 +88,7 @@ namespace EDIS.Areas.Admin.Controllers
             var ts = _context.Tickets.AsQueryable();
             var repairCost = _context.RepairCosts.Include(r => r.TicketDtl).AsQueryable();
 
-            if (!string.IsNullOrEmpty(ticketStatus))
+            if (!string.IsNullOrEmpty(ticketStatus))    //關帳
             {
                 if (ticketStatus == "已關帳")
                 {
@@ -98,16 +99,16 @@ namespace EDIS.Areas.Admin.Controllers
                     ts = ts.Where(t => t.IsShuted != "Y");
                 }
             }
-            if (!string.IsNullOrEmpty(ticketno))
+            if (!string.IsNullOrEmpty(ticketno))    //發票號碼
             {
                 ts = ts.Where(t => t.TicketNo.ToUpper() == ticketno);
             }
-            if (!string.IsNullOrEmpty(vendorname))
+            if (!string.IsNullOrEmpty(vendorname))  //廠商關鍵字
             {
                 ts = ts.Where(t => !string.IsNullOrEmpty(t.VendorName))
                        .Where(t => t.VendorName.Contains(vendorname));
             }
-            if (!string.IsNullOrEmpty(vendorno))
+            if (!string.IsNullOrEmpty(vendorno))    //廠商統編
             {
                 ts = ts.Where(t => t.VendorId != null)
                        .Join(_context.Vendors, t => t.VendorId, v => v.VendorId,
@@ -135,7 +136,7 @@ namespace EDIS.Areas.Admin.Controllers
             }
 
             /* Search date by Date. */
-            if (qtyDate1 != null || qtyDate2 != null)
+            if (qtyDate1 != null || qtyDate2 != null)   //關帳日期
             {
                 ts = ts.Where(t => t.ApplyDate != null)
                        .Where(t => t.ApplyDate >= applyDateFrom && t.ApplyDate <= applyDateTo);
@@ -146,9 +147,11 @@ namespace EDIS.Areas.Admin.Controllers
             {
                 var repCost = _context.RepairCosts.Where(r => r.TicketDtl.TicketDtlNo.ToUpper() == item.TicketNo.ToUpper())
                                                   .ToList().OrderBy(r => r.SeqNo).FirstOrDefault();
-
+                var keepCost = _context.KeepCosts.Where(r => r.TicketDtl.TicketDtlNo.ToUpper() == item.TicketNo.ToUpper())
+                                                 .ToList().OrderBy(r => r.SeqNo).FirstOrDefault();
                 if (repCost != null)
                 {
+                    item.DocType = "請修";
                     if (repCost.StockType == "0")
                     {
                         item.StockType = "庫存";
@@ -166,8 +169,29 @@ namespace EDIS.Areas.Admin.Controllers
                         item.StockType = "簽單";
                     }
                 }
+                else if(keepCost != null)
+                {
+                    item.DocType = "保養";
+                    if (keepCost.StockType == "0")
+                    {
+                        item.StockType = "庫存";
+                    }
+                    else if (keepCost.StockType == "2")
+                    {
+                        item.StockType = "發票";
+                    }
+                    else if (keepCost.StockType == "4")
+                    {
+                        item.StockType = "零用金";
+                    }
+                    else
+                    {
+                        item.StockType = "簽單";
+                    }
+                }
                 else
                 {
+                    item.DocType = "";
                     item.StockType = "";
                 }
                 //
@@ -180,7 +204,16 @@ namespace EDIS.Areas.Admin.Controllers
                     }
                 }
             }
-            ts = ts.Where(t => t.StockType == qryStockType || t.StockType == "");
+            if (!string.IsNullOrEmpty(qryStockType))    //費用別(發票/零用金)
+            {
+                ts = ts.Where(t => t.StockType == qryStockType || t.StockType == "");
+                ViewData["QryStockType"] = qryStockType;
+            }
+            if (!string.IsNullOrEmpty(qryDocType))    //(請修單/保養單)
+            {
+                ts = ts.Where(t => t.DocType == qryDocType || t.DocType == "");
+            }
+
             return PartialView("List", ts.ToList());
         }
 
@@ -295,7 +328,7 @@ namespace EDIS.Areas.Admin.Controllers
             }
         }
 
-        // GET: Admin/Tickets/Edit/5
+        // GET: Admin/Tickets/RefreshCost/5
         public IActionResult RefreshCost(string ticketNo)
         {
             TicketModel ticketModel = _context.Tickets.Find(ticketNo);
@@ -352,20 +385,30 @@ namespace EDIS.Areas.Admin.Controllers
                                         ticket = r.ticket,
                                         vendor = r.vendor.FirstOrDefault(),
                                         ticDate = r.ticDate
-                                    }).ToList();
+                                    }).Join(_context.RepairCosts.Where(c => c.StockType == "2").Where(c => c.TicketDtl != null), t => t.ticket.TicketNo, rc => rc.TicketDtl.TicketDtlNo,
+                                    (t, rc) => new 
+                                    {
+                                        ticket = t.ticket,
+                                        vendor = t.vendor,
+                                        ticDate = t.ticDate,
+                                        repairCost = rc
+                                    })
+                                    .Join(_context.Repairs, t => t.repairCost.DocId, r => r.DocId,
+                                    (t, r) => new 
+                                    {
+                                        ticket = t.ticket,
+                                        vendor = t.vendor,
+                                        ticDate = t.ticDate,
+                                        repairCost = t.repairCost,
+                                        repair = r
+                                    })
+                                    .ToList();
             foreach (var item in output)
             {
-                var rc = _context.RepairCosts.Where(r => r.StockType == "2")
-                                             .Where(r => r.TicketDtl.TicketDtlNo == item.ticket.TicketNo).ToList();
-                if (rc.Count() > 0)
-                {
-                    item.ticket.TradeMemo = item.ticket.TradeCode + "：";
-                    foreach (var item2 in rc)
-                    {
-                        item.ticket.TradeMemo += item2.DocId + " ";
-                    }
-                    item.ticket.TradeMemo += rc.First().PartName + rc.First().Standard + rc.First().PartNo;
-                }
+                item.ticket.AccDpt = item.repair.AccDpt;
+                item.ticket.TradeMemo = item.ticket.TicketNo + "_";
+                item.ticket.TradeMemo += item.repairCost.DocId + "，";
+                item.ticket.TradeMemo += item.repairCost.PartName + item.repairCost.Standard + item.repairCost.PartNo;
             }
 
             //ClosedXML的用法 先new一個Excel Workbook
@@ -411,6 +454,13 @@ namespace EDIS.Areas.Admin.Controllers
                 }
             }
         }
+
+        // GET: Admin/Ticket/Index2
+        public IActionResult Index2()
+        {
+            return View();
+        }
+
 
     }
 }

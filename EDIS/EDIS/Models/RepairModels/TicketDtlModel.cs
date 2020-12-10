@@ -21,8 +21,10 @@ namespace EDIS.Models.RepairModels
         [Display(Name = "單位")]
         public string Unite { get; set; }
         [Display(Name = "單價")]
+        [DisplayFormat(DataFormatString = "{0:N0}")]
         public decimal Price { get; set; }
         [Display(Name = "金額")]
+        [DisplayFormat(DataFormatString = "{0:N0}")]
         public decimal Cost { get; set; }
         [NotMapped]
         [Display(Name = "表單")]

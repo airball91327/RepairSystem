@@ -1,7 +1,7 @@
 ﻿@model EDIS.Models.RepairModels.QryTicketListData
 @{
     Layout = "~/Views/Shared/_PassedLayout.cshtml";
-    ViewBag.Title = "發票/零用金作業";
+    ViewBag.Title = "簽單作業";
 }
 
 <script>
@@ -20,12 +20,12 @@
     }
 </style>
 
-<h2>發票/零用金作業</h2>
+<h2>簽單作業</h2>
 <br />
 
 <div class="panel panel-primary">
     <div class="panel-body">
-        <form asp-action="Index" asp-controller="Ticket" asp-area="Admin" data-ajax="true" data-ajax-method="POST" id="ticketQtyForm"
+        <form asp-action="Index2" asp-controller="Ticket" asp-area="Admin" data-ajax="true" data-ajax-method="POST" id="ticketQtyForm"
               data-ajax-update="#pnlTICKETLIST"
               data-ajax-begin="$.Toast.showToast({
               'title':'查詢中，請稍待...',
@@ -63,21 +63,7 @@
                             <span> ~ </span>
                             <input asp-for="qtyApplyDateTo" class="form-control" />
                         </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="form-inline">
-                        <div class="form-group" style="width:313.9px;">
-                            <label asp-for="qtySTOCKTYPE" class="control-title"></label>
-                            <input asp-for="qtySTOCKTYPE" type="radio" value="發票" checked />發票
-                            <input asp-for="qtySTOCKTYPE" type="radio" value="零用金" />零用金
-                        </div>
-                        <div class="form-group" style="width:313.9px;">
-                            <label asp-for="qtyDOCTYPE" class="control-title"></label>
-                            <input asp-for="qtyDOCTYPE" type="radio" value="請修" checked />請修
-                            <input asp-for="qtyDOCTYPE" type="radio" value="保養" />保養
-                        </div>
-                        <div class="form-group" style="width:313.9px;">
+                        <div class="form-group" style="display: none;">
                             <label asp-for="qtyTICKETSTATUS" class="control-title"></label>
                             <input asp-for="qtyTICKETSTATUS" type="radio" value="未關帳" checked />未關帳
                             <input asp-for="qtyTICKETSTATUS" type="radio" value="已關帳" />已關帳
