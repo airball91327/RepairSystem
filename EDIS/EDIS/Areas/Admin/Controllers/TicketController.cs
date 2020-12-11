@@ -206,7 +206,14 @@ namespace EDIS.Areas.Admin.Controllers
             }
             if (!string.IsNullOrEmpty(qryStockType))    //費用別(發票/零用金)
             {
-                ts = ts.Where(t => t.StockType == qryStockType || t.StockType == "");
+                if (qryStockType == "無類別")
+                {
+                    ts = ts.Where(t => t.StockType == "");
+                }
+                else
+                {
+                    ts = ts.Where(t => t.StockType == qryStockType);
+                }
                 ViewData["QryStockType"] = qryStockType;
             }
             if (!string.IsNullOrEmpty(qryDocType))    //(請修單/保養單)
@@ -373,6 +380,8 @@ namespace EDIS.Areas.Admin.Controllers
                 }
             }
 
+            var repairCost = _context.RepairCosts.Include(c => c.TicketDtl)
+                                                 .Where(c => c.StockType == "2" && c.TicketDtl != null);
             var output = ticketList.GroupJoin(_context.Vendors, t => t.VendorId, v => v.VendorId,
                                     (t, v) => new
                                     {
@@ -385,7 +394,7 @@ namespace EDIS.Areas.Admin.Controllers
                                         ticket = r.ticket,
                                         vendor = r.vendor.FirstOrDefault(),
                                         ticDate = r.ticDate
-                                    }).Join(_context.RepairCosts.Where(c => c.StockType == "2").Where(c => c.TicketDtl != null), t => t.ticket.TicketNo, rc => rc.TicketDtl.TicketDtlNo,
+                                    }).Join(repairCost, t => t.ticket.TicketNo, rc => rc.TicketDtl.TicketDtlNo,
                                     (t, rc) => new 
                                     {
                                         ticket = t.ticket,
@@ -400,31 +409,29 @@ namespace EDIS.Areas.Admin.Controllers
                                         vendor = t.vendor,
                                         ticDate = t.ticDate,
                                         repairCost = t.repairCost,
-                                        repair = r
+                                        repair = r,
+                                        accDpt = r.AccDpt,
+                                        tradeMemo = t.ticket.TicketNo + "_" + t.repairCost.DocId + "，" + t.repairCost.PartName + t.repairCost.Standard + t.repairCost.PartNo
                                     })
                                     .ToList();
-            foreach (var item in output)
-            {
-                item.ticket.AccDpt = item.repair.AccDpt;
-                item.ticket.TradeMemo = item.ticket.TicketNo + "_";
-                item.ticket.TradeMemo += item.repairCost.DocId + "，";
-                item.ticket.TradeMemo += item.repairCost.PartName + item.repairCost.Standard + item.repairCost.PartNo;
-            }
+
 
             //ClosedXML的用法 先new一個Excel Workbook
             using (XLWorkbook workbook = new XLWorkbook())
             {
                 //取得要塞入Excel內的資料
-                var data = output.Select(c => new {
-                    c.ticket.Appl_No,
+                List<TicketExcelViewModel> data = new List<TicketExcelViewModel>();
+                data = output.Select(c => new TicketExcelViewModel
+                {
+                    Appl_No = c.ticket.Appl_No,
                     UniteNo = c.vendor != null ? c.vendor.UniteNo : "",
-                    c.ticket.TicketNo,
-                    c.ticket.TotalAmt,
-                    c.ticDate,
-                    AccDpt = "",
-                    c.ticket.TradeCode,
-                    c.ticket.TradeMemo,
-                });
+                    TicketNo = c.ticket.TicketNo,
+                    TotalAmt = c.ticket.TotalAmt,
+                    TicDate = c.ticDate,
+                    AccDpt = c.accDpt,
+                    TradeCode = c.ticket.TradeCode,
+                    TradeMemo = c.tradeMemo,
+                }).ToList();
 
                 //一個workbook內至少會有一個worksheet,並將資料Insert至這個位於A1這個位置上
                 var ws = workbook.Worksheets.Add("sheet1", 1);
@@ -438,6 +445,26 @@ namespace EDIS.Areas.Admin.Controllers
                 ws.Cell(1, 6).Value = "成本中心";
                 ws.Cell(1, 7).Value = "交易代號";
                 ws.Cell(1, 8).Value = "交易說明(含發票號碼,請修單號,零件名稱/規格/料號)";
+
+                //Data
+                if (data.Count() > 0)
+                {
+                    var previousObj = data.FirstOrDefault();
+                    int count = 0;
+                    foreach (var item in data)
+                    {
+                        if (item.TicketNo == previousObj.TicketNo && count != 0)
+                        {
+                            item.Appl_No = "";
+                            item.UniteNo = "";
+                            item.TicketNo = "";
+                            item.TotalAmt = null;
+                            item.TicDate = null;
+                            item.TradeCode = "";
+                        }
+                        count++;
+                    }
+                }
 
                 //如果是要塞入Query後的資料該資料一定要變成是data.AsEnumerable()
                 ws.Cell(2, 1).InsertData(data);
