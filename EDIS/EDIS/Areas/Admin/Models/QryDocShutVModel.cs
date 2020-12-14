@@ -15,7 +15,7 @@ namespace EDIS.Areas.Admin.Models
         [Display(Name = "表單類別")]
         public string qtyDOCTYPE { get; set; }
         [Display(Name = "關帳年月")]
-        public string qtyApplyDate { get; set; }
+        public string qtyShutDate { get; set; }
         [Display(Name = "送單日")]
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd}")]
@@ -26,17 +26,19 @@ namespace EDIS.Areas.Admin.Models
         [Display(Name = "完帳日")]
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd}")]
-        public DateTime? qtyShutDateFrom { get; set; }
+        public DateTime? qtyApplyDateFrom { get; set; }
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd}")]
-        public DateTime? qtyShutDateTo { get; set; }
+        public DateTime? qtyApplyDateTo { get; set; }
         [Display(Name = "完工日")]
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd}")]
-        public DateTime? qtyCloseDateFrom { get; set; }
+        public DateTime? qtyEndDateFrom { get; set; }
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd}")]
-        public DateTime? qtyCloseDateTo { get; set; }
+        public DateTime? qtyEndDateTo { get; set; }
+        [Display(Name = "關帳狀態")]
+        public string qtyShutStatus { get; set; }
 
     }
 }

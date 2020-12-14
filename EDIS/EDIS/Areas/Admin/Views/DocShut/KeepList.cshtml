@@ -1,0 +1,207 @@
+﻿@model IEnumerable<EDIS.Models.KeepModels.KeepListVModel>
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Identity
+@using EDIS.Models.Identity
+
+@inject CustomUserManager UserManager
+
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+    $(function () {
+        var ShutStatus = '@Html.Raw(ViewData["SHUTSTATUS"])';
+        var $radios = $('input:radio[name=ShutType]');
+        if (ShutStatus == "未關帳") {
+            if ($radios.is(':checked') === false) {
+                $radios.filter('[value=關帳]').prop('checked', true);
+                $radios.filter('[value=反關帳]').attr('disabled', true);
+            }
+        } else {
+            if ($radios.is(':checked') === false) {
+                $radios.filter('[value=反關帳]').prop('checked', true);
+                $radios.filter('[value=關帳]').attr('disabled', true);
+            }
+        }
+        /* Shut Repairs. */
+        $("#btnSHUTKEEP").click(function () {
+            url = '@Url.Action("ShutKeep", "DocShut", new { Area = "Admin" })';
+            var shutType = $("input[name='ShutType']:checked").val();
+            var shutDate = $('#ShutDate').val();
+            if (shutType != "" && shutType != null) {
+                var r = confirm("確定執行【" + shutType + "】作業?");
+                if (r == true) {
+                    var s = "";
+                    $("input[name='chkKEEP']:checked").each(function () {
+                        s += $(this).parents("tr").children().get(2).innerText.trim();
+                        s += ";";
+                    });
+                    if (s != "") {
+                        $.ajax({
+                            url: url,
+                            data: { keeps: s, shutType: shutType, shutDate: shutDate },
+                            type: "POST",
+                            beforeSend: $.Toast.showToast({
+                                'title': '作業進行中，請稍待...',
+                                'icon': 'loading',
+                                'duration': 0
+                            }),
+                            success: function (data) {
+                                alert('已儲存!');
+                                $.Toast.hideToast();
+                                setTimeout(function () {
+                                    ReSubmit();
+                                }, 500);
+                            },
+                            error: function (msg) {
+                                alert(msg);
+                                $.Toast.hideToast();
+                            }
+                        });
+                    }
+                    else {
+                        alert('請至少選擇一張表單');
+                    }
+                }
+            }
+            else {
+                alert('尚未選擇處理方式!');
+            }
+        });
+
+        $('input[name="chkALL"]').change(function () {
+            if ($(this).prop("checked")) {
+                $("input[name='chkKEEP']").each(function () {
+                    $(this).prop("checked", true);
+                });
+            }
+            else {
+                $("input[name='chkKEEP']").each(function () {
+                    $(this).prop("checked", false);
+                });
+            }
+        });
+    });
+</script>
+
+@if (Model.Count() <= 0)
+{
+    <p class="text-danger">無任何資料!</p>
+}
+else
+{
+    <div class="panel panel-primary">
+        <div class="panel-body">
+            <div class="container">
+                <div class="row form-inline" style="height:34px;">
+                    <div class="panel col-md-2 radioPanel">
+                        <label class="radio-inline"><input type="radio" name="ShutType" value="關帳" />關帳</label>
+                        <label class="radio-inline"><input type="radio" name="ShutType" value="反關帳" />反關帳</label>
+                    </div>
+                    <div class="col-md-2">
+                        <label for="ShutDate">關帳年月</label>
+                        <input type="number" id="ShutDate" class="form-control-s" />
+                    </div>
+                    <div class="col-md-2">
+                        <button class="btn btn-primary col-md-6" id="btnSHUTREP">儲存</button>
+                    </div>
+                </div>
+            </div>
+
+            <table class="table">
+                <tr>
+                    <th style="min-width: 80px;">
+                        @Html.CheckBox("chkALL") 全選
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.DocType)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.DocId)
+                        <br />
+                        @Html.DisplayNameFor(model => model.SentDate)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.AccDptName)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.AssetName)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.PlaceLoc)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.InOut)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Result)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Memo)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Cost)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Days)
+                    </th>
+                </tr>
+
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.CheckBox("chkREP")
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.DocType)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.DocId)
+                            <br />
+                            @Html.DisplayFor(modelItem => item.SentDate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.AccDptName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.AssetNo)
+                            <br />
+                            @Html.DisplayFor(modelItem => item.AssetName)
+                            <br />
+                            @Html.DisplayFor(modelItem => item.Brand)
+                            <br />
+                            @Html.DisplayFor(modelItem => item.Type)
+                            <br />
+
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.PlaceLoc)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.InOut)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Result)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Memo)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Cost)
+                        </td>
+                        <td>
+                            @if (item.Flg != "2")
+                            {
+                                @Html.DisplayFor(modelItem => item.Days)
+                            }
+                        </td>
+                    </tr>
+                }
+
+            </table>
+
+        </div>
+    </div>
+}
