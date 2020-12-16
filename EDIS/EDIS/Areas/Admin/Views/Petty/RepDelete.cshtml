@@ -1,0 +1,134 @@
+﻿@model EDIS.Models.RepairModels.RepairCostModel
+
+@{
+    ViewData["Title"] = "刪除 - 請修簽單";
+    Layout = "~/Views/Shared/_PassedLayout.cshtml";
+}
+
+<script>
+    var onFailed = function (data) {
+        alert(data.responseText);
+        $.Toast.hideToast();
+    };
+    function onSuccess() {
+        alert("已刪除!");
+        $.Toast.hideToast();
+        if (window.opener != null) {
+            window.opener.location = "javascript:ReSubmit();";
+            window.close();
+        }
+    }
+</script>
+
+<h2>刪除 - 請修簽單</h2>
+
+<h3>確定刪除此簽單?</h3>
+<div>
+    <h4>RepairCostModel</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.PartNo)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.PartNo)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.PartName)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.PartName)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Standard)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Standard)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Unite)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Unite)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Price)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Price)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Qty)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Qty)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.TotalCost)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.TotalCost)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.StockType)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.StockType)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.VendorId)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.VendorId)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.VendorName)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.VendorName)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.AccountDate)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.AccountDate)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.IsPetty)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.IsPetty)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.SignNo)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.SignNo)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Rtp)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Rtp)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Rtt)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Rtt)
+        </dd>
+    </dl>
+
+    <form asp-action="RepDelete" asp-controller="Petty" asp-area="Admin" data-ajax="true" data-ajax-method="POST"
+          data-ajax-begin="$.Toast.showToast({
+          'title':'刪除中，請稍待...',
+          'icon':'loading',
+          'duration':0
+          })"
+          data-ajax-failure="onFailed"
+          data-ajax-success="onSuccess()">
+        <input type="hidden" asp-for="DocId" />
+        <input type="hidden" asp-for="SeqNo" />
+        <input type="submit" value="刪除" class="btn btn-default" /> |
+    </form>
+</div>

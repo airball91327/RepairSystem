@@ -43,6 +43,9 @@ namespace EDIS.Models.KeepModels
         public int VendorId { get; set; }
         [Display(Name = "廠商名稱")]
         public string VendorName { get; set; }
+        [NotMapped]
+        [Display(Name = "廠商統編")]
+        public string VendorUniteNo { get; set; }
         [Display(Name = "日期")]
         [DataType(DataType.Date)]
         public DateTime? AccountDate { get; set; }
