@@ -105,8 +105,15 @@ namespace EDIS.Areas.Admin.Controllers
             }
             if (!string.IsNullOrEmpty(vendorname))  //廠商關鍵字
             {
-                ts = ts.Where(t => !string.IsNullOrEmpty(t.VendorName))
-                       .Where(t => t.VendorName.Contains(vendorname));
+                ts = ts.Where(t => t.VendorId != null)
+                       .Join(_context.Vendors, t => t.VendorId, v => v.VendorId,
+                       (t, v) => new
+                       {
+                           ticket = t,
+                           vendor = v
+                       }).Where(t => t.vendor.VendorName.Contains(vendorname)).Select(r => r.ticket);
+                //ts = ts.Where(t => !string.IsNullOrEmpty(t.VendorName))
+                //       .Where(t => t.VendorName.Contains(vendorname));
             }
             if (!string.IsNullOrEmpty(vendorno))    //廠商統編
             {
