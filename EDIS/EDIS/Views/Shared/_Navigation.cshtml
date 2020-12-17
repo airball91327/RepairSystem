@@ -166,16 +166,8 @@
                                     <li class="@Html.IsSelected(action: "Index", area: "Admin")">
                                         <a href="@Url.Action("Index", "DocShut", new { Area = "Admin" })">關帳作業</a>
                                     </li>
-                                    <li class="@Html.IsSelected(controller: "Petty", area: "Admin")">
-                                        <a href="#"><span class="nav-label">簽單</span><span class="fa arrow"></span></a>
-                                        <ul class="nav nav-fourth-level collapse @Html.IsSelected(controller: "Petty", area: "Admin", cssClass: "in")">
-                                            <li class="@Html.IsSelected(action: "Index", area: "Admin")">
-                                                <a href="@Url.Action("Index", "Petty", new { Area = "Admin" })">簽單作業</a>
-                                            </li>
-                                            <li class="@Html.IsSelected(action: "TransIndex", area: "Admin")">
-                                                <a href="@Url.Action("TransIndex", "Petty", new { Area = "Admin" })">轉撥計價</a>
-                                            </li>
-                                        </ul>
+                                    <li class="@Html.IsSelected(action: "Index", area: "Admin")">
+                                        <a href="@Url.Action("Index", "Invoice", new { Area = "Admin" })">簽單作業</a>
                                     </li>
                                 </ul>
                             </li>
@@ -273,16 +265,8 @@
                                     <li class="@Html.IsSelected(action: "Index", area: "Admin")">
                                         <a href="@Url.Action("Index", "DocShut", new { Area = "Admin" })">關帳作業</a>
                                     </li>
-                                    <li class="@Html.IsSelected(controller: "Petty", area: "Admin")">
-                                        <a href="#"><span class="nav-label">簽單</span><span class="fa arrow"></span></a>
-                                        <ul class="nav nav-fourth-level collapse @Html.IsSelected(controller: "Petty", area: "Admin", cssClass: "in")">
-                                            <li class="@Html.IsSelected(action: "Index", area: "Admin")">
-                                                <a href="@Url.Action("Index", "Petty", new { Area = "Admin" })">簽單作業</a>
-                                            </li>
-                                            <li class="@Html.IsSelected(action: "TransIndex", area: "Admin")">
-                                                <a href="@Url.Action("TransIndex", "Petty", new { Area = "Admin" })">轉撥計價</a>
-                                            </li>
-                                        </ul>
+                                    <li class="@Html.IsSelected(action: "Index", area: "Admin")">
+                                        <a href="@Url.Action("Index", "Invoice", new { Area = "Admin" })">簽單作業</a>
                                     </li>
                                 </ul>
                             </li>

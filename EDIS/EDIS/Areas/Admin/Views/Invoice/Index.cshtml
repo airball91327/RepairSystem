@@ -1,4 +1,4 @@
-﻿@model EDIS.Areas.Admin.Models.QryPettyVModel
+﻿@model EDIS.Areas.Admin.Models.QryInvoiceVModel
 
 @{
     ViewData["Title"] = "簽單作業";
@@ -7,7 +7,7 @@
 
 <script>
     function ReSubmit() {
-        $("#pettyQtyForm").submit();
+        $("#invoiceQtyForm").submit();
     }
 </script>
 
@@ -29,8 +29,8 @@
 
 <div class="panel panel-primary">
     <div class="panel-body">
-        <form asp-action="Index" asp-controller="Petty" asp-area="Admin" data-ajax="true" data-ajax-method="POST" id="pettyQtyForm"
-              data-ajax-update="#pnlPETTYLIST"
+        <form asp-action="Index" asp-controller="Invoice" asp-area="Admin" data-ajax="true" data-ajax-method="POST" id="invoiceQtyForm"
+              data-ajax-update="#pnlInvoiceLIST"
               data-ajax-begin="$.Toast.showToast({
               'title':'查詢中，請稍待...',
               'icon':'loading',
@@ -84,7 +84,7 @@
     </div>
 </div>
 
-<div id="pnlPETTYLIST" style="margin: 20px 0">
+<div id="pnlInvoiceLIST" style="margin: 20px 0">
 
 </div>
 

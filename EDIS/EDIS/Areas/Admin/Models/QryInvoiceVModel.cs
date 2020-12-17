@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace EDIS.Areas.Admin.Models
 {
-    public class QryPettyVModel
+    public class QryInvoiceVModel
     {
         [Display(Name = "簽單號碼")]
         public string qtySIGNNO{ get; set; }

@@ -388,7 +388,8 @@ namespace EDIS.Areas.Admin.Controllers
             }
 
             var repairCost = _context.RepairCosts.Include(c => c.TicketDtl)
-                                                 .Where(c => c.StockType == "2" && c.TicketDtl != null);
+                                                 .Where(c => c.TicketDtl != null)
+                                                 .Where(c => c.StockType == "2" || c.StockType == "4");
             var output = ticketList.GroupJoin(_context.Vendors, t => t.VendorId, v => v.VendorId,
                                     (t, v) => new
                                     {

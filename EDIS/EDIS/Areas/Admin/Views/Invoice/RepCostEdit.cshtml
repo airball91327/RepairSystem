@@ -1,4 +1,4 @@
-﻿@model EDIS.Models.KeepModels.KeepCostModel
+﻿@model EDIS.Models.RepairModels.RepairCostModel
 @{
     Layout = "~/Views/Shared/_PassedLayout.cshtml";
 }
@@ -105,7 +105,7 @@
 <h3>費用明細</h3>
 <h4>修改</h4>
 <hr />
-<form asp-action="KeepCostEdit" asp-controller="Petty" asp-area="Admin" data-ajax="true" data-ajax-method="POST" id="keepCostEditForm"
+<form asp-action="RepCostEdit" asp-controller="Invoice" asp-area="Admin" data-ajax="true" data-ajax-method="POST" id="repCostEditForm"
       data-ajax-begin="$.Toast.showToast({
           'title':'作業進行中，請稍待...',
           'icon':'loading',
