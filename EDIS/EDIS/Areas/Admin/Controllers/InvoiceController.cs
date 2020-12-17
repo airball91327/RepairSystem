@@ -284,6 +284,54 @@ namespace EDIS.Areas.Admin.Controllers
             }
         }
 
+        // GET: Admin/Invoice/TransferEdit/5
+        public IActionResult TransferEdit(string DocIds, string SeqNos)
+        {
+            string[] docIds = DocIds.Split(new char[] { ';' });
+            string[] seqNos = SeqNos.Split(new char[] { ';' });
+            InvoiceTransferVModel transferVModel = new InvoiceTransferVModel();
+            transferVModel.RepairInvoices = new List<RepairInvoice>();
+            foreach (var docid in docIds)
+            {
+                if (!string.IsNullOrEmpty(docid))
+                {
+                    int index = Array.IndexOf(docIds, docid);
+                    int seqNo = Convert.ToInt32(seqNos[index]);
+                    var rc = _context.RepairCosts.Find(docid, seqNo);
+                    if (rc != null)
+                    {
+                        RepairInvoice invoice = new RepairInvoice();
+                        invoice.DocId = rc.DocId;
+                        invoice.SeqNo = rc.SeqNo;
+                        invoice.SignNo = rc.SignNo;
+                        transferVModel.RepairInvoices.Add(invoice);
+                    }
+                }
+            }
+
+            List<SelectListItem> listItem = new List<SelectListItem>();
+            listItem.Add(new SelectListItem { Text = "1.建築物類", Value = "1" });
+            listItem.Add(new SelectListItem { Text = "2.醫療設備類", Value = "2" });
+            listItem.Add(new SelectListItem { Text = "3.機電設備類", Value = "3" });
+            listItem.Add(new SelectListItem { Text = "4.冷凍空調設備類", Value = "4" });
+            listItem.Add(new SelectListItem { Text = "5.通訊設備類", Value = "5" });
+            listItem.Add(new SelectListItem { Text = "7.照明設備類", Value = "7" });
+            listItem.Add(new SelectListItem { Text = "8.資訊設備類", Value = "8" });
+            listItem.Add(new SelectListItem { Text = "9.什項修繕類", Value = "9" });
+            ViewData["WorkClass"] = new SelectList(listItem, "Value", "Text", transferVModel.WorkClass);
+            //
+            List<SelectListItem> listItem2 = new List<SelectListItem>();
+            listItem2.Add(new SelectListItem { Text = "1.值班", Value = "1" });
+            listItem2.Add(new SelectListItem { Text = "2.維修", Value = "2" });
+            listItem2.Add(new SelectListItem { Text = "3.增設", Value = "3" });
+            listItem2.Add(new SelectListItem { Text = "4.保養", Value = "4" });
+            listItem2.Add(new SelectListItem { Text = "5.其他", Value = "5" });
+            listItem2.Add(new SelectListItem { Text = "7.報廢", Value = "7" });
+            ViewData["Type"] = new SelectList(listItem2, "Value", "Text", "");
+
+            return View(transferVModel);
+        }
+
         public List<RepairCostModel> GetRepInvoiceList(QryInvoiceVModel qdata)
         {
             string signno = qdata.qtySIGNNO;
@@ -292,6 +340,7 @@ namespace EDIS.Areas.Admin.Controllers
             string docid = qdata.qtyDOCID;
             string ticketStatus = qdata.qtyTICKETSTATUS;
             string qryDocType = qdata.qtyDOCTYPE;
+            string qtyShutDate = qdata.qtyShutDate;
             if (!string.IsNullOrEmpty(docid))
                 docid = docid.Trim();
             if (!string.IsNullOrEmpty(signno))
@@ -328,6 +377,21 @@ namespace EDIS.Areas.Admin.Controllers
             {
                 query = query.Where(r => r.DocId == docid);
             }
+            if (!string.IsNullOrEmpty(qtyShutDate)) //關帳年月
+            {
+                int year = Convert.ToInt32(qtyShutDate.Substring(0, 3)) + 1911;
+                int month = Convert.ToInt32(qtyShutDate.Substring(3, 2));
+                DateTime dateFrom = new DateTime(year, month, 1);
+                DateTime dateTo = dateFrom.AddMonths(1).AddSeconds(-1);
+                query = query.Join(_context.RepairDtls, q => q.DocId, rdtl => rdtl.DocId,
+                             (q, rdtl) => new 
+                             { 
+                                repairCost = q,
+                                dtl = rdtl
+                             })
+                             .Where(q => q.dtl.ShutDate >= dateFrom && q.dtl.ShutDate <= dateTo)
+                             .Select(q => q.repairCost);
+            }
 
             foreach (var item in query)
             {
@@ -349,6 +413,7 @@ namespace EDIS.Areas.Admin.Controllers
             string docid = qdata.qtyDOCID;
             string ticketStatus = qdata.qtyTICKETSTATUS;
             string qryDocType = qdata.qtyDOCTYPE;
+            string qtyShutDate = qdata.qtyShutDate;
             if (!string.IsNullOrEmpty(docid))
                 docid = docid.Trim();
             if (!string.IsNullOrEmpty(signno))
@@ -385,8 +450,23 @@ namespace EDIS.Areas.Admin.Controllers
             {
                 query = query.Where(r => r.DocId == docid);
             }
+            if (!string.IsNullOrEmpty(qtyShutDate)) //關帳年月
+            {
+                int year = Convert.ToInt32(qtyShutDate.Substring(0, 3)) + 1911;
+                int month = Convert.ToInt32(qtyShutDate.Substring(3, 2));
+                DateTime dateFrom = new DateTime(year, month, 1);
+                DateTime dateTo = dateFrom.AddMonths(1).AddSeconds(-1);
+                query = query.Join(_context.KeepDtls, q => q.DocId, rdtl => rdtl.DocId,
+                             (q, rdtl) => new
+                             {
+                                 keepCost = q,
+                                 dtl = rdtl
+                             })
+                             .Where(q => q.dtl.ShutDate >= dateFrom && q.dtl.ShutDate <= dateTo)
+                             .Select(q => q.keepCost);
+            }
 
-            foreach(var item in query)
+            foreach (var item in query)
             {
                 var vendor = _context.Vendors.Find(item.VendorId);
                 if (vendor != null)
@@ -398,6 +478,7 @@ namespace EDIS.Areas.Admin.Controllers
             return query.ToList();
         }
 
+        // GET: Admin/Invoice/ExportExcelRep/5
         public IActionResult ExportExcelRep(string DocIds, string SeqNos)
         {
             string[] docIds = DocIds.Split(new char[] { ';' });
@@ -468,6 +549,94 @@ namespace EDIS.Areas.Admin.Controllers
                 ws.Cell(1, 7).Value = "單價";
                 ws.Cell(1, 8).Value = "總金額";
                 ws.Cell(1, 9).Value = "請修單號";
+
+                //如果是要塞入Query後的資料該資料一定要變成是data.AsEnumerable()
+                ws.Cell(2, 1).InsertData(data);
+
+                //因為是用Query的方式,這個地方要用串流的方式來存檔
+                using (MemoryStream memoryStream = new MemoryStream())
+                {
+                    workbook.SaveAs(memoryStream);
+                    //請注意 一定要加入這行,不然Excel會是空檔
+                    memoryStream.Seek(0, SeekOrigin.Begin);
+                    //注意Excel的ContentType,是要用這個"application/vnd.ms-excel"
+                    string fileName = "簽單作業_" + DateTime.Now.ToString("yyyy-MM-dd") + ".xlsx";
+                    return this.File(memoryStream.ToArray(), "application/vnd.ms-excel", fileName);
+                }
+            }
+        }
+
+        // GET: Admin/Invoice/ExportExcelKeep/5
+        public IActionResult ExportExcelKeep(string DocIds, string SeqNos)
+        {
+            string[] docIds = DocIds.Split(new char[] { ';' });
+            string[] seqNos = SeqNos.Split(new char[] { ';' });
+            List<KeepCostModel> keepCostList = new List<KeepCostModel>();
+            foreach (var docid in docIds)
+            {
+                if (!string.IsNullOrEmpty(docid))
+                {
+                    int index = Array.IndexOf(docIds, docid);
+                    int seqNo = Convert.ToInt32(seqNos[index]);
+                    var kc = _context.KeepCosts.Find(docid, seqNo);
+                    if (kc != null)
+                    {
+                        keepCostList.Add(kc);
+                    }
+                }
+            }
+
+            var output = keepCostList.GroupJoin(_context.Vendors, t => t.VendorId, v => v.VendorId,
+                                    (t, v) => new
+                                    {
+                                        keepcost = t,
+                                        vendor = v,
+                                    })
+                                    .Select(r => new
+                                    {
+                                        keepcost = r.keepcost,
+                                        vendor = r.vendor.FirstOrDefault()
+                                    })
+                                    .Join(_context.Keeps, t => t.keepcost.DocId, r => r.DocId,
+                                    (t, r) => new
+                                    {
+                                        keepcost = t.keepcost,
+                                        vendor = t.vendor,
+                                        keep = r,
+                                        accDpt = r.AccDpt,
+                                    })
+                                    .ToList();
+
+            //ClosedXML的用法 先new一個Excel Workbook
+            using (XLWorkbook workbook = new XLWorkbook())
+            {
+                //取得要塞入Excel內的資料
+                var data = output.Select(c => new
+                {
+                    SignNo = c.keepcost.SignNo,
+                    VendorName = c.vendor.VendorName,
+                    VendorUniteNo = c.vendor.UniteNo,
+                    AccountDate = c.keepcost.AccountDate,
+                    PartName = c.keepcost.PartNo + "/" + c.keepcost.PartName + "/" + c.keepcost.Standard,
+                    Qty = c.keepcost.Qty,
+                    Price = c.keepcost.Price,
+                    TotalCost = c.keepcost.TotalCost,
+                    DocId = c.keepcost.DocId,
+                }).ToList();
+
+                //一個workbook內至少會有一個worksheet,並將資料Insert至這個位於A1這個位置上
+                var ws = workbook.Worksheets.Add("簽單列表", 1);
+
+                //Title
+                ws.Cell(1, 1).Value = "簽單號碼";
+                ws.Cell(1, 2).Value = "廠商名稱";
+                ws.Cell(1, 3).Value = "廠商統編";
+                ws.Cell(1, 4).Value = "日期";
+                ws.Cell(1, 5).Value = "料號/零件名稱/規格";
+                ws.Cell(1, 6).Value = "數量";
+                ws.Cell(1, 7).Value = "單價";
+                ws.Cell(1, 8).Value = "總金額";
+                ws.Cell(1, 9).Value = "保養單號";
 
                 //如果是要塞入Query後的資料該資料一定要變成是data.AsEnumerable()
                 ws.Cell(2, 1).InsertData(data);

@@ -1,0 +1,109 @@
+﻿@model EDIS.Areas.Admin.Models.InvoiceTransferVModel
+
+@{
+    ViewData["Title"] = "轉撥計價";
+    Layout = "~/Views/Shared/_PassedLayout.cshtml";
+}
+
+<script>
+    $(function () {
+        $("#EngQryBtn").click(function () {
+            var queryStr = $("#EngQry").val();
+            $.ajax({
+                url: '@Url.Action("QueryUsers", "Repair", new { Area = "" })',
+                type: "GET",
+                data: { QueryStr: queryStr },
+                success: function (data) {
+                    var select = $('#EditEngId');
+                    $('option', select).remove();
+                    select.addItems(data);
+                }
+            });
+        });
+    });
+
+    $.fn.addItems = function (data) {
+        return this.each(function () {
+            var list = this;
+            $.each(data, function (val, text) {
+
+                var option = new Option(text.text, text.value);
+                list.add(option);
+            });
+        });
+    };
+</script>
+
+<h2>轉撥計價</h2>
+
+<hr />
+<div class="row">
+    <div class="col-md-8">
+        <form asp-action="TransferEdit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group" style="word-break: break-word;">
+                <label asp-for="RepairInvoices" class="control-label"></label>
+                <br />
+                <span>
+                    @foreach (var modelItem in Model.RepairInvoices)
+                    {
+                        string s = modelItem.DocId + "(" + modelItem.SignNo + ")，";
+                        @Html.Raw(s)
+                    }
+                </span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="AccountDate" class="control-label"></label>
+                <input asp-for="AccountDate" class="form-control" />
+                <span asp-validation-for="AccountDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Engineer" class="control-label"></label>
+                <div class="form-inline">
+                    <input asp-for="EngId" hidden />
+                    <input asp-for="Engineer" class="form-control" />
+                    <span asp-validation-for="Engineer" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label">修改預設施工人員</label>
+                <div class="form-inline">
+                    <input type="text" placeholder="輸入code或關鍵字查詢" class="form-control" id="EngQry" />
+                    <button type="button" class="btn btn-default" id="EngQryBtn">查詢</button>
+                    <select class="form-control" id="EditEngId">
+                        <option disabled selected>請選擇</option>
+                    </select>
+                    <button type="button" class="btn btn-default" id="EditEngBtn">修改人員</button>
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="EngDpt" class="control-label"></label>
+                <input asp-for="EngDpt" class="form-control" />
+                <span asp-validation-for="EngDpt" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="WorkClass" class="control-label"></label>
+                <select asp-for="WorkClass" asp-items="@ViewData["WorkClass"] as SelectList" class="form-control">
+                </select>
+                <span asp-validation-for="WorkClass" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Type" class="control-label"></label>
+                <select asp-for="Type" asp-items="@ViewData["Type"] as SelectList" class="form-control">
+                    <option disabled selected>請選擇</option>
+                </select>
+                <span asp-validation-for="Type" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="送出" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index" asp-controller="Invoice" asp-area="Admin" class="btn btn-primary">回到列表</a>
+</div>
+

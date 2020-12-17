@@ -21,5 +21,7 @@ namespace EDIS.Areas.Admin.Models
         public string qtyTICKETSTATUS { get; set; }
         [Display(Name = "表單類別")]
         public string qtyDOCTYPE { get; set; }
+        [Display(Name = "關帳年月")]
+        public string qtyShutDate { get; set; }
     }
 }

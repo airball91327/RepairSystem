@@ -37,6 +37,24 @@
                 }
             });
 
+            $('#btnSend').click(function () {
+                var s = "";
+                var s2 = "";
+                $("input[name='chkREP']:checked").each(function () {
+                    s += $(this).parents("tr").children().get(10).innerText.trim();
+                    s += ";";
+                    s2 += $(this).parents("tr").children().get(2).innerText.trim();
+                    s2 += ";";
+                });
+                if (s != "") {
+                    var url = '@Url.Action("TransferEdit", "Invoice", new { Area = "Admin" })' + '?DocIds=' + s + '&SeqNos=' + s2;
+                    window.location.href = url;
+                }
+                else {
+                    alert("請至少選擇一張簽單!")
+                }
+            });
+
             $('input[name="chkALL"]').change(function () {
                 if ($(this).prop("checked")) {
                     $("input[name='chkREP']").each(function () {
@@ -73,7 +91,7 @@ else
             <table class="table table-bordered" style="width: 100%;">
                 <tr>
                     <th style="min-width: 80px;">
-                        @Html.CheckBox("chkALL") 全選
+                        <label>@Html.CheckBox("chkALL") 全選</label>
                     </th>
                     <th>
                         簽單號碼
