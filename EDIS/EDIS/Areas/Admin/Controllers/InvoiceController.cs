@@ -14,6 +14,7 @@ using EDIS.Repositories;
 using EDIS.Models.Identity;
 using System.IO;
 using ClosedXML.Excel;
+using EDIS.Models;
 
 namespace EDIS.Areas.Admin.Controllers
 {
@@ -308,7 +309,15 @@ namespace EDIS.Areas.Admin.Controllers
                     }
                 }
             }
-
+            // Get default engineer.
+            var transEng = _context.TransDefaultEng.FirstOrDefault();
+            if (transEng != null)
+            {
+                transferVModel.Engineer = transEng.FullName;
+                transferVModel.EngId = transEng.UserId;
+                transferVModel.EngDpt = transEng.DptId;
+            }
+            //
             List<SelectListItem> listItem = new List<SelectListItem>();
             listItem.Add(new SelectListItem { Text = "1.建築物類", Value = "1" });
             listItem.Add(new SelectListItem { Text = "2.醫療設備類", Value = "2" });
@@ -332,6 +341,71 @@ namespace EDIS.Areas.Admin.Controllers
             return View(transferVModel);
         }
 
+        // POST: Admin/Invoice/TransferEdit/5
+        [HttpPost]
+        public IActionResult TransferEdit(InvoiceTransferVModel invoiceTransfer)
+        {
+            var test = invoiceTransfer;
+
+            return new JsonResult(invoiceTransfer)
+            {
+                Value = new { success = true, error = "" }
+            };
+        }
+
+        // POST: Admin/Invoice/EditDefaultEng/5
+        [HttpPost]
+        public IActionResult EditDefaultEng(int? userId)
+        {
+            if (userId == null)
+            {
+                throw new Exception("修改失敗!");
+            }
+            var defaultEng = _context.TransDefaultEng.FirstOrDefault();
+            if (defaultEng != null)
+            {
+                var user = _context.AppUsers.Find(userId.Value);
+                if (user != null)
+                {
+                    var dpt = _context.Departments.Find(user.DptId);
+                    defaultEng.UserId = user.Id;
+                    defaultEng.UserName = user.UserName;
+                    defaultEng.FullName = user.FullName;
+                    defaultEng.DptId = dpt.DptId;
+                    defaultEng.DptName = dpt.Name_C;
+                    _context.Entry(defaultEng).State = EntityState.Modified;
+                }
+            }
+            else
+            {
+                var user = _context.AppUsers.Find(userId.Value);
+                if (user != null)
+                {
+                    var dpt = _context.Departments.Find(user.DptId);
+                    TransDefaultEng transDefaultEng = new TransDefaultEng();
+                    transDefaultEng.Id = 1;
+                    transDefaultEng.UserId = user.Id;
+                    transDefaultEng.UserName = user.UserName;
+                    transDefaultEng.FullName = user.FullName;
+                    transDefaultEng.DptId = dpt.DptId;
+                    transDefaultEng.DptName = dpt.Name_C;
+                    _context.TransDefaultEng.Add(transDefaultEng);
+                }
+            }
+            try
+            {
+                _context.SaveChanges();
+                var eng = _context.TransDefaultEng.FirstOrDefault();
+                return new JsonResult(eng)
+                {
+                    Value = new { success = true, error = "", Data = eng }
+                };
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
         public List<RepairCostModel> GetRepInvoiceList(QryInvoiceVModel qdata)
         {
             string signno = qdata.qtySIGNNO;

@@ -18,10 +18,10 @@ namespace EDIS.Areas.Admin.Models
         public List<RepairInvoice> RepairInvoices { get; set; }
         [Display(Name = "入帳年月")]
         public string AccountDate { get; set; }
-        [Display(Name = "施工人員")]
+        [Display(Name = "施工人員(外部人員預設)")]
         public string Engineer { get; set; }
-        public string EngId { get; set; }
-        [Display(Name = "負責部門")]
+        public int EngId { get; set; }
+        [Display(Name = "負責部門(外部人員預設)")]
         public string EngDpt { get; set; }
         [Display(Name = "單據號碼")]
         public string InvoiceNo { get; set; }
