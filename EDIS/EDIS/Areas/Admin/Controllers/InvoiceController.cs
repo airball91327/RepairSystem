@@ -343,11 +343,71 @@ namespace EDIS.Areas.Admin.Controllers
 
         // POST: Admin/Invoice/TransferEdit/5
         [HttpPost]
-        public IActionResult TransferEdit(InvoiceTransferVModel invoiceTransfer)
+        public IActionResult TransferEdit(InvoiceTransferVModel invoiceTransferVModel)
         {
-            var test = invoiceTransfer;
+            var accountDate = invoiceTransferVModel.AccountDate;
+            var defaultEngId = invoiceTransferVModel.EngId;
+            var defaultEngDpt = invoiceTransferVModel.EngDpt;
+            var workClass = invoiceTransferVModel.WorkClass;
+            var type = invoiceTransferVModel.Type;
+            List<RepairInvoice> invoices = invoiceTransferVModel.RepairInvoices;
+            List<InvoiceTransfer> resultList = new List<InvoiceTransfer>();
+            //
+            var rv = _context.RepairCosts.Join(_context.Repairs, rc => rc.DocId, r => r.DocId,
+                                         (rc, r) => new
+                                         {
+                                             cost = rc,
+                                             repair = r
+                                         })
+                                         .Join(_context.AppUsers, r => r.repair.EngId, u => u.Id,
+                                         (r, u) => new 
+                                         { 
+                                             cost = r.cost,
+                                             repair = r.repair,
+                                             repairEng = u
+                                         });
+            if (invoices.Count() > 0)
+            {
+                foreach(var item in invoices)
+                {
+                    var rc = rv.Where(r => r.cost.DocId == item.DocId && r.cost.SeqNo == item.SeqNo).FirstOrDefault();
+                    if (rc != null)
+                    {
+                        InvoiceTransfer invoiceTransfer = new InvoiceTransfer();
+                        invoiceTransfer.DocId = rc.cost.DocId;
+                        invoiceTransfer.AccountDate = accountDate;
+                        invoiceTransfer.TotalCost = rc.cost.TotalCost;
+                        invoiceTransfer.WorkClass = workClass;
+                        invoiceTransfer.Type = type;
+                        invoiceTransfer.AccDpt = rc.repair.AccDpt;
+                        var isExternalEng = _context.ExternalUsers.Find(rc.repair.EngId);
+                        if (isExternalEng != null)  //外部工程師
+                        {
+                            invoiceTransfer.EngId = defaultEngId;
+                            invoiceTransfer.EngDpt = defaultEngDpt;
+                        }
+                        else  //非外部
+                        {
+                            var engDpt = _context.Departments.Find(rc.repairEng.DptId);
+                            invoiceTransfer.EngId = rc.repair.EngId;
+                            invoiceTransfer.EngDpt = engDpt != null ? engDpt.DptId : "";
+                        }
+                        resultList.Add(invoiceTransfer);
+                    }
+                    //
+                    var repairCost = _context.RepairCosts.Find(item.DocId, item.SeqNo);
+                    if (repairCost != null)
+                    {
+                        repairCost.IsTransfor = "Y";
+                        _context.Entry(repairCost).State = EntityState.Modified;
+                    }
+                }
+                _context.SaveChanges();
+            }
 
-            return new JsonResult(invoiceTransfer)
+            var sendToApiList = resultList;
+
+            return new JsonResult(invoiceTransferVModel)
             {
                 Value = new { success = true, error = "" }
             };

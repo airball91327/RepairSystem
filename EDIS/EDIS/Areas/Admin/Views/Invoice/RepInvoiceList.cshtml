@@ -133,8 +133,7 @@ else
                     {
                         <tr>
                             <td>
-                                @{ int test = 1;}
-                                @if (test == 1)
+                                @if (item.IsTransfor != "Y")
                                 {
                                     @Html.CheckBox("chkREP")
                                 }

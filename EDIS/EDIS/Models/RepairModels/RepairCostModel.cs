@@ -54,6 +54,8 @@ namespace EDIS.Models.RepairModels
         public int Rtp { get; set; }
         [Display(Name = "異動時間")]
         public DateTime Rtt { get; set; }
+        [Display(Name = "已轉撥計價")]
+        public string IsTransfor { get; set; }
 
         public virtual TicketDtlModel TicketDtl { get; set; }
     }
