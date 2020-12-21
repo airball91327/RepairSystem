@@ -339,8 +339,8 @@ function getAssetName() {
         data: { assetNo: AssetNo },
         success: function (data) {
             //console.log(data); // debug
-            if (data == "") {
-                $("#AssetNameErrorMsg").html("查無資料!");
+            if (data == "查無資料" || data == "已報廢") {
+                $("#AssetNameErrorMsg").html(data);
             }
             else {
                 $("#AssetNameErrorMsg").html("");

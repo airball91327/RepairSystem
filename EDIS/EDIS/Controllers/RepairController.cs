@@ -1016,6 +1016,10 @@ namespace EDIS.Controllers
             {
                 return Json("查無資料");
             }
+            if (asset.DisposeKind == "報廢")
+            {
+                return Json("已報廢");
+            }
             var returnAsset = new
             {
                 AssetNo = asset.AssetNo,
