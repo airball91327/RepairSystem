@@ -613,7 +613,8 @@ namespace EDIS.Controllers
                 case "列管財產負責人":
                     list = new List<SelectListItem>();
                     //u = _context.AppUsers.Where(ur => ur.UserName == "181151").FirstOrDefault();
-                    u = _context.AppUsers.Where(ur => ur.UserName == "183436").FirstOrDefault();
+                    //u = _context.AppUsers.Where(ur => ur.UserName == "183436").FirstOrDefault();
+                    u = _context.AppUsers.Where(ur => ur.UserName == "111218").FirstOrDefault();
                     if (!string.IsNullOrEmpty(u.DptId))
                     {
                         li = new SelectListItem();
