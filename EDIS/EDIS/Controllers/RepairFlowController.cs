@@ -611,27 +611,35 @@ namespace EDIS.Controllers
                     }
                     break;
                 case "列管財產負責人":
+                    //u = _context.AppUsers.Where(ur => ur.UserName == "111218").FirstOrDefault();
+                    s = roleManager.GetUsersInRole("ListedAssetMgr").ToList();
                     list = new List<SelectListItem>();
-                    //u = _context.AppUsers.Where(ur => ur.UserName == "181151").FirstOrDefault();
-                    //u = _context.AppUsers.Where(ur => ur.UserName == "183436").FirstOrDefault();
-                    u = _context.AppUsers.Where(ur => ur.UserName == "111218").FirstOrDefault();
-                    if (!string.IsNullOrEmpty(u.DptId))
+                    foreach (string l in s)
                     {
-                        li = new SelectListItem();
-                        li.Text = u.FullName + "(" + u.UserName + ")";
-                        li.Value = u.Id.ToString();
-                        list.Add(li);
+                        u = _context.AppUsers.Where(ur => ur.UserName == l).FirstOrDefault();
+                        if (!string.IsNullOrEmpty(u.DptId))
+                        {
+                            li = new SelectListItem();
+                            li.Text = u.FullName + "(" + u.UserName + ")";
+                            li.Value = u.Id.ToString();
+                            list.Add(li);
+                        }
                     }
                     break;
                 case "固資財產負責人":
+                    //u = _context.AppUsers.Where(ur => ur.UserName == "1814").FirstOrDefault();
+                    s = roleManager.GetUsersInRole("FixedAssetMgr").ToList();
                     list = new List<SelectListItem>();
-                    u = _context.AppUsers.Where(ur => ur.UserName == "1814").FirstOrDefault();
-                    if (!string.IsNullOrEmpty(u.DptId))
+                    foreach (string l in s)
                     {
-                        li = new SelectListItem();
-                        li.Text = u.FullName + "(" + u.UserName + ")";
-                        li.Value = u.Id.ToString();
-                        list.Add(li);
+                        u = _context.AppUsers.Where(ur => ur.UserName == l).FirstOrDefault();
+                        if (!string.IsNullOrEmpty(u.DptId))
+                        {
+                            li = new SelectListItem();
+                            li.Text = u.FullName + "(" + u.UserName + ")";
+                            li.Value = u.Id.ToString();
+                            list.Add(li);
+                        }
                     }
                     break;
                 default:
