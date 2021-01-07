@@ -53,7 +53,10 @@
                     @Html.DisplayFor(modelItem => item.SignNo)
                 </td>
                 <td>
-                    @item.AccountDate.Value.ToString("yyyy/MM/dd")
+                    @if (item.AccountDate.HasValue == true)
+                    {
+                        @item.AccountDate.Value.ToString("yyyy/MM/dd")
+                    }
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.PartNo)<br />
