@@ -41,17 +41,20 @@ namespace EDIS.Areas.Mobile.Components.Repair
                                                    repair = r,
                                                    flow = f
                                                }).ToList();
-            var accDpts = userRepairs.GroupBy(r => r.repair.AccDpt).Select(group => group.FirstOrDefault()).ToList();
+            var accDpts = userRepairs.Select(r => r.repair.AccDpt.Trim()).Distinct().ToList();
             var departments = _context.Departments.ToList();
             List<SelectListItem> listItem = new List<SelectListItem>();
-            foreach(var item in accDpts)
+            foreach(string id in accDpts)
             {
-                var dpt = departments.Where(d => d.DptId == item.repair.AccDpt).FirstOrDefault();
-                listItem.Add(new SelectListItem
+                var dpt = departments.Where(d => d.DptId == id.Trim()).FirstOrDefault();
+                if (dpt != null)
                 {
-                    Text = dpt.Name_C + "(" + dpt.DptId + ")",    //show DptName(DptId)
-                    Value = dpt.DptId
-                });
+                    listItem.Add(new SelectListItem
+                    {
+                        Text = dpt.Name_C + "(" + dpt.DptId + ")",    //show DptName(DptId)
+                        Value = dpt.DptId
+                    });
+                }
             }
             ViewData["ACCDPT"] = new SelectList(listItem, "Value", "Text");
 

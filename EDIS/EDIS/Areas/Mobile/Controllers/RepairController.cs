@@ -139,32 +139,31 @@ namespace EDIS.Areas.Mobile.Controllers
             //        searchAllDoc = true;
             //}
 
-            var rps = _context.Repairs.ToList();
+            var rps = _context.Repairs.AsQueryable();
             if (!string.IsNullOrEmpty(docid))
             {
-                rps = rps.Where(v => v.DocId == docid).ToList();
+                rps = rps.Where(v => v.DocId == docid);
             }
             if (!string.IsNullOrEmpty(ano))
             {
-                rps = rps.Where(v => v.AssetNo == ano).ToList();
+                rps = rps.Where(v => v.AssetNo == ano);
             }
             if (!string.IsNullOrEmpty(dptid))
             {
-                rps = rps.Where(v => v.DptId == dptid).ToList();
+                rps = rps.Where(v => v.DptId == dptid);
             }
             if (!string.IsNullOrEmpty(acc))
             {
-                rps = rps.Where(v => v.AccDpt == acc).ToList();
+                rps = rps.Where(v => v.AccDpt == acc);
             }
             if (!string.IsNullOrEmpty(aname))
             {
                 rps = rps.Where(v => v.AssetName != null)
-                        .Where(v => v.AssetName.Contains(aname))
-                        .ToList();
+                        .Where(v => v.AssetName.Contains(aname));
             }
             if (string.IsNullOrEmpty(qtyDate1) == false || string.IsNullOrEmpty(qtyDate2) == false)
             {
-                rps = rps.Where(v => v.ApplyDate >= applyDateFrom && v.ApplyDate <= applyDateTo).ToList();
+                rps = rps.Where(v => v.ApplyDate >= applyDateFrom && v.ApplyDate <= applyDateTo);
             }
 
             /* If no search result. */
