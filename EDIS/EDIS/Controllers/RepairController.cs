@@ -1143,6 +1143,8 @@ namespace EDIS.Controllers
             string[] s = new string[] { "?", "2" };
             RepairFlowModel flow = _context.RepairFlows.Where(f => f.DocId == DocId)
                                                        .Where(f => s.Contains(f.Status)).FirstOrDefault();
+            var delivEmpFlow = _context.RepairFlows.Where(f => f.DocId == DocId)
+                                                   .Where(f => f.Cls.Contains("驗收人")).OrderByDescending(f => f.StepId);
             RepairPrintVModel vm = new RepairPrintVModel();
             if (repair == null)
             {
@@ -1277,11 +1279,14 @@ namespace EDIS.Controllers
                     if (flow.Status == "2")
                     {
                         vm.CloseDate = flow.Rtt;
-                        AppUserModel u = _context.AppUsers.Find(flow.UserId);
-                        if (u != null)
+                        if (delivEmpFlow.Count() > 0)
                         {
-                            vm.DelivEmp = u.UserName;
-                            vm.DelivEmpName = u.FullName;
+                            AppUserModel u = _context.AppUsers.Find(delivEmpFlow.FirstOrDefault().UserId);
+                            if (u != null)
+                            {
+                                vm.DelivEmp = u.UserName;
+                                vm.DelivEmpName = u.FullName;
+                            }
                         }
                     }
                 }
