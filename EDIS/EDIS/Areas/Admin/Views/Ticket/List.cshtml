@@ -233,15 +233,15 @@ else
                             @Html.DisplayNameFor(model => model.StockType)
                         </th>
                         <th>
+                            @Html.DisplayNameFor(model => model.VendorName) /
+                            <br />
+                            @Html.DisplayNameFor(model => model.UniteNo)
+                        </th>
+                        <th>
                             發票號碼
                         </th>
                         <th>
                             @Html.DisplayNameFor(model => model.TicDate)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.VendorName) /
-                            <br />
-                            @Html.DisplayNameFor(model => model.UniteNo)
                         </th>
                         <th>
                             @Html.DisplayNameFor(model => model.TradeCode)
@@ -284,15 +284,15 @@ else
                                 @Html.DisplayFor(modelItem => item.StockType)
                             </td>
                             <td>
+                                @Html.DisplayFor(modelItem => item.VendorName) /
+                                <br />
+                                @Html.DisplayFor(modelItem => item.UniteNo)
+                            </td>
+                            <td>
                                 @Html.DisplayFor(modelItem => item.TicketNo)
                             </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.TicDate)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.VendorName) /
-                                <br />
-                                @Html.DisplayFor(modelItem => item.UniteNo)
                             </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.TradeCode)
