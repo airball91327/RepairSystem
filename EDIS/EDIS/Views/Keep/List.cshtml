@@ -88,18 +88,18 @@ else
                     {
                         if (item.FlowCls == "驗收人")
                         {
-                            @Html.ActionLink("結案", "Edit", "Keep", new { Area = "", id = item.DocId, page = 7 }, new { target = "_blank" })
+                            @Html.ActionLink("結案", "Edit", "Keep", new { Area = "", id = item.DocId, page = 7 }, new { target = "_blank", rel = "opener" })
                             @Html.Raw(" |")
                         }
                         else
                         {
-                            @Html.ActionLink("處理", "Edit", "Keep", new { Area = "", id = item.DocId }, new { target = "_blank" })
+                            @Html.ActionLink("處理", "Edit", "Keep", new { Area = "", id = item.DocId }, new { target = "_blank", rel = "opener" })
                             @Html.Raw(" |")
                         }
                     }
                     else if (item.Flg == "?" && item.FlowCls.Contains("工程師") && UserManager.IsInRole(User, "RepEngineer")) //其他工程師案件
                     {
-                        @Html.ActionLink("處理", "Edit", "Keep", new { Area = "", id = item.DocId }, new { target = "_blank" })
+                        @Html.ActionLink("處理", "Edit", "Keep", new { Area = "", id = item.DocId }, new { target = "_blank", rel = "opener" })
                         @Html.Raw(" |")
                     }
                     else

@@ -63,14 +63,14 @@ else
                     @Html.DisplayFor(modelItem => item.DocId)
                 </td>
                 <td>
-                    @Html.ActionLink("預覽", "Details", "TicketDtl", new { Area = "Admin", id = item.TicketDtlNo, seq = item.SeqNo }, new { target = "_blank" })
+                    @Html.ActionLink("預覽", "Details", "TicketDtl", new { Area = "Admin", id = item.TicketDtlNo, seq = item.SeqNo }, new { target = "_blank", rel = "opener" })
                     @{
                         if (item.DocId == null)
                         {
                             @Html.Raw(" | ")
                             @Html.ActionLink("編輯", "Edit2", "TicketDtl", new { Area = "Admin", id = item.TicketDtlNo, seq = item.SeqNo }, new { target = "_blank" })
                             @Html.Raw(" | ")
-                            @Html.ActionLink("刪除", "Delete2", "TicketDtl", new { Area = "Admin", id = item.TicketDtlNo, seq = item.SeqNo }, new { target = "_blank" })
+                            @Html.ActionLink("刪除", "Delete2", "TicketDtl", new { Area = "Admin", id = item.TicketDtlNo, seq = item.SeqNo }, new { target = "_blank", rel = "opener" })
                         }
                         else
                         {

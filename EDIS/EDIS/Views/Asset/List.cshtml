@@ -289,7 +289,7 @@
                     <td style="width:100px">
                         @if (role == "admin")
                         {
-                            @Html.ActionLink("修改", "Edit", new { id = item.DeviceNo }, new { target = "_blank" })
+                            @Html.ActionLink("修改", "Edit", new { id = item.DeviceNo }, new { target = "_blank", rel = "opener" })
                             <br />
                             @Html.ActionLink("刪除", "Delete", new { id = item.DeviceNo }, new { name = "del" })
                             <br />
