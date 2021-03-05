@@ -22,7 +22,7 @@
 
         //Click button or the tr to show the ticket details.
         $('.btnShowDtl').click(function () {
-            var ticketNo = $(this).parents('tr').children().get(2).innerText.trim();
+            var ticketNo = $(this).parents('tr').children().get(3).innerText.trim();
             $.ajax({
                 url: '@Url.Action("List", "TicketDtl", new { Area = "Admin" })',
                 type: "GET",
@@ -33,7 +33,7 @@
             });
         });
         $('#ticketTable tbody tr').click(function () {
-            var ticketNo = $(this).find('td:eq(2)').html().trim();
+            var ticketNo = $(this).find('td:eq(3)').html().trim();
             $.ajax({
                 url: '@Url.Action("List", "TicketDtl", new { Area = "Admin" })',
                 type: "GET",
@@ -58,7 +58,7 @@
                         $('#ticketTable tr').each(function (index) {
                             if (index != 0) {
                                 var row = $(this);
-                                var id = row.find('td:eq(2)').html().trim();
+                                var id = row.find('td:eq(3)').html().trim();
                                 if (id == ticketNo) {
                                     row.find('td:eq(9)').html(data.data);
                                 }
@@ -76,7 +76,7 @@
             var s = "";
             var checkAmt = true;
             $("input[name='chkTICKET']:checked").each(function () {
-                s += $(this).parents("tr").children().get(2).innerText.trim();
+                s += $(this).parents("tr").children().get(3).innerText.trim();
                 s += ";";
                 var totalAmt = $(this).parents("tr").children().get(9).innerText.trim();
                 if (parseInt(totalAmt) != 0) {
@@ -113,7 +113,7 @@
             var s = "";
             var checkAmt = true;
             $("input[name='chkTICKET']:checked").each(function () {
-                s += $(this).parents("tr").children().get(2).innerText.trim();
+                s += $(this).parents("tr").children().get(3).innerText.trim();
                 s += ";";
                 var totalAmt = $(this).parents("tr").children().get(9).innerText.trim();
                 if (parseInt(totalAmt) != 0) {
@@ -148,7 +148,7 @@
         $('#btnExcel').click(function () {
             var s = "";
             $("input[name='chkTICKET']:checked").each(function () {
-                s += $(this).parents("tr").children().get(2).innerText.trim();
+                s += $(this).parents("tr").children().get(3).innerText.trim();
                 s += ";";
             });
             if (s != "") {
