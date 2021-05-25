@@ -333,10 +333,11 @@ function onSuccess() {
 function getAssetName() {
     var AssetNo = $("#AssetNo").val();
     $.ajax({
-        url: '../Repair/GetAssetName',
+        //url: '../Repair/GetAssetName',
+        url: '../Repair/QueryAssets',
         type: "POST",
         dataType: "json",
-        data: { assetNo: AssetNo },
+        data: { QueryStr: AssetNo },
         success: function (data) {
             //console.log(data); // debug
             if (data == "查無資料" || data == "已報廢") {

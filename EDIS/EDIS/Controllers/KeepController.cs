@@ -13,6 +13,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.Net.Http;
+using Newtonsoft.Json;
 
 namespace EDIS.Controllers
 {
@@ -738,6 +740,57 @@ namespace EDIS.Controllers
         // GET: Keep/QueryAssets
         public JsonResult QueryAssets(string QueryStr, string QueryAccDpt, string QueryDelivDpt)
         {
+            /*List<AssetQryResult> objs = new List<AssetQryResult>();
+
+            // No query string.
+            if (string.IsNullOrEmpty(QueryStr))
+            {
+                return Json("查無資料");
+            }
+            else
+            {
+                //
+                string responseString = "";
+
+                using (var client = new HttpClient())
+                {
+                    List<SelectListItem> list = new List<SelectListItem>();
+                    string urlstr = "http://dms.cch.org.tw/TestWebApi/api/AssetData";
+                    urlstr += "?keyword=" + QueryStr + "&accdpt=" + QueryAccDpt + "&delivdpt=" + QueryDelivDpt;
+                    var url = new Uri(urlstr, UriKind.Absolute);
+                    //string json = JsonConvert.SerializeObject(apps);
+                    //HttpContent contentPost = new StringContent(json);
+                    //contentPost.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                    try
+                    {
+                        var response = client.GetAsync(url); //
+                        responseString = response.Result.Content.ReadAsStringAsync().Result;
+                        
+                        objs = JsonConvert.DeserializeObject<List<AssetQryResult>>(responseString);
+                        // no result.
+                        if (objs.Count() <= 0)
+                        {
+                            return Json(list);
+                        }
+                        else
+                        {
+                            objs.ForEach(asset =>
+                            {
+                                list.Add(new SelectListItem
+                                {
+                                    Text = asset.NAME_C + "(" + asset.ASSET_NO + ")",
+                                    Value = asset.ASSET_NO
+                                });
+                            });
+                            return Json(list);
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        return Json(list);
+                    }
+                }
+            }*/
             var assets = _context.Assets.AsQueryable();
             // No query string.
             if (string.IsNullOrEmpty(QueryStr) && string.IsNullOrEmpty(QueryAccDpt) && string.IsNullOrEmpty(QueryDelivDpt))
@@ -764,15 +817,17 @@ namespace EDIS.Controllers
             List<SelectListItem> list = new List<SelectListItem>();
             if (assets.Count() != 0)
             {
-                assets.ToList().ForEach(asset => {
-                       list.Add(new SelectListItem
-                       {
-                           Text = asset.AssetNo != null ? asset.Cname + "(" + asset.AssetNo + ")" : asset.Cname + "(" + asset.DeviceNo + ")",
-                           Value = asset.DeviceNo.ToString()
-                       });
+                assets.ToList().ForEach(asset =>
+                {
+                    list.Add(new SelectListItem
+                    {
+                        Text = asset.AssetNo != null ? asset.Cname + "(" + asset.AssetNo + ")" : asset.Cname + "(" + asset.DeviceNo + ")",
+                        Value = asset.DeviceNo.ToString()
+                    });
                 });
             }
             return Json(list);
+
         }
 
         // GET: Keep/GetAssetFormatId

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using ClosedXML.Excel;
@@ -18,6 +19,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using X.PagedList;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -949,7 +951,58 @@ namespace EDIS.Controllers
             }
             return did;
         }
+        [HttpPost]
+        public JsonResult QueryAssets(string QueryStr)
+        {
+            List<AssetQryResult> objs = new List<AssetQryResult>();
+            
+            // No query string.
+            if (string.IsNullOrEmpty(QueryStr))
+            {
+                return Json("查無資料");
+            }
+            else
+            {
+                //
+                string responseString = "";
 
+                using (var client = new HttpClient())
+                {
+                    string urlstr = "http://dms.cch.org.tw/TestWebApi/api/AssetData";
+                    urlstr += "?keyword=" + QueryStr;
+                    var url = new Uri(urlstr, UriKind.Absolute);
+                    //string json = JsonConvert.SerializeObject(apps);
+                    //HttpContent contentPost = new StringContent(json);
+                    //contentPost.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                    try
+                    {
+                        var response = client.GetAsync(url); //
+                        responseString = response.Result.Content.ReadAsStringAsync().Result;
+                        objs = JsonConvert.DeserializeObject<List<AssetQryResult>>(responseString);
+                        // no result.
+                        if (objs.Count() <= 0)
+                        {
+                            return Json("查無資料");
+                        }
+                        else
+                        {
+                            var returnAsset = new
+                            {
+                                AssetNo = objs.First().ASSET_NO,
+                                Cname = objs.First().NAME_C,
+                                AccDate = objs.First().ACCDATE
+                            };
+                            return Json(returnAsset);
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        return Json("查無資料");
+                    }
+                }
+            }
+
+        }
         public ActionResult Views(string id)
         {
             RepairModel repair = _context.Repairs.Find(id);

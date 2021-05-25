@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Net.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Newtonsoft.Json;
 
 namespace EDIS.Models.RepairModels
 {
@@ -99,6 +101,40 @@ namespace EDIS.Models.RepairModels
         public DateTime? Rtt { get; set; }
         [NotMapped]
         public string upload { get; set; }
+        //
+        public string GetAccDate(string ano)
+        {
+            string responseString = "";
+
+            using (var client = new HttpClient())
+            {
+                string urlstr = "http://dms.cch.org.tw/TestWebApi/api/AssetData/GetAssetData";
+                urlstr += "?ano=" + ano.ToUpper();
+                var url = new Uri(urlstr, UriKind.Absolute);
+                //string json = JsonConvert.SerializeObject(apps);
+                //HttpContent contentPost = new StringContent(json);
+                //contentPost.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                try
+                {
+                    var response = client.GetAsync(url); //
+                    responseString = response.Result.Content.ReadAsStringAsync().Result;
+                    var objs = JsonConvert.DeserializeObject<AssetQryResult>(responseString);
+                    // no result.
+                    if (objs == null)
+                    {
+                        return "";
+                    }
+                    else
+                    {
+                        return objs.ACCDATE;
+                    }
+                }
+                catch (Exception e)
+                {
+                    return e.Message;
+                }
+            }
+        }
     }
 
     [Table("DeviceClassCodes")]

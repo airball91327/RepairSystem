@@ -30,4 +30,13 @@ namespace EDIS.Models.RepairModels
         public string qtyTroubleDes { get; set; }
         public string qtyEngId { get; set; }
     }
+    public class AssetQryResult
+    {
+        public string ASSET_NO { get; set; }
+        public string NAME_C { get; set; }
+        public string ACC_DPT { get; set; }
+        public string DELIV_DPT { get; set; }
+        public string ACCDATE { get; set; }
+    }
+
 }

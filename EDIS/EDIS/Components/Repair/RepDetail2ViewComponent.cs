@@ -1,4 +1,5 @@
-﻿using EDIS.Data;
+﻿using EDIS.Controllers;
+using EDIS.Data;
 using EDIS.Models.Identity;
 using EDIS.Models.RepairModels;
 using EDIS.Repositories;
@@ -36,11 +37,18 @@ namespace EDIS.Components.Repair
             repair.CheckerName = _context.AppUsers.Find(repair.CheckerId).FullName;
             if(repair.AssetNo != null && repair.AssetNo != "")
             {
-                var tempAsset = _context.Assets.Where(a => a.AssetNo == repair.AssetNo).FirstOrDefault();
-                if(tempAsset != null)
+                string acc = new AssetModel().GetAccDate(repair.AssetNo);
+                int accdat;
+                if (Int32.TryParse(acc, out accdat))
                 {
-                    repair.AssetAccDate = tempAsset.AccDate;
+                    repair.AssetAccDate = DateTime.ParseExact(Convert.ToString(19110000 + accdat), "yyyyMMdd", null);
                 }
+                
+                //var tempAsset = _context.Assets.Where(a => a.AssetNo == repair.AssetNo).FirstOrDefault();
+                //if(tempAsset != null)
+                //{
+                //    repair.AssetAccDate = tempAsset.AccDate;
+                //}
             }
             if (!string.IsNullOrEmpty(repair.Building))
             {
